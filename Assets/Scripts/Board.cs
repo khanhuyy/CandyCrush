@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 public enum GameState {
-    wait,
-    move,
-    win,
-    lose,
-    pause
+    Wait,
+    Move,
+    Win,
+    Lose,
+    Pause
 }
 
 public enum TileKind {
@@ -26,7 +26,7 @@ public class TileType {
 
 public class Board : MonoBehaviour
 {
-    public GameState currentState = GameState.move;
+    public GameState currentState = GameState.Move;
     public int width, height;
     [FormerlySerializedAs("offSet")] public int rowOffSet; // dot offset position vertical to fall down
     [SerializeField] private GameObject tilePrefab;
@@ -342,12 +342,12 @@ public class Board : MonoBehaviour
         }
         // findMatches.currentMatches.Clear();
         // currentDot = null;
-        // yield return new WaitForSeconds(refillDelay);
+        yield return new WaitForSeconds(refillDelay);
         // if(IsDeadlocked()) {
         //     ShuffleBoard();
         //     Debug.Log("Deadlocked");
         // }
-        // currentState = GameState.move;
+        currentState = GameState.Move;
         // streakValue = 1;
     }
 

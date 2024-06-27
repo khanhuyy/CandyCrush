@@ -127,7 +127,7 @@ public class Dot : MonoBehaviour
                 column = previousColumn;
                 // yield return new WaitForSeconds(0.5f);
                 // board.currentDot = null;
-                // board.currentState = GameState.move;
+                board.currentState = GameState.Move;
             } 
             else 
             {
@@ -147,16 +147,17 @@ public class Dot : MonoBehaviour
         // {
         //     hintManager.DestroyHint();
         // }
-        // if(board.currentState == GameState.move) {
+        if(board.currentState == GameState.Move) {
             firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // }
+        }
     }
     
     private void OnMouseUp() {
-        // if(board.currentState == GameState.move) {
+        if(board.currentState == GameState.Move) 
+        {
             finalTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             CalculateAngle();
-        // }
+        }
     }
 
     void CalculateAngle() {
@@ -164,14 +165,14 @@ public class Dot : MonoBehaviour
         
         if(Mathf.Abs(finalTouchPosition.y - firstTouchPosition.y) > swipeResist || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResist)
         {
-            board.currentState = GameState.wait;
             swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
             MovePieces();
+            board.currentState = GameState.Wait;
             board.currentDot = this;
         }
-        // else {
-        //     board.currentState = GameState.move;
-        // }
+        else {
+            board.currentState = GameState.Move;
+        }
     }
 
     void MovePiecesActual(Vector2 direction) {
@@ -185,7 +186,7 @@ public class Dot : MonoBehaviour
             row += (int)direction.y;
             StartCoroutine(CheckMoveCo());
         } else {
-            board.currentState = GameState.move;
+            board.currentState = GameState.Move;
         }
         
     }
@@ -228,7 +229,7 @@ public class Dot : MonoBehaviour
             // StartCoroutine(CheckMoveCo());
             // MovePiecesActual(Vector2.down);
         } else {
-            board.currentState = GameState.move;
+            board.currentState = GameState.Move;
         }
         StartCoroutine(CheckMoveCo());
     }

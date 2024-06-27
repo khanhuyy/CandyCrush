@@ -52,7 +52,7 @@ public class EndGameManager : MonoBehaviour
 
     public void DecreaseCounterValue()
     {
-        if(board.currentState != GameState.pause)
+        if(board.currentState != GameState.Pause)
         {
             currentCounterValue--;
             counter.SetText("" + currentCounterValue);
@@ -69,7 +69,7 @@ public class EndGameManager : MonoBehaviour
     public void WinGame()
     {
         wonPanel.SetActive(true);
-        board.currentState = GameState.win;
+        board.currentState = GameState.Win;
         currentCounterValue = 0;
         counter.SetText("" + currentCounterValue);
         FadePanelController fade = FindObjectOfType<FadePanelController>();
@@ -79,7 +79,7 @@ public class EndGameManager : MonoBehaviour
     public void LoseGame()
     {
         tryAgainPanel.SetActive(true);
-        board.currentState = GameState.lose;
+        board.currentState = GameState.Lose;
         Debug.Log("You lose!");
         currentCounterValue = 0;
         counter.SetText("" + currentCounterValue);

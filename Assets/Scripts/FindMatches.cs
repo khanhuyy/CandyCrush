@@ -74,29 +74,29 @@ public class FindMatches : MonoBehaviour
 
     private IEnumerator FindAllMatchesCo() {
         yield return new WaitForSeconds(0.2f);
-        for (int i = 0; i < board.width; i++) {
-            for (int j = 0; j < board.height; j++) {
-                GameObject currentDot = board.allDots[i, j];
+        for (int column = 0; column < board.width; column++) {
+            for (int row = 0; row < board.height; row++) {
+                GameObject currentDot = board.allDots[column, row];
                 if(currentDot != null) {
                     Dot currentDotDot = currentDot.GetComponent<Dot>(); // todo refactor name
-                    if(i > 0 && i < board.width - 1) {
-                        GameObject leftDot = board.allDots[i - 1, j];
-                        GameObject rightDot = board.allDots[i + 1, j];
-                        if(leftDot != null && rightDot != null) {
-                            Dot leftDotDot = leftDot.GetComponent<Dot>(); // todo refactor name 
-                            Dot rightDotDot = rightDot.GetComponent<Dot>(); // todo refactor name
-                            if(leftDot.tag == currentDot.tag && rightDot.tag == currentDot.tag) {
-                                currentMatches.Union(IsRowBomb(leftDotDot, currentDotDot, rightDotDot));
-                                currentMatches.Union(IsColumnBomb(leftDotDot, currentDotDot, rightDotDot));
-                                currentMatches.Union(IsAdjacentBomb(leftDotDot, currentDotDot, rightDotDot));
-                                GetNearbyPieces(leftDot, currentDot, rightDot);
+                    if(column > 0 && column < board.width - 1) {
+                        GameObject leftDotGo = board.allDots[column - 1, row];
+                        GameObject rightDotGo = board.allDots[column + 1, row];
+                        if(leftDotGo != null && rightDotGo != null) {
+                            Dot leftDot = leftDotGo.GetComponent<Dot>(); // todo refactor name 
+                            Dot rightDot = rightDotGo.GetComponent<Dot>(); // todo refactor name
+                            if(leftDotGo.tag == currentDot.tag && rightDotGo.tag == currentDot.tag) {
+                                currentMatches.Union(IsRowBomb(leftDot, currentDotDot, rightDot));
+                                currentMatches.Union(IsColumnBomb(leftDot, currentDotDot, rightDot));
+                                currentMatches.Union(IsAdjacentBomb(leftDot, currentDotDot, rightDot));
+                                GetNearbyPieces(leftDotGo, currentDot, rightDotGo);
                             }
                         }
                     }
 
-                    if(j > 0 && j < board.height - 1) {
-                        GameObject upDot = board.allDots[i, j + 1];
-                        GameObject downDot = board.allDots[i, j - 1];
+                    if(row > 0 && row < board.height - 1) {
+                        GameObject upDot = board.allDots[column, row + 1];
+                        GameObject downDot = board.allDots[column, row - 1];
                         if(upDot != null && downDot != null) {
                             Dot upDotDot = upDot.GetComponent<Dot>(); // todo refactor name
                             Dot downDotDot = downDot.GetComponent<Dot>(); // todo refactor name

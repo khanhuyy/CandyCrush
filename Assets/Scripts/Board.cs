@@ -232,8 +232,8 @@ public class Board : MonoBehaviour
             // {
             //     soundManager.PlayRandomDestroyNoise();
             // }
-            // GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
-            // Destroy(particle, 0.5f);
+            GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
+            Destroy(particle, 0.5f);
             Destroy(allDots[column, row]);
             // scoreManager.IncreaseScore(basePieceValue * streakValue);
             allDots[column, row] = null;

@@ -289,36 +289,39 @@ public class Board : MonoBehaviour
             nullCount = 0;
         }
         yield return new WaitForSeconds(.4f);
-        // StartCoroutine(FillBoardCo());
+        StartCoroutine(FillBoardCo());
     }
 
     private void RefillBoard() {
-        for (int i = 0; i < width; i ++) {
-            for (int j = 0; j < height; j++) {
-                if(allDots[i, j] == null && !blankSpaces[i, j]) {
-                    Vector2 tempPosition = new Vector2(i, j + offSet);
+        for (int column = 0; column < width; column ++) {
+            for (int row = 0; row < height; row++) {
+                // if(allDots[column, row] == null && !blankSpaces[column, row]) {
+                if(allDots[column, row] == null) {
+                    // Vector2 tempPosition = new Vector2(column, row + offSet);
+                    Vector2 tempPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
-                    int maxIterations = 0;
-                    while(MatchesAt(i, j, dots[dotToUse]) && maxIterations < 100)
-                    {
-                        maxIterations++;
-                        dotToUse = Random.Range(0, dots.Length);
-                    }
-                    maxIterations = 0;
-                    GameObject piece = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
-                    allDots[i, j] = piece;
-                    piece.GetComponent<Dot>().column = i;
-                    piece.GetComponent<Dot>().row = j;
+                    // int maxIterations = 0;
+                    // while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
+                    // {
+                    //     maxIterations++;
+                    //     dotToUse = Random.Range(0, dots.Length);
+                    // }
+                    // maxIterations = 0;
+                    // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
+                    GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
+                    allDots[column, row] = dot;
+                    // piece.GetComponent<Dot>().column = column;
+                    // piece.GetComponent<Dot>().row = row;
                 }
             }   
         }
     }
 
     private bool MatchedOnBoard() {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if(allDots[i, j] != null) {
-                    if(allDots[i, j].GetComponent<Dot>().isMatched) {
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                if(allDots[column, row] != null) {
+                    if(allDots[column, row].GetComponent<Dot>().isMatched) {
                         return true;
                     }
                 }
@@ -330,20 +333,22 @@ public class Board : MonoBehaviour
     private IEnumerator FillBoardCo() {
         RefillBoard();
         yield return new WaitForSeconds(refillDelay);
-        while(MatchedOnBoard()) {
-            streakValue += 1;
+        while(MatchedOnBoard())
+        {
+            yield return new WaitForSeconds(refillDelay);
+            // streakValue += 1;
             DestroyMatches();
-            yield return new WaitForSeconds(2 * refillDelay);
+            // yield return new WaitForSeconds(2 * refillDelay);
         }
-        findMatches.currentMatches.Clear();
-        currentDot = null;
-        yield return new WaitForSeconds(refillDelay);
-        if(IsDeadlocked()) {
-            ShuffleBoard();
-            Debug.Log("Deadlocked");
-        }
-        currentState = GameState.move;
-        streakValue = 1;
+        // findMatches.currentMatches.Clear();
+        // currentDot = null;
+        // yield return new WaitForSeconds(refillDelay);
+        // if(IsDeadlocked()) {
+        //     ShuffleBoard();
+        //     Debug.Log("Deadlocked");
+        // }
+        // currentState = GameState.move;
+        // streakValue = 1;
     }
 
     private void SwitchPieces(int column, int row, Vector2 direction) 

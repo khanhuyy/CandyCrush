@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum GameState {
     wait,
@@ -27,7 +28,7 @@ public class Board : MonoBehaviour
 {
     public GameState currentState = GameState.move;
     public int width, height;
-    public int offSet;
+    [FormerlySerializedAs("offSet")] public int rowOffSet; // dot offset position vertical to fall down
     [SerializeField] private GameObject tilePrefab;
     public GameObject breakableTilePrefab;
     public GameObject [] dots;
@@ -297,8 +298,7 @@ public class Board : MonoBehaviour
             for (int row = 0; row < height; row++) {
                 // if(allDots[column, row] == null && !blankSpaces[column, row]) {
                 if(allDots[column, row] == null) {
-                    // Vector2 tempPosition = new Vector2(column, row + offSet);
-                    Vector2 tempPosition = new Vector2(column, row);
+                    Vector2 tempPosition = new Vector2(column, row + rowOffSet);
                     int dotToUse = Random.Range(0, dots.Length);
                     // int maxIterations = 0;
                     // while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
@@ -310,8 +310,8 @@ public class Board : MonoBehaviour
                     // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
                     GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
                     allDots[column, row] = dot;
-                    // piece.GetComponent<Dot>().column = column;
-                    // piece.GetComponent<Dot>().row = row;
+                    dot.GetComponent<Dot>().column = column;
+                    dot.GetComponent<Dot>().row = row;
                 }
             }   
         }

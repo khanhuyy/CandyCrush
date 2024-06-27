@@ -47,12 +47,12 @@ public class Dot : MonoBehaviour
         // hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
         // findMatches = FindObjectOfType<FindMatches>();    
-        targetX = (int) transform.position.x;
-        targetY = (int) transform.position.y;
-        column = targetX;
-        row = targetY;
-        previousColumn = column;
-        previousRow = row;
+        // targetX = (int) transform.position.x;
+        // targetY = (int) transform.position.y;
+        // column = targetX;
+        // row = targetY;
+        // previousColumn = column;
+        // previousRow = row;
     }
 
     // for testing and debug

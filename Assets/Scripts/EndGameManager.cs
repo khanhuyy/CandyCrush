@@ -30,8 +30,8 @@ public class EndGameManager : MonoBehaviour
 
     void Start()
     {
-        board = FindObjectOfType<Board>();
-        SetupGame();
+        // board = FindObjectOfType<Board>();
+        // SetupGame();
     }
 
     void SetupGame()

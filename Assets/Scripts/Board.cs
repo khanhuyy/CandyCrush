@@ -28,7 +28,7 @@ public class Board : MonoBehaviour
     public GameState currentState = GameState.move;
     public int width, height;
     public int offSet;
-    public GameObject tilePrefab;
+    [SerializeField] private GameObject tilePrefab;
     public GameObject breakableTilePrefab;
     public GameObject [] dots;
     public GameObject destroyEffect;
@@ -49,15 +49,15 @@ public class Board : MonoBehaviour
 
     void Start()
     {
-        goalManager = FindObjectOfType<GoalManager>();
-        soundManager = FindObjectOfType<SoundManager>();
-        scoreManager = FindObjectOfType<ScoreManager>();
+        // goalManager = FindObjectOfType<GoalManager>();
+        // soundManager = FindObjectOfType<SoundManager>();
+        // scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
-        findMatches = FindObjectOfType<FindMatches>();
-        blankSpaces = new bool[width, height];  
+        // findMatches = FindObjectOfType<FindMatches>();
+        // blankSpaces = new bool[width, height];  
         allDots = new GameObject[width, height]; 
         Setup(); 
-        currentState = GameState.pause;
+        // currentState = GameState.pause;
     }
 
     public void GenerateBlankSpace() {
@@ -81,56 +81,56 @@ public class Board : MonoBehaviour
     }
 
     private void Setup() {
-        GenerateBlankSpace();
-        GenerateBreakableTiles();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if(!blankSpaces[i, j]) {
-                    Vector2 tempPosition = new Vector2(i, j + offSet);
-                    Vector2 tilePosition = new Vector2(i, j);
-                    // GameObject backgroundTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, this.transform) as GameObject;
-                    // backgroundTile.transform.parent = this.transform;
-                    // backgroundTile.name = "( " + i + ", " + j + " )";
+        // GenerateBlankSpace();
+        // GenerateBreakableTiles();
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                // if(!blankSpaces[column, row]) {
+                    // Vector2 tempPosition = new Vector2(column, row + offset);
+                    Vector2 tilePosition = new Vector2(column, row);
+                    GameObject backgroundTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, this.transform) as GameObject;
+                    backgroundTile.transform.parent = this.transform;
+                    backgroundTile.name = "( " + column + ", " + row + " )";
                     int dotToUse = Random.Range(0, dots.Length);
-                    int maxIterations = 0;
-                    while(MatchesAt(i, j, dots[dotToUse]) && maxIterations < 100) {
+                    // int maxIterations = 0;
+                    while(MatchesAt(column, row, dots[dotToUse])) {
                         dotToUse = Random.Range(0, dots.Length);
-                        maxIterations++;
+                        // maxIterations++;
                     }
-                    maxIterations = 0; // todo consider
-                    GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
-                    dot.GetComponent<Dot>().column = i;
-                    dot.GetComponent<Dot>().row = j;
-                    dot.name = "( " + i + ", " + j + " )";
-                    allDots[i, j] = dot;
-                }
+                    // maxIterations = 0; // todo consider
+                    GameObject dot = Instantiate(dots[dotToUse], tilePosition, Quaternion.identity, this.transform);
+                    dot.GetComponent<Dot>().column = column;
+                    dot.GetComponent<Dot>().row = row;
+                    dot.name = "( " + column + ", " + row + " )";
+                    allDots[column, row] = dot;
+                // }
             }
         }
     }
 
-    private bool MatchesAt(int column, int row, GameObject piece) {
+    private bool MatchesAt(int column, int row, GameObject dot) {
         if(column > 1 && row > 1) {
             if(allDots[column - 1, row] != null && allDots[column - 2, row] != null) {
-                if(allDots[column - 1, row].tag == piece.tag || allDots[column - 2, row].tag == piece.tag) {
+                if(allDots[column - 1, row].CompareTag(dot.tag) || allDots[column - 2, row].CompareTag(dot.tag)) {
                     return true;
                 }
             }
             if(allDots[column, row - 1] != null && allDots[column, row - 2] != null) {
-                if(allDots[column, row - 1].tag == piece.tag || allDots[column, row - 2].tag == piece.tag) {
+                if(allDots[column, row - 1].CompareTag(dot.tag) || allDots[column, row - 2].CompareTag(dot.tag)) {
                     return true;
                 }
             }
         } else if (column <= 1 || row <= 1) {
             if(column > 1) {
                 if(allDots[column - 1, row] != null && allDots[column - 2, row] != null) {
-                    if(allDots[column - 1, row].tag == piece.tag || allDots[column - 2, row].tag == piece.tag) {
+                    if(allDots[column - 1, row].CompareTag(dot.tag) || allDots[column - 2, row].CompareTag(dot.tag)) {
                         return true;
                     }
                 }
             }
             if(row > 1) {
                 if(allDots[column, row - 1] != null && allDots[column, row - 2] != null) {
-                    if(allDots[column, row - 1].tag == piece.tag || allDots[column, row - 2].tag == piece.tag) {
+                    if(allDots[column, row - 1].CompareTag(dot.tag) || allDots[column, row - 2].CompareTag(dot.tag)) {
                         return true;
                     }
                 }

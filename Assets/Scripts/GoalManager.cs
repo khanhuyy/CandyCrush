@@ -22,8 +22,8 @@ public class GoalManager : MonoBehaviour
 
     void Start()
     {
-        endGame = FindObjectOfType<EndGameManager>();
-        SetupIntroGoals();
+        // endGame = FindObjectOfType<EndGameManager>();
+        // SetupIntroGoals();
     }
 
     public void SetupIntroGoals()

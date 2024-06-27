@@ -13,13 +13,13 @@ public class ScoreManager : MonoBehaviour
 
     void Start()
     {
-        board = FindObjectOfType<Board>();
+        // board = FindObjectOfType<Board>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        scoreText.SetText("" + score);
+        // scoreText.SetText("" + score);
     }
 
     public void IncreaseScore(int amountToIncrease)

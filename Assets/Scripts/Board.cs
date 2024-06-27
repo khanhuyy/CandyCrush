@@ -54,7 +54,7 @@ public class Board : MonoBehaviour
         // soundManager = FindObjectOfType<SoundManager>();
         // scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
-        // findMatches = FindObjectOfType<FindMatches>();
+        findMatches = FindObjectOfType<FindMatches>();
         // blankSpaces = new bool[width, height];  
         allDots = new GameObject[width, height]; 
         Setup(); 
@@ -206,7 +206,9 @@ public class Board : MonoBehaviour
     }
 
     private void DestroyMatchesAt(int column, int row) {
-        if(allDots[column, row].GetComponent<Dot>().isMatched) {
+        if(allDots[column, row].GetComponent<Dot>().isMatched)
+        {
+            findMatches.currentMatches.Remove(allDots[column, row]);
             // define how many pieces are destroyed
             // if(findMatches.currentMatches.Count >= 4) {
             //     CheckToMakeBomb();

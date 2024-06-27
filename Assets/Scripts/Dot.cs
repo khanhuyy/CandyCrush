@@ -46,7 +46,7 @@ public class Dot : MonoBehaviour
         // endGameManager = FindObjectOfType<EndGameManager>();
         // hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
-        // findMatches = FindObjectOfType<FindMatches>();    
+        findMatches = FindObjectOfType<FindMatches>();    
         // targetX = (int) transform.position.x;
         // targetY = (int) transform.position.y;
         // column = targetX;
@@ -84,7 +84,7 @@ public class Dot : MonoBehaviour
             if(board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
             }
-            // findMatches.FindAllMatches();
+            findMatches.FindAllMatches();
         } else {
             // Directly set position, todo check
             tempPosition = new Vector2(targetX, transform.position.y);
@@ -98,7 +98,7 @@ public class Dot : MonoBehaviour
             if(board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
             }
-            // findMatches.FindAllMatches(); // todo consider call 1 time
+            findMatches.FindAllMatches(); // todo consider call 1 time
         } else {
             // Directly set position, todo check
             tempPosition = new Vector2(transform.position.x, targetY);

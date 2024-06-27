@@ -81,9 +81,9 @@ public class Dot : MonoBehaviour
             // Move towars the target
             tempPosition = new Vector2(targetX, transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
-            // if(board.allDots[column, row] != this.gameObject) {
-            //     board.allDots[column, row] = this.gameObject;
-            // }
+            if(board.allDots[column, row] != this.gameObject) {
+                board.allDots[column, row] = this.gameObject;
+            }
             // findMatches.FindAllMatches();
         } else {
             // Directly set position, todo check
@@ -95,9 +95,9 @@ public class Dot : MonoBehaviour
             // Move towars the target
             tempPosition = new Vector2(transform.position.x, targetY);
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
-            // if(board.allDots[column, row] != this.gameObject) {
-            //     board.allDots[column, row] = this.gameObject;
-            // }
+            if(board.allDots[column, row] != this.gameObject) {
+                board.allDots[column, row] = this.gameObject;
+            }
             // findMatches.FindAllMatches(); // todo consider call 1 time
         } else {
             // Directly set position, todo check
@@ -129,14 +129,14 @@ public class Dot : MonoBehaviour
                 // board.currentDot = null;
                 // board.currentState = GameState.move;
             } 
-            // else 
-            // {
-            //     if(endGameManager.requirements.gameType == GameType.Moves)
-            //     {
-            //         endGameManager.DecreaseCounterValue();
-            //     }
-            //     board.DestroyMatches();
-            // }
+            else 
+            {
+                // if(endGameManager.requirements.gameType == GameType.Moves)
+                // {
+                //     endGameManager.DecreaseCounterValue();
+                // }
+                board.DestroyMatches();
+            }
             otherDot = null;
         }
     }

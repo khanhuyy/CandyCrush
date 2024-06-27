@@ -92,12 +92,12 @@ public class Board : MonoBehaviour
                     backgroundTile.transform.parent = this.transform;
                     backgroundTile.name = "( " + column + ", " + row + " )";
                     int dotToUse = Random.Range(0, dots.Length);
-                    // int maxIterations = 0;
-                    while(MatchesAt(column, row, dots[dotToUse])) {
+                    int maxIterations = 0;
+                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100) {
                         dotToUse = Random.Range(0, dots.Length);
-                        // maxIterations++;
+                        maxIterations++;
                     }
-                    // maxIterations = 0; // todo consider
+                    maxIterations = 0; // todo consider
                     GameObject dot = Instantiate(dots[dotToUse], tilePosition, Quaternion.identity, this.transform);
                     dot.GetComponent<Dot>().column = column;
                     dot.GetComponent<Dot>().row = row;
@@ -207,32 +207,32 @@ public class Board : MonoBehaviour
     private void DestroyMatchesAt(int column, int row) {
         if(allDots[column, row].GetComponent<Dot>().isMatched) {
             // define how many pieces are destroyed
-            if(findMatches.currentMatches.Count >= 4) {
-                CheckToMakeBomb();
-            }
-
-            // check if tile is bounded jelly
-            if(breakableTiles[column, row] != null)
-            {
-                breakableTiles[column, row].TakeDamage(1);
-                if(breakableTiles[column, row].hitPoints <= 0)
-                {
-                    breakableTiles[column, row] = null;
-                }
-            }
-            if(goalManager != null)
-            {
-                goalManager.CompareGoal(allDots[column, row].tag.ToString());
-                goalManager.UpdateGoals();
-            }
-            if(soundManager != null)
-            {
-                soundManager.PlayRandomDestroyNoise();
-            }
-            GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
-            Destroy(particle, 0.5f);
+            // if(findMatches.currentMatches.Count >= 4) {
+            //     CheckToMakeBomb();
+            // }
+            //
+            // // check if tile is bounded jelly
+            // if(breakableTiles[column, row] != null)
+            // {
+            //     breakableTiles[column, row].TakeDamage(1);
+            //     if(breakableTiles[column, row].hitPoints <= 0)
+            //     {
+            //         breakableTiles[column, row] = null;
+            //     }
+            // }
+            // if(goalManager != null)
+            // {
+            //     goalManager.CompareGoal(allDots[column, row].tag.ToString());
+            //     goalManager.UpdateGoals();
+            // }
+            // if(soundManager != null)
+            // {
+            //     soundManager.PlayRandomDestroyNoise();
+            // }
+            // GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
+            // Destroy(particle, 0.5f);
             Destroy(allDots[column, row]);
-            scoreManager.IncreaseScore(basePieceValue * streakValue);
+            // scoreManager.IncreaseScore(basePieceValue * streakValue);
             allDots[column, row] = null;
         }
     }
@@ -245,9 +245,9 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        findMatches.currentMatches.Clear(); // todo consider ???
-
-        StartCoroutine(DecreaseRowCo2());
+        // findMatches.currentMatches.Clear(); // todo consider ???
+        //
+        StartCoroutine(DecreaseRowCo());
     }
 
     // todo check again
@@ -274,21 +274,22 @@ public class Board : MonoBehaviour
         StartCoroutine(FillBoardCo());
     }
 
+    // Delete and row down if have matches
     private IEnumerator DecreaseRowCo() {
         int nullCount = 0;
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if(allDots[i, j] == null) {
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                if(allDots[column, row] == null) {
                     nullCount++;
                 } else if(nullCount > 0) {
-                    allDots[i, j].GetComponent<Dot>().row -= nullCount;
-                    allDots[i, j] = null;
+                    allDots[column, row].GetComponent<Dot>().row -= nullCount;
+                    allDots[column, row] = null;
                 }
             }
             nullCount = 0;
         }
         yield return new WaitForSeconds(.4f);
-        StartCoroutine(FillBoardCo());
+        // StartCoroutine(FillBoardCo());
     }
 
     private void RefillBoard() {

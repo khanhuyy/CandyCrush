@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1031,9 +1030,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 1
-  width: 5
-  height: 5
-  offSet: 10
+  width: 10
+  height: 10
+  rowOffSet: 10
   tilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
   breakableTilePrefab: {fileID: 6693946532121589710, guid: 1ea11cc6df4434249a49a4cc54b37929, type: 3}
   dots:
@@ -2433,10 +2432,10 @@ GameObject:
   m_Layer: 0
   m_Name: Match Finder
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1639355394
 MonoBehaviour:
   m_ObjectHideFlags: 0

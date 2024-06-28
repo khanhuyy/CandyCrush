@@ -27,10 +27,10 @@ public class Dot : MonoBehaviour
     public float swipeAngle = 0;
     public float swipeResist = 1f; // swipe distance must greater than 1
 
-    [Header("Powerup Stuff")]
-    public bool isColorBomb;
-    public bool isColumnBomb;
-    public bool isRowBomb;
+    [Header("Power Up Stuff")]
+    public bool isColorBomb; // 5 similar in row or column
+    public bool isColumnBomb; // 4 similar in row
+    public bool isRowBomb; // 4 similar in column
     public bool isAdjacentBomb;
     public GameObject rowArrow;
     public GameObject columnArrow;
@@ -38,8 +38,8 @@ public class Dot : MonoBehaviour
     public GameObject adjacentMarker;
     void Start()
     {
-        // isColumnBomb = false;
-        // isRowBomb = false;
+        isColumnBomb = false;
+        isRowBomb = false;
         // isColorBomb = false;
         // isAdjacentBomb = false;
         //
@@ -58,8 +58,8 @@ public class Dot : MonoBehaviour
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isAdjacentBomb = true;
-            GameObject arrow = Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+            isRowBomb = true;
+            GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity, this.transform);
         }
     }
 

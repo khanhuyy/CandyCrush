@@ -34,13 +34,13 @@ public class FindMatches : MonoBehaviour
     private List<GameObject> IsRowBomb(Dot dot1, Dot dot2, Dot dot3) {
         List<GameObject> currentDots = new List<GameObject>();
         if(dot1.isRowBomb) {
-            currentMatches.Union(GetRowPieces(dot1.row));
+            currentMatches.Union(GetRowDots(dot1.row));
         }
         if(dot2.isRowBomb) {
-            currentMatches.Union(GetRowPieces(dot2.row));
+            currentMatches.Union(GetRowDots(dot2.row));
         }
         if(dot3.isRowBomb) {
-            currentMatches.Union(GetRowPieces(dot3.row));
+            currentMatches.Union(GetRowDots(dot3.row));
         }
         return currentDots;
     }
@@ -48,13 +48,13 @@ public class FindMatches : MonoBehaviour
     private List<GameObject> IsColumnBomb(Dot dot1, Dot dot2, Dot dot3) {
         List<GameObject> currentDots = new List<GameObject>();
         if(dot1.isColorBomb) {
-            currentMatches.Union(GetColumnPieces(dot1.column));
+            currentMatches.Union(GetColumnDots(dot1.column));
         }
         if(dot2.isColorBomb) {
-            currentMatches.Union(GetColumnPieces(dot2.column));
+            currentMatches.Union(GetColumnDots(dot2.column));
         }
         if(dot3.isColorBomb) {
-            currentMatches.Union(GetColumnPieces(dot3.column));
+            currentMatches.Union(GetColumnDots(dot3.column));
         }
         return currentDots;
     }
@@ -87,6 +87,11 @@ public class FindMatches : MonoBehaviour
                             Dot rightDot = rightDotGo.GetComponent<Dot>();
                             if(leftDotGo.CompareTag(currentDotGo.tag) && rightDotGo.CompareTag(currentDotGo.tag))
                             {
+                                if (currentDot.isRowBomb || leftDot.isRowBomb || rightDot.isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowDots(row));
+
+                                }
                                 if (!currentMatches.Contains(leftDotGo))
                                 {
                                     currentMatches.Add(leftDotGo);
@@ -119,6 +124,20 @@ public class FindMatches : MonoBehaviour
                             Dot downDot = downDotGo.GetComponent<Dot>();
                             if(upDotGo.CompareTag(currentDotGo.tag) && downDotGo.CompareTag(currentDotGo.tag))
                             {
+                                if (currentDot.isColumnBomb || upDot.isColumnBomb || downDot.isColumnBomb)
+                                {
+                                    currentMatches.Union(GetRowDots(column));
+                                }
+                                if (.isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnDots(column));
+                                }
+                                if (currentDot.isColumnBomb)
+                                {
+                                    currentMatches.Union(GetColumnDots(column));
+                                }
+                                
+                                
                                 if (!currentMatches.Contains(upDotGo))
                                 {
                                     currentMatches.Add(upDotGo);
@@ -162,17 +181,18 @@ public class FindMatches : MonoBehaviour
         return dots;
     }
 
-    List<GameObject> GetColumnPieces(int column) {
+    // all column dots
+    List<GameObject> GetColumnDots(int column) {
         List<GameObject> dots = new List<GameObject>();
-        for (int i = 0; i < board.height; i++) {
-            if(board.allDots[column, i] != null) {
-                Dot dot = board.allDots[column, i].GetComponent<Dot>();
-                if(dot.isRowBomb)
-                {
-                    dots.Union(GetRowPieces(i)).ToList();
-                }
-                dots.Add(board.allDots[column, i]);
-                board.allDots[column, i].GetComponent<Dot>().isMatched = true;
+        for (int row = 0; row < board.height; row++) {
+            if(board.allDots[column, row] != null) {
+                // Dot dot = board.allDots[column, row].GetComponent<Dot>();
+                // if(dot.isRowBomb)
+                // {
+                //     dots.Union(GetRowPieces(row)).ToList();
+                // }
+                dots.Add(board.allDots[column, row]);
+                board.allDots[column, row].GetComponent<Dot>().isMatched = true;
             }
         }
         return dots;
@@ -194,17 +214,17 @@ public class FindMatches : MonoBehaviour
         }
     }
 
-    List<GameObject> GetRowPieces(int row) {
+    List<GameObject> GetRowDots(int row) {
         List<GameObject> dots = new List<GameObject>();
-        for (int i = 0; i < board.width; i++) {
-            if(board.allDots[i, row] != null) {
-                Dot dot = board.allDots[i, row].GetComponent<Dot>();
-                if(dot.isColumnBomb)
-                {
-                    dots.Union(GetColumnPieces(i)).ToList();
-                }
-                dots.Add(board.allDots[i, row]);
-                board.allDots[i, row].GetComponent<Dot>().isMatched = true;
+        for (int column = 0; column < board.width; column++) {
+            if(board.allDots[column, row] != null) {
+                // Dot dot = board.allDots[i, row].GetComponent<Dot>();
+                // if(dot.isColumnBomb)
+                // {
+                //     dots.Union(GetColumnDots(i)).ToList();
+                // }
+                dots.Add(board.allDots[column, row]);
+                board.allDots[column, row].GetComponent<Dot>().isMatched = true;
             }
         }
         return dots;

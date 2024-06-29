@@ -251,15 +251,12 @@ public class FindMatches : MonoBehaviour
             if (board.currentDot.isMatched)
             {
                 board.currentDot.isMatched = false;
-                int typeOfBombs = Random.Range(0, 100);
-                if (typeOfBombs < 50)
+                if (board.currentDot.swipeAngle is > -45 and <= 45 or < -135 or >= 135)
                 {
-                    // make a row bomb
                     board.currentDot.MakeRowBomb();
                 }
-                else 
+                else
                 {
-                    // column bomb
                     board.currentDot.MakeColumnBomb();
                 }
             }
@@ -269,15 +266,12 @@ public class FindMatches : MonoBehaviour
                     if(otherDot.isMatched) {
                         otherDot.isMatched = false;
                     }
-                    int typeOfBombs = Random.Range(0, 100);
-                    if (typeOfBombs < 50)
+                    if (board.currentDot.swipeAngle is > -45 and <= 45 or < -135 or >= 135)
                     {
-                        // make a row bomb
-                       otherDot.MakeRowBomb(); // not a ref
+                        otherDot.MakeRowBomb();
                     }
                     else
                     {
-                        // column bomb
                         otherDot.MakeColumnBomb();
                     }
                 }

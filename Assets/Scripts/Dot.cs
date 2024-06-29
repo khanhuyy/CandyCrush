@@ -164,7 +164,10 @@ public class Dot : MonoBehaviour
         // swipe angle range right, top, left, bottom are 315 - 45, 45 - 135, 135 - 225, 225 - 315
         if(Mathf.Abs(finalTouchPosition.y - firstTouchPosition.y) > swipeResist || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResist)
         {
+            Debug.Log(Mathf.Abs(finalTouchPosition.y - firstTouchPosition.y));
+            Debug.Log(Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x));
             swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
+            Debug.Log(swipeAngle);
             MovePieces();
             board.currentState = GameState.Wait;
             board.currentDot = this;

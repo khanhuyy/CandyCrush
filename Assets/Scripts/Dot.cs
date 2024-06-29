@@ -58,8 +58,8 @@ public class Dot : MonoBehaviour
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isRowBomb = true;
-            GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity, this.transform);
+            isColumnBomb = true;
+            GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity, this.transform);
         }
     }
 

@@ -90,10 +90,22 @@ public class FindMatches : MonoBehaviour
                                 if (currentDot.isRowBomb || leftDot.isRowBomb || rightDot.isRowBomb)
                                 {
                                     currentMatches.Union(GetRowDots(row));
-
                                 }
-                                if (!currentMatches.Contains(leftDotGo))
+                                if (leftDot.isColumnBomb)
                                 {
+                                    currentMatches.Union((GetColumnDots(column - 1)));
+                                }
+                                if (currentDot.isColumnBomb) // redundant?
+                                {
+                                    currentMatches.Union((GetColumnDots(column)));
+                                }
+                                if (rightDot.isColumnBomb)
+                                {
+                                    currentMatches.Union((GetColumnDots(column + 1)));
+                                }
+                                // trace all dot in valid matches
+                                if (!currentMatches.Contains(leftDotGo))
+                                { 
                                     currentMatches.Add(leftDotGo);
                                 }
                                 leftDot.isMatched = true;
@@ -126,17 +138,21 @@ public class FindMatches : MonoBehaviour
                             {
                                 if (currentDot.isColumnBomb || upDot.isColumnBomb || downDot.isColumnBomb)
                                 {
-                                    currentMatches.Union(GetRowDots(column));
-                                }
-                                if (.isColumnBomb)
-                                {
-                                    currentMatches.Union(GetColumnDots(column));
-                                }
-                                if (currentDot.isColumnBomb)
-                                {
                                     currentMatches.Union(GetColumnDots(column));
                                 }
                                 
+                                if (downDot.isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowDots(row - 1));
+                                }
+                                if (currentDot.isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowDots(row));
+                                }
+                                if (upDot.isRowBomb)
+                                {
+                                    currentMatches.Union(GetRowDots(row + 1));
+                                }
                                 
                                 if (!currentMatches.Contains(upDotGo))
                                 {

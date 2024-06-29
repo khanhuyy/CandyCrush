@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Dot : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class Dot : MonoBehaviour
     private HintManager hintManager;
     private FindMatches findMatches;
     private Board board;
-    public GameObject otherDot;
+    [FormerlySerializedAs("otherDot")] public GameObject otherDotGo;
     private Vector2 firstTouchPosition;
     private Vector2 finalTouchPosition;
     private Vector2 tempPosition;
@@ -40,7 +41,7 @@ public class Dot : MonoBehaviour
     {
         isColumnBomb = false;
         isRowBomb = false;
-        // isColorBomb = false;
+        isColorBomb = false;
         // isAdjacentBomb = false;
         //
         // endGameManager = FindObjectOfType<EndGameManager>();
@@ -58,8 +59,8 @@ public class Dot : MonoBehaviour
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isColumnBomb = true;
-            GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity, this.transform);
+            isColorBomb = true;
+            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
         }
     }
 
@@ -108,21 +109,24 @@ public class Dot : MonoBehaviour
     }
 
     public IEnumerator CheckMoveCo() {
-        // if(isColorBomb) {
-        //     // this piece is a color bomb and the other pieceis the color to destroy
-        //     findMatches.MatchPIecesOfColor(otherDot.tag);
-        //     isMatched = true;
-        // } else if(otherDot.GetComponent<Dot>().isColorBomb) {
-        //     // other piece is color bomb
-        //     findMatches.MatchPIecesOfColor(this.gameObject.tag);
-        //     otherDot.GetComponent<Dot>().isMatched = true;
-        // }
-        yield return new WaitForSeconds(.5f);
-        if(otherDot != null) {
-            if(!isMatched && !otherDot.GetComponent<Dot>().isMatched) 
+        if(isColorBomb) {
+            // this piece is a color bomb and the other pieceis the color to destroy
+            findMatches.MatchDotsOfColor(otherDotGo.tag);
+            isMatched = true;
+        } else if(otherDotGo.TryGetComponent(out Dot tempOtherDot) && tempOtherDot.isColorBomb) {
+            // other piece is color bomb
+            findMatches.MatchDotsOfColor(this.gameObject.tag);
+            if (otherDotGo.TryGetComponent(out Dot otherDot))
             {
-                otherDot.GetComponent<Dot>().row = row;
-                otherDot.GetComponent<Dot>().column = column;
+                otherDot.isMatched = true;
+            }
+        }
+        yield return new WaitForSeconds(.5f);
+        if(otherDotGo != null) {
+            if(!isMatched && !otherDotGo.GetComponent<Dot>().isMatched) 
+            {
+                otherDotGo.GetComponent<Dot>().row = row;
+                otherDotGo.GetComponent<Dot>().column = column;
                 row = previousRow;
                 column = previousColumn;
                 yield return new WaitForSeconds(0.5f);
@@ -137,7 +141,7 @@ public class Dot : MonoBehaviour
                 // }
                 board.DestroyMatches();
             }
-            // otherDot = null;
+            // otherDotGo = null;
         }
     }
 
@@ -178,12 +182,12 @@ public class Dot : MonoBehaviour
     }
 
     void MovePiecesActual(Vector2 direction) {
-        otherDot = board.allDots[column + (int)direction.x, row + (int)direction.y];
+        otherDotGo = board.allDots[column + (int)direction.x, row + (int)direction.y];
         previousColumn = column;
         previousRow = row;
-        if(otherDot != null) {
-            otherDot.GetComponent<Dot>().column += (-1) * (int)direction.x;
-            otherDot.GetComponent<Dot>().row += (-1) * (int)direction.y;
+        if(otherDotGo != null) {
+            otherDotGo.GetComponent<Dot>().column += (-1) * (int)direction.x;
+            otherDotGo.GetComponent<Dot>().row += (-1) * (int)direction.y;
             column += (int)direction.x;
             row += (int)direction.y;
             StartCoroutine(CheckMoveCo());
@@ -196,37 +200,37 @@ public class Dot : MonoBehaviour
     void MovePieces() {
         if(swipeAngle > -45 && swipeAngle <= 45 && column < board.width - 1) {
             // Right Swipe
-            otherDot = board.allDots[column + 1, row];
+            otherDotGo = board.allDots[column + 1, row];
             previousColumn = column;
             previousRow = row;
-            otherDot.GetComponent<Dot>().column -= 1;
+            otherDotGo.GetComponent<Dot>().column -= 1;
             column += 1;
             // StartCoroutine(CheckMoveCo());
             // MovePiecesActual(Vector2.right);
         } else if(swipeAngle > 45 && swipeAngle <= 135 && row < board.height - 1) {
             // Up Swipe
-            otherDot = board.allDots[column, row + 1];
+            otherDotGo = board.allDots[column, row + 1];
             previousColumn = column;
             previousRow = row;
-            otherDot.GetComponent<Dot>().row -= 1;
+            otherDotGo.GetComponent<Dot>().row -= 1;
             row += 1;
             // StartCoroutine(CheckMoveCo());
             // MovePiecesActual(Vector2.up);
         } else if((swipeAngle > 135 || swipeAngle <= -135) && column > 0) {
             // Left Swipe
-            otherDot = board.allDots[column - 1, row];
+            otherDotGo = board.allDots[column - 1, row];
             previousColumn = column;
             previousRow = row;
-            otherDot.GetComponent<Dot>().column += 1;
+            otherDotGo.GetComponent<Dot>().column += 1;
             column -= 1;
             // StartCoroutine(CheckMoveCo());
             // MovePiecesActual(Vector2.left);
         } else if(swipeAngle > -135 && swipeAngle <= -45 && row > 0) {
             // Down Swipe
-            otherDot = board.allDots[column, row - 1];
+            otherDotGo = board.allDots[column, row - 1];
             previousColumn = column;
             previousRow = row;
-            otherDot.GetComponent<Dot>().row += 1;
+            otherDotGo.GetComponent<Dot>().row += 1;
             row -= 1;
             // StartCoroutine(CheckMoveCo());
             // MovePiecesActual(Vector2.down);

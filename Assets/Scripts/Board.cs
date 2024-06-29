@@ -171,8 +171,8 @@ public class Board : MonoBehaviour
                             currentDot.MakeColorBomb();
                         }
                     } else {
-                        if(currentDot.otherDot != null) {
-                            Dot otherDot = currentDot.otherDot.GetComponent<Dot>();
+                        if(currentDot.otherDotGo != null) {
+                            Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
                             if(otherDot.isMatched) {
                                 if(!otherDot.isColorBomb) {
                                     otherDot.isMatched = false;
@@ -190,8 +190,8 @@ public class Board : MonoBehaviour
                             currentDot.MakeAdjacentBomb();
                         }
                     } else {
-                        if(currentDot.otherDot != null) {
-                            Dot otherDot = currentDot.otherDot.GetComponent<Dot>();
+                        if(currentDot.otherDotGo != null) {
+                            Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
                             if(otherDot.isMatched) {
                                 if(!otherDot.isAdjacentBomb) {
                                     otherDot.isMatched = false;

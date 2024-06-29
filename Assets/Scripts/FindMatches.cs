@@ -214,16 +214,20 @@ public class FindMatches : MonoBehaviour
         return dots;
     }
 
+    // match the same color dot
     // todo refactor name
-    public void MatchPIecesOfColor(string color) {
-        for(int i = 0; i < board.width; i++) {
-            for (int j = 0; j< board.height; j++) {
-                // check if that piece exists
-                if(board.allDots[i, j] != null) {
+    public void MatchDotsOfColor(string color) {
+        for(int column = 0; column < board.width; column++) {
+            for (int row = 0; row< board.height; row++) {
+                // check if that dot exists
+                if(board.allDots[column, row] != null) {
                     // check the tag on that piece
-                    if(board.allDots[i, j].tag == color) {
+                    if(board.allDots[column, row].CompareTag(color)) {
                         // set that piece to be matched
-                        board.allDots[i, j].GetComponent<Dot>().isMatched = true;
+                        if (board.allDots[column, row].TryGetComponent(out Dot otherDot))
+                        {
+                            otherDot.isMatched = true;
+                        }
                     }
                 }
             }
@@ -260,8 +264,8 @@ public class FindMatches : MonoBehaviour
                     board.currentDot.MakeColumnBomb();
                 }
             }
-            else if(board.currentDot.otherDot != null) {
-                if (board.currentDot.otherDot.TryGetComponent(out Dot otherDot))
+            else if(board.currentDot.otherDotGo != null) {
+                if (board.currentDot.otherDotGo.TryGetComponent(out Dot otherDot))
                 {
                     if(otherDot.isMatched) {
                         otherDot.isMatched = false;
@@ -293,16 +297,16 @@ public class FindMatches : MonoBehaviour
     //                 board.currentDot.MakeColumnBomb();
     //             }
     //         } 
-    //     } else if(board.currentDot.otherDot != null) { // todo fix bugs
-    //         Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
-    //         if(otherDot.isMatched) {
-    //             otherDot.isMatched = false;
+    //     } else if(board.currentDot.otherDotGo != null) { // todo fix bugs
+    //         Dot otherDotGo = board.currentDot.otherDotGo.GetComponent<Dot>();
+    //         if(otherDotGo.isMatched) {
+    //             otherDotGo.isMatched = false;
     //         }
     //         if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)
     //               ||(board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135)) {
-    //                 otherDot.MakeRowBomb();
+    //                 otherDotGo.MakeRowBomb();
     //             }else {
-    //                 otherDot.MakeColumnBomb();
+    //                 otherDotGo.MakeColumnBomb();
     //             }
     //     }
     // }

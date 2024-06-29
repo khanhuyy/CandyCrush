@@ -189,8 +189,8 @@ public class Test : MonoBehaviour {
                 }
             }
             //Is the other piece matched?
-            else if(board.currentDot.otherDot != null){
-                Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
+            else if(board.currentDot.otherDotGo != null){
+                Dot otherDot = board.currentDot.otherDotGo.GetComponent<Dot>();
                 //Is the other Dot matched?
                 if(otherDot.isMatched){
                     //Make it unmatched
@@ -201,12 +201,12 @@ public class Test : MonoBehaviour {
                     if (typeOfBomb < 50)
                     {
                         //Make a row bomb
-                        otherDot.MakeRowBomb();
+                        otherDotGo.MakeRowBomb();
                     }
                     else if (typeOfBomb >= 50)
                     {
                         //Make a column bomb
-                        otherDot.MakeColumnBomb();
+                        otherDotGo.MakeColumnBomb();
                     }
                     */
                     if ((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)

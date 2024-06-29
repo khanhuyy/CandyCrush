@@ -35,7 +35,7 @@ public class Board : MonoBehaviour
     public GameObject destroyEffect;
     public TileType[] boardLayout;
     public GameObject [,] allDots;
-    public Dot currentDot;
+    public Dot currentDot; // calculate bomb dot
 
     private bool[,] blankSpaces;
     private BackgroundTile[,] breakableTiles;
@@ -206,13 +206,14 @@ public class Board : MonoBehaviour
     }
 
     private void DestroyMatchesAt(int column, int row) {
-        if(allDots[column, row].GetComponent<Dot>().isMatched)
+        if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
-            findMatches.currentMatches.Remove(allDots[column, row]);
             // define how many pieces are destroyed
-            // if(findMatches.currentMatches.Count >= 4) {
-            //     CheckToMakeBomb();
-            // }
+            if(findMatches.currentMatches.Count is 4 or 7) {
+                findMatches.CheckBombs();
+                // CheckToMakeBomb();
+            }
+            findMatches.currentMatches.Remove(allDots[column, row]);
             //
             // // check if tile is bounded jelly
             // if(breakableTiles[column, row] != null)
@@ -342,8 +343,8 @@ public class Board : MonoBehaviour
             DestroyMatches();
             // yield return new WaitForSeconds(2 * refillDelay);
         }
-        // findMatches.currentMatches.Clear();
-        // currentDot = null;
+        findMatches.currentMatches.Clear();
+        currentDot = null;
         yield return new WaitForSeconds(refillDelay);
         // if(IsDeadlocked()) {
         //     ShuffleBoard();

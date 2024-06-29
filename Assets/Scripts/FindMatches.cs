@@ -246,50 +246,71 @@ public class FindMatches : MonoBehaviour
         return dots;
     }
 
-    // public void CheckBombs() {
-    //     if(board.currentDot != null) {
-    //         Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
-    //         if(board.currentDot.isMatched) {
-    //             board.currentDot.isMatched = false;
-    //             int typeOfBombs = Random.Range(0, 100);
-    //             if(typeOfBombs < 50) {
-    //                 // make a row bomb
-    //                 otherDot.MakeRowBomb();
-    //             } else if(typeOfBombs >= 50) {
-    //                 // column bomb
-    //                 otherDot.MakeColumnBomb();
-    //             }
-    //         } else if(board.currentDot.otherDot != null) {
-    //             if(otherDot.isMatched) {
-    //                 otherDot.isMatched = false;
-    //             }
-    //         }
-    //     }
-    // }
-
     public void CheckBombs() {
         if(board.currentDot != null) {
-            if(board.currentDot.isMatched) {
+            if (board.currentDot.isMatched)
+            {
                 board.currentDot.isMatched = false;
-                if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)
-                  ||(board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135)) {
+                int typeOfBombs = Random.Range(0, 100);
+                if (typeOfBombs < 50)
+                {
+                    // make a row bomb
                     board.currentDot.MakeRowBomb();
-                }else {
+                }
+                else 
+                {
+                    // column bomb
                     board.currentDot.MakeColumnBomb();
                 }
-            } 
-        } else if(board.currentDot.otherDot != null) { // todo fix bugs
-            Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
-            if(otherDot.isMatched) {
-                otherDot.isMatched = false;
             }
-            if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)
-                  ||(board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135)) {
-                    otherDot.MakeRowBomb();
-                }else {
-                    otherDot.MakeColumnBomb();
+            else if(board.currentDot.otherDot != null) {
+                if (board.currentDot.otherDot.TryGetComponent(out Dot otherDot))
+                {
+                    if(otherDot.isMatched) {
+                        otherDot.isMatched = false;
+                    }
+                    int typeOfBombs = Random.Range(0, 100);
+                    if (typeOfBombs < 50)
+                    {
+                        // make a row bomb
+                       otherDot.MakeRowBomb(); // not a ref
+                    }
+                    else
+                    {
+                        // column bomb
+                        otherDot.MakeColumnBomb();
+                    }
                 }
+                
+            }
         }
     }
+
+
+    // public void CheckBombs() {
+    //     // check board has movement
+    //     if(board.currentDot != null) {
+    //         if(board.currentDot.isMatched) {
+    //             board.currentDot.isMatched = false;
+    //             if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)
+    //               ||(board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135)) {
+    //                 board.currentDot.MakeRowBomb();
+    //             }else {
+    //                 board.currentDot.MakeColumnBomb();
+    //             }
+    //         } 
+    //     } else if(board.currentDot.otherDot != null) { // todo fix bugs
+    //         Dot otherDot = board.currentDot.otherDot.GetComponent<Dot>();
+    //         if(otherDot.isMatched) {
+    //             otherDot.isMatched = false;
+    //         }
+    //         if((board.currentDot.swipeAngle > -45 && board.currentDot.swipeAngle <= 45)
+    //               ||(board.currentDot.swipeAngle < -135 || board.currentDot.swipeAngle >= 135)) {
+    //                 otherDot.MakeRowBomb();
+    //             }else {
+    //                 otherDot.MakeColumnBomb();
+    //             }
+    //     }
+    // }
 
 }

@@ -67,11 +67,11 @@ public class Dot : MonoBehaviour
     void Update()
     {
         // todo remove
-        FindMatches();
-        if(isMatched) {
-            SpriteRenderer mySrite = GetComponent<SpriteRenderer>();
-            mySrite.color = new Vector4(255f, 255f, 255f, 0.2f);
-        }
+        // FindMatches();
+        // if(isMatched) {
+        //     SpriteRenderer mySrite = GetComponent<SpriteRenderer>();
+        //     mySrite.color = new Vector4(255f, 255f, 255f, 0.2f);
+        // }
         
         targetX = column;
         targetY = row;
@@ -125,8 +125,8 @@ public class Dot : MonoBehaviour
                 otherDot.GetComponent<Dot>().column = column;
                 row = previousRow;
                 column = previousColumn;
-                // yield return new WaitForSeconds(0.5f);
-                // board.currentDot = null;
+                yield return new WaitForSeconds(0.5f);
+                board.currentDot = null;
                 board.currentState = GameState.Move;
             } 
             else 
@@ -137,7 +137,7 @@ public class Dot : MonoBehaviour
                 // }
                 board.DestroyMatches();
             }
-            otherDot = null;
+            // otherDot = null;
         }
     }
 
@@ -162,7 +162,6 @@ public class Dot : MonoBehaviour
 
     void CalculateAngle() {
         // swipe angle range right, top, left, bottom are 315 - 45, 45 - 135, 135 - 225, 225 - 315
-        
         if(Mathf.Abs(finalTouchPosition.y - firstTouchPosition.y) > swipeResist || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResist)
         {
             swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;

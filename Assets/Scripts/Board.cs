@@ -165,8 +165,6 @@ public class Board : MonoBehaviour
         if(findMatches.currentMatches.Count == 5 || findMatches.currentMatches.Count == 8) {
             if(CanGenerateColorBomb()) {
                 if(currentDot != null) {
-                    Debug.Log("match " + currentDot.isMatched);
-                    Debug.Log("color " + currentDot.isColorBomb);
                     if(currentDot.isMatched && !currentDot.isColorBomb) {
                         currentDot.isMatched = false;
                         currentDot.MakeColorBomb();
@@ -209,7 +207,7 @@ public class Board : MonoBehaviour
         if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
             // define how many pieces are destroyed
-            if(findMatches.currentMatches.Count > 4) {
+            if(findMatches.currentMatches.Count >= 4) {
                 // findMatches.CheckDirectionBombs();
                 CheckToMakeBomb();
             }
@@ -242,10 +240,10 @@ public class Board : MonoBehaviour
     }
 
     public void DestroyMatches() {
-        for ( int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if (allDots[i, j] != null) {
-                    DestroyMatchesAt(i, j);
+        for ( int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                if (allDots[column, row] != null) {
+                    DestroyMatchesAt(column, row);
                 }
             }
         }

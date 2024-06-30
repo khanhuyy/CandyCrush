@@ -32,7 +32,7 @@ public class Dot : MonoBehaviour
     public bool isColorBomb; // 5 similar in row or column
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
-    public bool isAdjacentBomb;
+    public bool isAdjacentBomb; // L shape, 3 length in both cordinate
     public GameObject rowArrow;
     public GameObject columnArrow;
     public GameObject colorBomb;
@@ -42,7 +42,7 @@ public class Dot : MonoBehaviour
         isColumnBomb = false;
         isRowBomb = false;
         isColorBomb = false;
-        // isAdjacentBomb = false;
+        isAdjacentBomb = false;
         //
         // endGameManager = FindObjectOfType<EndGameManager>();
         // hintManager = FindObjectOfType<HintManager>();
@@ -59,8 +59,8 @@ public class Dot : MonoBehaviour
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isColorBomb = true;
-            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
+            isAdjacentBomb = true;
+            Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
         }
     }
 

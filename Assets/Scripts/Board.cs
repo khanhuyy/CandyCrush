@@ -140,7 +140,7 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private bool ColumnOrRow() {
+    private bool CanGenerateColorBomb() {
         int numberHorizontal = 0;
         int numberVertical = 0;
         Dot firstPiece = findMatches.currentMatches[0].GetComponent<Dot>();
@@ -160,43 +160,43 @@ public class Board : MonoBehaviour
 
     private void CheckToMakeBomb() {
         if(findMatches.currentMatches.Count == 4 || findMatches.currentMatches.Count == 7) {
-            findMatches.CheckBombs();
+            findMatches.CheckDirectionBombs();
         }
         if(findMatches.currentMatches.Count == 5 || findMatches.currentMatches.Count == 8) {
-            if(ColumnOrRow()) {
+            if(CanGenerateColorBomb()) {
                 if(currentDot != null) {
-                    if(currentDot.isMatched) {
-                        if(currentDot.isColorBomb) {
-                            currentDot.isMatched = false;
-                            currentDot.MakeColorBomb();
-                        }
+                    Debug.Log("match " + currentDot.isMatched);
+                    Debug.Log("color " + currentDot.isColorBomb);
+                    if(currentDot.isMatched && !currentDot.isColorBomb) {
+                        currentDot.isMatched = false;
+                        currentDot.MakeColorBomb();
                     } else {
                         if(currentDot.otherDotGo != null) {
                             Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if(otherDot.isMatched) {
-                                if(!otherDot.isColorBomb) {
+                            if (otherDot.isMatched || !otherDot.isColorBomb)
+                            {
                                     otherDot.isMatched = false;
                                     otherDot.MakeColorBomb();
-                                }
+                                
                             }
                         }
                     }
                 }
-            } else {
+            } 
+            else 
+            {
+                // adjacent bomb
                 if(currentDot != null) {
-                    if(currentDot.isMatched) {
-                        if(currentDot.isAdjacentBomb) {
-                            currentDot.isMatched = false;
-                            currentDot.MakeAdjacentBomb();
-                        }
+                    if(currentDot.isMatched || !currentDot.isAdjacentBomb) {
+                        currentDot.isMatched = false;
+                        currentDot.MakeAdjacentBomb();
+                        
                     } else {
                         if(currentDot.otherDotGo != null) {
                             Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if(otherDot.isMatched) {
-                                if(!otherDot.isAdjacentBomb) {
-                                    otherDot.isMatched = false;
-                                    otherDot.MakeAdjacentBomb();
-                                }
+                            if(otherDot.isMatched || !otherDot.isAdjacentBomb) {
+                                otherDot.isMatched = false;
+                                otherDot.MakeAdjacentBomb();
                             }
                         }
                     }
@@ -209,9 +209,9 @@ public class Board : MonoBehaviour
         if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
             // define how many pieces are destroyed
-            if(findMatches.currentMatches.Count is 4 or 7) {
-                findMatches.CheckBombs();
-                // CheckToMakeBomb();
+            if(findMatches.currentMatches.Count > 4) {
+                // findMatches.CheckDirectionBombs();
+                CheckToMakeBomb();
             }
             findMatches.currentMatches.Remove(allDots[column, row]);
             //
@@ -249,7 +249,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        findMatches.currentMatches.Clear(); // todo consider ???
+        findMatches.currentMatches.Clear();
         StartCoroutine(DecreaseRowCo());
     }
 

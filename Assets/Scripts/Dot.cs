@@ -59,8 +59,8 @@ public class Dot : MonoBehaviour
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isAdjacentBomb = true;
-            Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+            isColorBomb = true;
+            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
         }
     }
 
@@ -99,7 +99,7 @@ public class Dot : MonoBehaviour
             if(board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
             }
-            findMatches.FindAllMatches(); // todo consider call 1 time
+            findMatches.FindAllMatches();
         } else {
             // Directly set position, todo check
             tempPosition = new Vector2(transform.position.x, targetY);
@@ -275,11 +275,13 @@ public class Dot : MonoBehaviour
     public void MakeColorBomb() {
         isColorBomb = true;
         Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
-        this.gameObject.tag = "Color";
+        Debug.Log("color bome " + transform.position);
+        // this.gameObject.tag = "Color";
     }
 
     public void MakeAdjacentBomb() {
         isAdjacentBomb = true;
         Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+        Debug.Log("adjancent bome " + transform.position);
     }
 }

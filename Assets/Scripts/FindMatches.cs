@@ -47,13 +47,13 @@ public class FindMatches : MonoBehaviour
 
     private List<GameObject> IsColumnBomb(Dot dot1, Dot dot2, Dot dot3) {
         List<GameObject> currentDots = new List<GameObject>();
-        if(dot1.isColorBomb) {
+        if(dot1.isColumnBomb) {
             currentMatches.Union(GetColumnDots(dot1.column));
         }
-        if(dot2.isColorBomb) {
+        if(dot2.isColumnBomb) {
             currentMatches.Union(GetColumnDots(dot2.column));
         }
-        if(dot3.isColorBomb) {
+        if(dot3.isColumnBomb) {
             currentMatches.Union(GetColumnDots(dot3.column));
         }
         return currentDots;
@@ -196,7 +196,8 @@ public class FindMatches : MonoBehaviour
         return dots;
     }
 
-    public void CheckBombs() {
+    // gen row or column bomb
+    public void CheckDirectionBombs() {
         if(board.currentDot != null) {
             if (board.currentDot.isMatched)
             {
@@ -231,7 +232,7 @@ public class FindMatches : MonoBehaviour
     }
 
 
-    // public void CheckBombs() {
+    // public void CheckDirectionBombs() {
     //     // check board has movement
     //     if(board.currentDot != null) {
     //         if(board.currentDot.isMatched) {

@@ -35,7 +35,7 @@ public class Board : MonoBehaviour
     public GameObject destroyEffect;
     public TileType[] boardLayout;
     public GameObject [,] allDots;
-    public Dot currentDot; // calculate bomb dot
+    public Dot currentDot; // calculate first selected dot
 
     private bool[,] blankSpaces;
     private BackgroundTile[,] breakableTiles;
@@ -55,7 +55,7 @@ public class Board : MonoBehaviour
         // scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
         findMatches = FindObjectOfType<FindMatches>();
-        // blankSpaces = new bool[width, height];  
+        blankSpaces = new bool[width, height];  
         allDots = new GameObject[width, height]; 
         Setup(); 
         // currentState = GameState.pause;
@@ -82,11 +82,11 @@ public class Board : MonoBehaviour
     }
 
     private void Setup() {
-        // GenerateBlankSpace();
-        // GenerateBreakableTiles();
+        GenerateBlankSpace();
+        GenerateBreakableTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                // if(!blankSpaces[column, row]) {
+                if(!blankSpaces[column, row]) {
                     // Vector2 tempPosition = new Vector2(column, row + offset);
                     Vector2 tilePosition = new Vector2(column, row);
                     GameObject backgroundTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, this.transform) as GameObject;
@@ -104,7 +104,7 @@ public class Board : MonoBehaviour
                     dot.GetComponent<Dot>().row = row;
                     dot.name = "( " + column + ", " + row + " )";
                     allDots[column, row] = dot;
-                // }
+                }
             }
         }
     }
@@ -171,7 +171,7 @@ public class Board : MonoBehaviour
                     } else {
                         if(currentDot.otherDotGo != null) {
                             Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if (otherDot.isMatched || !otherDot.isColorBomb)
+                            if (otherDot.isMatched && !otherDot.isColorBomb)
                             {
                                     otherDot.isMatched = false;
                                     otherDot.MakeColorBomb();
@@ -192,7 +192,7 @@ public class Board : MonoBehaviour
                     } else {
                         if(currentDot.otherDotGo != null) {
                             Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if(otherDot.isMatched || !otherDot.isAdjacentBomb) {
+                            if(otherDot.isMatched && !otherDot.isAdjacentBomb) {
                                 otherDot.isMatched = false;
                                 otherDot.MakeAdjacentBomb();
                             }
@@ -248,22 +248,24 @@ public class Board : MonoBehaviour
             }
         }
         findMatches.currentMatches.Clear();
-        StartCoroutine(DecreaseRowCo());
+        // StartCoroutine(DecreaseRowCo());
+        StartCoroutine(DecreaseRowCo2());
     }
 
-    // todo check again
+    // todo refactor O(n^3)
+    // row down with blank tile
     private IEnumerator DecreaseRowCo2() {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                // if the current spot isn't black and is empty. . .
-                if(!blankSpaces[i, j] && allDots[i, j] == null) {
-                    for(int k = j + 1; k < height; k++) {
+        for (int column = 0; column < width; column++) {
+            for (int row = 0; row < height; row++) {
+                // if the current spot isn't blank and is empty. . .
+                if(!blankSpaces[column, row] && allDots[column, row] == null) {
+                    for(int k = row + 1; k < height; k++) {
                         // if a dot is found
-                        if (allDots[i, k] != null) {
+                        if (allDots[column, k] != null) {
                             // move this dot to this empty space
-                            allDots[i, k].GetComponent<Dot>().row = j;
+                            allDots[column, k].GetComponent<Dot>().row = row;
                             // set that spot to be null
-                            allDots[i, k] = null;
+                            allDots[column, k] = null;
                             // break out of the loop;
                             break;
                         }
@@ -271,7 +273,8 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        yield return new WaitForSeconds(refillDelay * 0.5f);
+        // yield return new WaitForSeconds(refillDelay * 0.5f);
+        yield return new WaitForSeconds(0.4f);
         StartCoroutine(FillBoardCo());
     }
 
@@ -299,22 +302,25 @@ public class Board : MonoBehaviour
     private void RefillBoard() {
         for (int column = 0; column < width; column ++) {
             for (int row = 0; row < height; row++) {
-                // if(allDots[column, row] == null && !blankSpaces[column, row]) {
-                if(allDots[column, row] == null) {
-                    Vector2 tempPosition = new Vector2(column, row + rowOffSet);
-                    int dotToUse = Random.Range(0, dots.Length);
-                    // int maxIterations = 0;
-                    // while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
-                    // {
-                    //     maxIterations++;
-                    //     dotToUse = Random.Range(0, dots.Length);
-                    // }
-                    // maxIterations = 0;
-                    // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
-                    GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
-                    allDots[column, row] = dot;
-                    dot.GetComponent<Dot>().column = column;
-                    dot.GetComponent<Dot>().row = row;
+                if (allDots[column, row] == null && !blankSpaces[column, row])
+                {
+                    if (allDots[column, row] == null)
+                    {
+                        Vector2 tempPosition = new Vector2(column, row + rowOffSet);
+                        int dotToUse = Random.Range(0, dots.Length);
+                        // int maxIterations = 0;
+                        // while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
+                        // {
+                        //     maxIterations++;
+                        //     dotToUse = Random.Range(0, dots.Length);
+                        // }
+                        // maxIterations = 0;
+                        // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
+                        GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
+                        allDots[column, row] = dot;
+                        dot.GetComponent<Dot>().column = column;
+                        dot.GetComponent<Dot>().row = row;
+                    }
                 }
             }   
         }

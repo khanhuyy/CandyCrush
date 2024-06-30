@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
     public Dot currentDot; // calculate first selected dot
 
     private bool[,] blankSpaces;
-    private BackgroundTile[,] breakableTiles;
+    private BackgroundTile[,] breakableTiles; // ~ jelly in candy crush
     private FindMatches findMatches;
     public int basePieceValue = 20;
     private int streakValue = 1;
@@ -212,16 +212,17 @@ public class Board : MonoBehaviour
                 CheckToMakeBomb();
             }
             findMatches.currentMatches.Remove(allDots[column, row]);
-            //
-            // // check if tile is bounded jelly
-            // if(breakableTiles[column, row] != null)
-            // {
-            //     breakableTiles[column, row].TakeDamage(1);
-            //     if(breakableTiles[column, row].hitPoints <= 0)
-            //     {
-            //         breakableTiles[column, row] = null;
-            //     }
-            // }
+            
+            // check if tile is bounded jelly
+            if(breakableTiles[column, row] != null)
+            {
+                breakableTiles[column, row].TakeDamage(1);
+                if(breakableTiles[column, row].hitPoints <= 0)
+                {
+                    breakableTiles[column, row] = null;
+                }
+            }
+            
             // if(goalManager != null)
             // {
             //     goalManager.CompareGoal(allDots[column, row].tag.ToString());
@@ -352,10 +353,10 @@ public class Board : MonoBehaviour
         findMatches.currentMatches.Clear();
         currentDot = null;
         yield return new WaitForSeconds(refillDelay);
-        // if(IsDeadlocked()) {
-        //     ShuffleBoard();
-        //     Debug.Log("Deadlocked");
-        // }
+        if(IsDeadlocked()) {
+            ShuffleBoard();
+            Debug.Log("Deadlocked");
+        }
         currentState = GameState.Move;
         // streakValue = 1;
     }
@@ -371,32 +372,32 @@ public class Board : MonoBehaviour
 
     private bool CheckForMatches()
     {
-        for(int i = 0; i <width; i++)
+        for(int column = 0; column < width; column++)
         {
-            for(int j = 0; j < height; j++)
+            for(int row = 0; row < height; row++)
             {
-                if(allDots[i, j] != null)
+                if(allDots[column, row] != null)
                 {
                     // make sure that ond and two to the right are in the board
-                    if(i < width - 2)
+                    if(column < width - 2)
                     {
                         // check if the dots to the right and two to the right
-                        if(allDots[i + 1, j] != null && allDots[i + 2, j] != null)
+                        if(allDots[column + 1, row] != null && allDots[column + 2, row] != null)
                         {
-                            if(allDots[i + 1, j].tag == allDots[i, j].tag
-                            && allDots[i + 2, j].tag == allDots[i, j].tag)
+                            if(allDots[column + 1, row].CompareTag(allDots[column, row].tag)
+                            && allDots[column + 2, row].CompareTag(allDots[column, row].tag))
                             {
                                 return true;
                             }
                         }
                     }
-                    if(j < height - 2)
+                    if(row < height - 2)
                     {
                         // check if the dot above exist
-                        if(allDots[i, j + 1] != null && allDots[i, j + 2] != null)
+                        if(allDots[column, row + 1] != null && allDots[column, row + 2] != null)
                         {
-                            if(allDots[i, j + 1].tag == allDots[i, j].tag
-                            && allDots[i, j + 2].tag == allDots[i, j].tag)
+                            if(allDots[column, row + 1].CompareTag(allDots[column, row].tag)
+                            && allDots[column, row + 2].CompareTag(allDots[column, row].tag))
                             {
                                 return true;
                             }
@@ -423,22 +424,22 @@ public class Board : MonoBehaviour
 
     private bool IsDeadlocked()
     {
-        for (int i = 0; i < width; i++)
+        for (int column = 0; column < width; column++)
         {
-            for (int j = 0; j < height; j++)
+            for (int row = 0; row < height; row++)
             {
-                if(allDots[i, j] != null)
+                if(allDots[column, row] != null)
                 {
-                    if(i < width - 1)
+                    if(column < width - 1)
                     {
-                        if(SwitchAndCheck(i, j, Vector2.right))
+                        if(SwitchAndCheck(column, row, Vector2.right))
                         {
                             return false;
                         }
                     }
-                    if(j < height - 1)
+                    if(row < height - 1)
                     {
-                        if(SwitchAndCheck(i, j, Vector2.up))
+                        if(SwitchAndCheck(column, row, Vector2.up))
                         {
                             return false;
                         }
@@ -451,41 +452,41 @@ public class Board : MonoBehaviour
 
     private void ShuffleBoard()
     {
-        List<GameObject> newBoard = new List<GameObject>();
-        for (int i = 0; i < width; i++)
+        List<GameObject> newBoardTiles = new List<GameObject>();
+        for (int column = 0; column < width; column++)
         {
-            for (int j = 0; j < height; j++)
+            for (int row = 0; row < height; row++)
             {
-                if(allDots[i, j] != null)
+                if(allDots[column, row] != null)
                 {
-                    newBoard.Add(allDots[i, j]);
+                    newBoardTiles.Add(allDots[column, row]);
                 }
             }
         }
         // yield return new WaitForSeconds(0.5f); // ???
         // for every spot on the board
-        for (int i = 0; i < width; i++)
+        for (int column = 0; column < width; column++)
         {
-            for (int j = 0; j < height; j++)
+            for (int row = 0; row < height; row++)
             {
                 // if this spot shouldn't be blank
-                if(!blankSpaces[i, j])
+                if(!blankSpaces[column, row])
                 {
                     // pick a random number
-                    int pieceToUse = Random.Range(0, newBoard.Count);
-                    // make a container for the piece
-                    Dot piece = newBoard[pieceToUse].GetComponent<Dot>();
+                    int pieceToUse = Random.Range(0, newBoardTiles.Count);
+                    
                     int maxIterations = 0;
-                    while(MatchesAt(i, j, newBoard[pieceToUse]) && maxIterations < 100) {
-                        pieceToUse = Random.Range(0, newBoard.Count);
+                    while(MatchesAt(column, row, newBoardTiles[pieceToUse]) && maxIterations < 100) {
+                        pieceToUse = Random.Range(0, newBoardTiles.Count);
                         maxIterations++;
                     }
-                    maxIterations = 0; // todo consider
-                    piece.column = i;
-                    piece.row = j;
+                    // make a container for the piece
+                    Dot piece = newBoardTiles[pieceToUse].GetComponent<Dot>();
+                    piece.column = column;
+                    piece.row = row;
                     // fill in the dots array with this new piece
-                    allDots[i, j] = newBoard[pieceToUse];
-                    newBoard.Remove(newBoard[pieceToUse]);
+                    allDots[column, row] = newBoardTiles[pieceToUse];
+                    newBoardTiles.Remove(newBoardTiles[pieceToUse]);
                 }
             }
         }

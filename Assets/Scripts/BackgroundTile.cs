@@ -12,21 +12,21 @@ public class BackgroundTile : MonoBehaviour
     void Start()
     {
         // goalManager = FindObjectOfType<GoalManager>();
-        // sprite = GetComponent<SpriteRenderer>();
+        sprite = GetComponent<SpriteRenderer>();
         Initalize();
     }
     
     void Update()
     {
-        // if(hitPoints <= 0)
-        // {
-        //     if(goalManager != null)
-        //     {
-        //         goalManager.CompareGoal(this.gameObject.tag);
-        //         goalManager.UpdateGoals();
-        //     }
-        //     Destroy(this.gameObject);
-        // }    
+        if(hitPoints <= 0)
+        {
+            // if(goalManager != null)
+            // {
+            //     goalManager.CompareGoal(this.gameObject.tag);
+            //     goalManager.UpdateGoals();
+            // }
+            Destroy(this.gameObject);
+        }    
     }
 
     public void TakeDamage(int damage)

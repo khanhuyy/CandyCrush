@@ -1000,6 +1000,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cfdb7ba74493c488f27510302b1559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraOffset: -10
+  aspectRatio: 0.625
+  padding: 2
+  yOffset: 1
 --- !u!1 &628157776
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,7 +1046,22 @@ MonoBehaviour:
   - {fileID: 8197473084841504685, guid: 280ba7e464e0d5c428adc254a5da951d, type: 3}
   - {fileID: 8197473084841504685, guid: 4ed1b7f7e334f284a93f4149ac021e3d, type: 3}
   destroyEffect: {fileID: 2809334069459502985, guid: aa38cac8ad6434f4c9e72c8aba7eb584, type: 3}
-  boardLayout: []
+  boardLayout:
+  - x: 0
+    y: 0
+    tileKind: 1
+  - x: 9
+    y: 9
+    tileKind: 1
+  - x: 5
+    y: 5
+    tileKind: 1
+  - x: 6
+    y: 6
+    tileKind: 0
+  - x: 7
+    y: 6
+    tileKind: 0
   currentDot: {fileID: 0}
   basePieceValue: 20
   refillDelay: 0.5
@@ -1888,7 +1907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1344178053
 Transform:
   m_ObjectHideFlags: 0

@@ -249,8 +249,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        // findMatches.currentMatches.Clear(); // todo consider ???
-        //
+        findMatches.currentMatches.Clear(); // todo consider ???
         StartCoroutine(DecreaseRowCo());
     }
 
@@ -280,17 +279,20 @@ public class Board : MonoBehaviour
 
     // Delete and row down if have matches
     private IEnumerator DecreaseRowCo() {
-        int nullCount = 0;
+        int totalNullRows = 0;
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if(allDots[column, row] == null) {
-                    nullCount++;
-                } else if(nullCount > 0) {
-                    allDots[column, row].GetComponent<Dot>().row -= nullCount;
+                    totalNullRows++;
+                } else if(totalNullRows > 0) {
+                    if (allDots[column, row].TryGetComponent(out Dot dot))
+                    {
+                        dot.row -= totalNullRows;
+                    }
                     allDots[column, row] = null;
                 }
             }
-            nullCount = 0;
+            totalNullRows = 0;
         }
         yield return new WaitForSeconds(.4f);
         StartCoroutine(FillBoardCo());

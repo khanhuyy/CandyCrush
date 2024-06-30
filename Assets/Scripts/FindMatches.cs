@@ -63,10 +63,13 @@ public class FindMatches : MonoBehaviour
         if(!currentMatches.Contains(piece)) {
             currentMatches.Add(piece);
         }
-        piece.GetComponent<Dot>().isMatched = true;
+        if (piece.TryGetComponent(out Dot dot))
+        {
+            dot.isMatched = true;
+        }
     }
 
-    private void GetNearbyPieces(GameObject dot1, GameObject dot2, GameObject dot3) {
+    private void MatchNearbyPieces(GameObject dot1, GameObject dot2, GameObject dot3) {
         AddToListAndMatch(dot1);
         AddToListAndMatch(dot2);
         AddToListAndMatch(dot3);
@@ -87,43 +90,10 @@ public class FindMatches : MonoBehaviour
                             Dot rightDot = rightDotGo.GetComponent<Dot>();
                             if(leftDotGo.CompareTag(currentDotGo.tag) && rightDotGo.CompareTag(currentDotGo.tag))
                             {
-                                if (currentDot.isRowBomb || leftDot.isRowBomb || rightDot.isRowBomb)
-                                {
-                                    currentMatches.Union(GetRowDots(row));
-                                }
-                                if (leftDot.isColumnBomb)
-                                {
-                                    currentMatches.Union((GetColumnDots(column - 1)));
-                                }
-                                if (currentDot.isColumnBomb) // redundant?
-                                {
-                                    currentMatches.Union((GetColumnDots(column)));
-                                }
-                                if (rightDot.isColumnBomb)
-                                {
-                                    currentMatches.Union((GetColumnDots(column + 1)));
-                                }
-                                // trace all dot in valid matches
-                                if (!currentMatches.Contains(leftDotGo))
-                                { 
-                                    currentMatches.Add(leftDotGo);
-                                }
-                                leftDot.isMatched = true;
-                                if (!currentMatches.Contains(rightDotGo))
-                                {
-                                    currentMatches.Add(rightDotGo);
-                                }
-                                rightDot.isMatched = true;
-                                if (!currentMatches.Contains(currentDotGo))
-                                {
-                                    currentMatches.Add(currentDotGo);
-                                }
-                                currentDot.isMatched = true;
-                                
-                                // currentMatches.Union(IsRowBomb(leftDot, currentDotDot, rightDot));
-                                // currentMatches.Union(IsColumnBomb(leftDot, currentDotDot, rightDot));
-                                // currentMatches.Union(IsAdjacentBomb(leftDot, currentDotDot, rightDot));
-                                // GetNearbyPieces(leftDotGo, currentDot, rightDotGo);
+                                currentMatches.Union(IsRowBomb(leftDot, currentDot, rightDot));
+                                currentMatches.Union(IsColumnBomb(leftDot, currentDot, rightDot));
+                                // currentMatches.Union(IsAdjacentBomb(leftDot, currentDot, rightDot));
+                                MatchNearbyPieces(leftDotGo, currentDotGo, rightDotGo);
                             }
                         }
                     }
@@ -136,43 +106,10 @@ public class FindMatches : MonoBehaviour
                             Dot downDot = downDotGo.GetComponent<Dot>();
                             if(upDotGo.CompareTag(currentDotGo.tag) && downDotGo.CompareTag(currentDotGo.tag))
                             {
-                                if (currentDot.isColumnBomb || upDot.isColumnBomb || downDot.isColumnBomb)
-                                {
-                                    currentMatches.Union(GetColumnDots(column));
-                                }
-                                
-                                if (downDot.isRowBomb)
-                                {
-                                    currentMatches.Union(GetRowDots(row - 1));
-                                }
-                                if (currentDot.isRowBomb)
-                                {
-                                    currentMatches.Union(GetRowDots(row));
-                                }
-                                if (upDot.isRowBomb)
-                                {
-                                    currentMatches.Union(GetRowDots(row + 1));
-                                }
-                                
-                                if (!currentMatches.Contains(upDotGo))
-                                {
-                                    currentMatches.Add(upDotGo);
-                                }
-                                upDot.isMatched = true;
-                                if (!currentMatches.Contains(downDotGo))
-                                {
-                                    currentMatches.Add(downDotGo);
-                                }
-                                downDot.isMatched = true;
-                                if (!currentMatches.Contains(currentDotGo))
-                                {
-                                    currentMatches.Add(currentDotGo);
-                                }
-                                currentDot.isMatched = true;
-                                // currentMatches.Union(IsColumnBomb(upDot, currentDot, downDot));
-                                // currentMatches.Union(IsRowBomb(upDot, currentDot, downDot));
-                                // currentMatches.Union(IsAdjacentBomb(upDot, currentDot, downDot));
-                                // GetNearbyPieces(upDotGo, currentDotGo, downDotGo);
+                                currentMatches.Union(IsRowBomb(downDot, currentDot, upDot));
+                                currentMatches.Union(IsColumnBomb(downDot, currentDot, upDot));
+                                // currentMatches.Union(IsAdjacentBomb(downDot, currentDot, upDot));
+                                MatchNearbyPieces(downDotGo, currentDotGo, upDotGo);
                             }
                         }
                     }
@@ -208,7 +145,10 @@ public class FindMatches : MonoBehaviour
                 //     dots.Union(GetRowPieces(row)).ToList();
                 // }
                 dots.Add(board.allDots[column, row]);
-                board.allDots[column, row].GetComponent<Dot>().isMatched = true;
+                if (board.allDots[column, row].TryGetComponent(out Dot dot))
+                {
+                    dot.isMatched = true;
+                }
             }
         }
         return dots;
@@ -244,7 +184,10 @@ public class FindMatches : MonoBehaviour
                 //     dots.Union(GetColumnDots(i)).ToList();
                 // }
                 dots.Add(board.allDots[column, row]);
-                board.allDots[column, row].GetComponent<Dot>().isMatched = true;
+                if (board.allDots[column, row].TryGetComponent(out Dot dot))
+                {
+                    dot.isMatched = true;
+                }
             }
         }
         return dots;

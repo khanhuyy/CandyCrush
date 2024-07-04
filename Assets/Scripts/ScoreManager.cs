@@ -16,7 +16,6 @@ public class ScoreManager : MonoBehaviour
         board = FindObjectOfType<Board>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         scoreText.SetText("" + score);

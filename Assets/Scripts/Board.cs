@@ -27,7 +27,7 @@ public class TileType {
 public class Board : MonoBehaviour
 {
     public GameState currentState = GameState.Move;
-    public int width, height;
+    public int width, height, offset;
     [FormerlySerializedAs("offSet")] public int rowOffSet; // dot offset position vertical to fall down
     [SerializeField] private GameObject tilePrefab;
     public GameObject breakableTilePrefab;
@@ -52,7 +52,7 @@ public class Board : MonoBehaviour
     {
         // goalManager = FindObjectOfType<GoalManager>();
         // soundManager = FindObjectOfType<SoundManager>();
-        // scoreManager = FindObjectOfType<ScoreManager>();
+        scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
         findMatches = FindObjectOfType<FindMatches>();
         blankSpaces = new bool[width, height];  
@@ -88,8 +88,9 @@ public class Board : MonoBehaviour
             for (int row = 0; row < height; row++) {
                 if(!blankSpaces[column, row]) {
                     // Vector2 tempPosition = new Vector2(column, row + offset);
+                    Vector2 tempPosition = new Vector2(column, row);
                     Vector2 tilePosition = new Vector2(column, row);
-                    GameObject backgroundTile = Instantiate(tilePrefab, tilePosition, Quaternion.identity, this.transform) as GameObject;
+                    GameObject backgroundTile = Instantiate(tilePrefab, tempPosition, Quaternion.identity, this.transform) as GameObject;
                     backgroundTile.transform.parent = this.transform;
                     backgroundTile.name = "( " + column + ", " + row + " )";
                     int dotToUse = Random.Range(0, dots.Length);
@@ -99,7 +100,7 @@ public class Board : MonoBehaviour
                         maxIterations++;
                     }
                     maxIterations = 0; // todo consider
-                    GameObject dot = Instantiate(dots[dotToUse], tilePosition, Quaternion.identity, this.transform);
+                    GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
                     dot.GetComponent<Dot>().column = column;
                     dot.GetComponent<Dot>().row = row;
                     dot.name = "( " + column + ", " + row + " )";
@@ -235,7 +236,7 @@ public class Board : MonoBehaviour
             GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
             Destroy(particle, 0.5f);
             Destroy(allDots[column, row]);
-            // scoreManager.IncreaseScore(basePieceValue * streakValue);
+            scoreManager.IncreaseScore(basePieceValue * streakValue);
             allDots[column, row] = null;
         }
     }
@@ -345,8 +346,8 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(refillDelay);
         while(MatchedOnBoard())
         {
+            streakValue ++;
             yield return new WaitForSeconds(refillDelay);
-            // streakValue += 1;
             DestroyMatches();
             // yield return new WaitForSeconds(2 * refillDelay);
         }
@@ -358,7 +359,7 @@ public class Board : MonoBehaviour
             Debug.Log("Deadlocked");
         }
         currentState = GameState.Move;
-        // streakValue = 1;
+        streakValue = 1;
     }
 
     private void SwitchPieces(int column, int row, Vector2 direction) 

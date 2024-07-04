@@ -275,8 +275,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        // yield return new WaitForSeconds(refillDelay * 0.5f);
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(refillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
     }
 
@@ -297,7 +296,7 @@ public class Board : MonoBehaviour
             }
             totalNullRows = 0;
         }
-        yield return new WaitForSeconds(.4f);
+        yield return new WaitForSeconds(refillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
     }
 
@@ -310,15 +309,14 @@ public class Board : MonoBehaviour
                     {
                         Vector2 tempPosition = new Vector2(column, row + rowOffSet);
                         int dotToUse = Random.Range(0, dots.Length);
-                        // int maxIterations = 0;
-                        // while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
-                        // {
-                        //     maxIterations++;
-                        //     dotToUse = Random.Range(0, dots.Length);
-                        // }
-                        // maxIterations = 0;
-                        // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
-                        GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
+                        int maxIterations = 0;
+                        while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
+                        {
+                            maxIterations++;
+                            dotToUse = Random.Range(0, dots.Length);
+                        }
+                        GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform);
+                        // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
                         allDots[column, row] = dot;
                         dot.GetComponent<Dot>().column = column;
                         dot.GetComponent<Dot>().row = row;
@@ -347,17 +345,16 @@ public class Board : MonoBehaviour
         while(MatchedOnBoard())
         {
             streakValue ++;
-            yield return new WaitForSeconds(refillDelay);
             DestroyMatches();
-            // yield return new WaitForSeconds(2 * refillDelay);
+            yield return new WaitForSeconds(2 * refillDelay);
         }
         findMatches.currentMatches.Clear();
         currentDot = null;
         yield return new WaitForSeconds(refillDelay);
         if(IsDeadlocked()) {
             ShuffleBoard();
-            Debug.Log("Deadlocked");
         }
+        yield return new WaitForSeconds(refillDelay);
         currentState = GameState.Move;
         streakValue = 1;
     }

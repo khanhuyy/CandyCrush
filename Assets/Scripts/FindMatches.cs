@@ -142,14 +142,13 @@ public class FindMatches : MonoBehaviour
         List<GameObject> dots = new List<GameObject>();
         for (int row = 0; row < board.height; row++) {
             if(board.allDots[column, row] != null) {
-                // Dot dot = board.allDots[column, row].GetComponent<Dot>();
-                // if(dot.isRowBomb)
-                // {
-                //     dots.Union(GetRowPieces(row)).ToList();
-                // }
-                dots.Add(board.allDots[column, row]);
                 if (board.allDots[column, row].TryGetComponent(out Dot dot))
                 {
+                    if(dot.isRowBomb)
+                    {
+                        dots.Union(GetRowDots(row)).ToList();
+                    }
+                    dots.Add(board.allDots[column, row]);
                     dot.isMatched = true;
                 }
             }
@@ -181,16 +180,16 @@ public class FindMatches : MonoBehaviour
         List<GameObject> dots = new List<GameObject>();
         for (int column = 0; column < board.width; column++) {
             if(board.allDots[column, row] != null) {
-                // Dot dot = board.allDots[i, row].GetComponent<Dot>();
-                // if(dot.isColumnBomb)
-                // {
-                //     dots.Union(GetColumnDots(i)).ToList();
-                // }
-                dots.Add(board.allDots[column, row]);
                 if (board.allDots[column, row].TryGetComponent(out Dot dot))
                 {
+                    if(dot.isColumnBomb)
+                    {
+                        dots.Union(GetColumnDots(column)).ToList();
+                    }
+                    dots.Add(board.allDots[column, row]);
                     dot.isMatched = true;
                 }
+                
             }
         }
         return dots;

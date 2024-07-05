@@ -51,7 +51,7 @@ public class Board : MonoBehaviour
     void Start()
     {
         // goalManager = FindObjectOfType<GoalManager>();
-        // soundManager = FindObjectOfType<SoundManager>();
+        soundManager = FindObjectOfType<SoundManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
         findMatches = FindObjectOfType<FindMatches>();
@@ -229,10 +229,10 @@ public class Board : MonoBehaviour
             //     goalManager.CompareGoal(allDots[column, row].tag.ToString());
             //     goalManager.UpdateGoals();
             // }
-            // if(soundManager != null)
-            // {
-            //     soundManager.PlayRandomDestroyNoise();
-            // }
+            if(soundManager != null)
+            {
+                soundManager.PlayRandomDestroyNoise();
+            }
             GameObject particle = Instantiate(destroyEffect, allDots[column, row].transform.position, Quaternion.identity);
             Destroy(particle, 0.5f);
             Destroy(allDots[column, row]);

@@ -50,7 +50,7 @@ public class Board : MonoBehaviour
 
     void Start()
     {
-        // goalManager = FindObjectOfType<GoalManager>();
+        goalManager = FindObjectOfType<GoalManager>();
         soundManager = FindObjectOfType<SoundManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
@@ -224,11 +224,11 @@ public class Board : MonoBehaviour
                 }
             }
             
-            // if(goalManager != null)
-            // {
-            //     goalManager.CompareGoal(allDots[column, row].tag.ToString());
-            //     goalManager.UpdateGoals();
-            // }
+            if(goalManager != null)
+            {
+                goalManager.CompareGoal(allDots[column, row].tag.ToString());
+                goalManager.UpdateGoals();
+            }
             if(soundManager != null)
             {
                 soundManager.PlayRandomDestroyNoise();
@@ -479,9 +479,11 @@ public class Board : MonoBehaviour
                         maxIterations++;
                     }
                     // make a container for the piece
-                    Dot piece = newBoardTiles[pieceToUse].GetComponent<Dot>();
-                    piece.column = column;
-                    piece.row = row;
+                    if (newBoardTiles[pieceToUse].TryGetComponent(out Dot piece))
+                    {
+                        piece.column = column;
+                        piece.row = row;
+                    }
                     // fill in the dots array with this new piece
                     allDots[column, row] = newBoardTiles[pieceToUse];
                     newBoardTiles.Remove(newBoardTiles[pieceToUse]);

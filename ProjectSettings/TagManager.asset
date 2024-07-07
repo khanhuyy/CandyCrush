@@ -10,11 +10,17 @@ TagManager:
   - Diamond Dot
   - Square Dot
   - Color
+  - Blue
+  - Green
+  - Red
+  - Purple
+  - Orange
+  - Yellow
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Test
   - Water
   - UI
   - 
@@ -44,6 +50,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: UI
+    uniqueID: 2838676743
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

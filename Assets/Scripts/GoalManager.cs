@@ -22,11 +22,11 @@ public class GoalManager : MonoBehaviour
 
     void Start()
     {
-        // endGame = FindObjectOfType<EndGameManager>();
-        // SetupIntroGoals();
+        endGame = FindObjectOfType<EndGameManager>();
+        SetupGoals();
     }
 
-    public void SetupIntroGoals()
+    public void SetupGoals()
     {
         for(int i = 0; i < levelGoals.Length; i++)
         {

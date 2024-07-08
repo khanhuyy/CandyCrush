@@ -43,8 +43,8 @@ public class Dot : MonoBehaviour
         isRowBomb = false;
         isColorBomb = false;
         isAdjacentBomb = false;
-        //
-        // endGameManager = FindObjectOfType<EndGameManager>();
+        
+        endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
         findMatches = FindObjectOfType<FindMatches>();    
@@ -136,10 +136,10 @@ public class Dot : MonoBehaviour
             } 
             else 
             {
-                // if(endGameManager.requirements.gameType == GameType.Moves)
-                // {
-                //     endGameManager.DecreaseCounterValue();
-                // }
+                if(endGameManager.requirements.gameType == GameType.Moves)
+                {
+                    endGameManager.DecreaseCounterValue();
+                }
                 board.DestroyMatches();
             }
             // otherDotGo = null;

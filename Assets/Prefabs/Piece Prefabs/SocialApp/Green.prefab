@@ -112,10 +112,10 @@ MonoBehaviour:
   isColumnBomb: 0
   isRowBomb: 0
   isAdjacentBomb: 0
-  rowArrow: {fileID: 0}
-  columnArrow: {fileID: 0}
-  colorBomb: {fileID: 0}
-  adjacentMarker: {fileID: 0}
+  rowArrow: {fileID: 3295156975526245475, guid: 1eee38e0398e67141b70de2307f92ee3, type: 3}
+  columnArrow: {fileID: 5841795449247314045, guid: 475cd40f139f5964396fde8690f3f4cb, type: 3}
+  colorBomb: {fileID: 648130534546897170, guid: 2f2c928fc82378b428596593a5cb25d1, type: 3}
+  adjacentMarker: {fileID: 5515958249895773246, guid: c02517ff98d29064284696d7abe14a83, type: 3}
 --- !u!61 &3185772371309187712
 BoxCollider2D:
   m_ObjectHideFlags: 0

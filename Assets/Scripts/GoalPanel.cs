@@ -14,7 +14,7 @@ public class GoalPanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Setup();
     }
 
     // Update is called once per frame

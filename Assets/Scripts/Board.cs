@@ -353,6 +353,7 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(refillDelay);
         if(IsDeadlocked()) {
             ShuffleBoard();
+            Debug.Log("hello");
         }
         yield return new WaitForSeconds(refillDelay);
         currentState = GameState.Move;

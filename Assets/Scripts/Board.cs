@@ -26,13 +26,23 @@ public class TileType {
 
 public class Board : MonoBehaviour
 {
+    [Header("Scriptable Object Stuff")]
+    public World world;
+    public int level;
+    
     public GameState currentState = GameState.Move;
+    
+    [Header("Board Dimension")]
     public int width, height, offset;
-    [FormerlySerializedAs("offSet")] public int rowOffSet; // dot offset position vertical to fall down
+    public int rowOffSet; // dot offset position vertical to fall down
+    
+    [Header("Prefabs")]
     [SerializeField] private GameObject tilePrefab;
     public GameObject breakableTilePrefab;
     public GameObject [] dots;
     public GameObject destroyEffect;
+    
+    [Header("Layout")]
     public TileType[] boardLayout;
     public GameObject [,] allDots;
     public Dot currentDot; // calculate first selected dot
@@ -48,6 +58,21 @@ public class Board : MonoBehaviour
     public float refillDelay = 0.5f;
     public int[] scoreGoals;
 
+    private void Awake()
+    {
+        if (world != null)
+        {
+            if (Mathf.Abs(level) < world.levels.Length && world.levels[level] != null)
+            {
+                width = world.levels[level].width;
+                height = world.levels[level].height;
+                dots = world.levels[level].dots;
+                scoreGoals = world.levels[level].scoreGoals;
+                boardLayout = world.levels[level].boardLayout;
+            }
+        }
+    }
+    
     void Start()
     {
         goalManager = FindObjectOfType<GoalManager>();

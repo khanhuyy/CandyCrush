@@ -18,14 +18,28 @@ public class GoalManager : MonoBehaviour
     public GameObject goalPrefab;
     public GameObject goalIntroParent;
     public GameObject goalGameParent;
+    private Board board;
     private EndGameManager endGame;
 
     void Start()
     {
+        board = FindObjectOfType<Board>();
         endGame = FindObjectOfType<EndGameManager>();
+        GetGoals();
         SetupGoals();
     }
 
+    void GetGoals()
+    {
+        if (board != null && board.world != null)
+        {
+            if (board.world.levels[board.level] != null)
+            {
+                levelGoals = board.world.levels[board.level].levelGoals;
+            }
+        }
+    }
+    
     public void SetupGoals()
     {
         for(int i = 0; i < levelGoals.Length; i++)

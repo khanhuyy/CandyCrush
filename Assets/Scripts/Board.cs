@@ -58,7 +58,7 @@ public class Board : MonoBehaviour
         blankSpaces = new bool[width, height];  
         allDots = new GameObject[width, height]; 
         Setup(); 
-        // currentState = GameState.pause;
+        currentState = GameState.Pause;
     }
 
     public void GenerateBlankSpace() {

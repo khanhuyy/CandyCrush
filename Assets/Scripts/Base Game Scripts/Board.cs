@@ -173,30 +173,71 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private bool CanGenerateColorBomb() {
-        int numberHorizontal = 0;
-        int numberVertical = 0;
-        Dot firstPiece = findMatches.currentMatches[0].GetComponent<Dot>();
-        if (firstPiece != null) {
-            foreach(GameObject currentPiece in findMatches.currentMatches) {
-                Dot dot = currentPiece.GetComponent<Dot>();
-                if(dot.row == firstPiece.row) {
-                    numberHorizontal++;
+    private int GenerateColorBomb()
+    {
+        // Make a copy of the current matches
+        List<GameObject> simulateMatch = findMatches.currentMatches;
+        
+        // Cycle through all of match Copy and decide if a bomb needs to
+        for (int i = 0; i < simulateMatch.Count; i++)
+        {
+            // store this dot
+            if (simulateMatch[i].TryGetComponent(out Dot currentSimulateDot))
+            {
+                int column = currentSimulateDot.column;
+                int row = currentSimulateDot.row;
+                int columnMatch = 0;
+                int rowMatch = 0;
+                // Cycle throu the rest of the dots in match to compare
+                for (int j = 0; j < simulateMatch.Count; j++)
+                {
+                    if (simulateMatch[j].TryGetComponent(out Dot nextDot))
+                    {
+                        if (currentSimulateDot == nextDot)
+                        {
+                            continue;
+                        }
+
+                        if (nextDot.column == currentSimulateDot.column && nextDot.CompareTag(currentSimulateDot.tag))
+                        {
+                            columnMatch++;
+                        }
+
+                        if (nextDot.row == currentSimulateDot.row && nextDot.CompareTag(currentSimulateDot.tag))
+                        {
+                            rowMatch++;
+                        }
+                    }
                 }
-                if(dot.column == firstPiece.column) {
-                    numberVertical ++;
+                // todo enum
+                // return 3 if columb or row bomb
+                // return 2 if adjacent bomb
+                // return 1 if color bomb
+                if (columnMatch == 4 || rowMatch == 4)
+                {
+                    return 1;
+                }
+                if (columnMatch == 2 && rowMatch == 2)
+                {
+                    return 2;
+                }
+
+                if (columnMatch == 3 || rowMatch == 3)
+                {
+                    return 3;
                 }
             }
         }
-        return (numberVertical == 5 || numberHorizontal == 5);
+        
+        return 0;
     }
 
     private void CheckToMakeBomb() {
-        if(findMatches.currentMatches.Count == 4 || findMatches.currentMatches.Count == 7) {
-            findMatches.CheckDirectionBombs();
-        }
-        if(findMatches.currentMatches.Count == 5 || findMatches.currentMatches.Count == 8) {
-            if(CanGenerateColorBomb()) {
+        if (findMatches.currentMatches.Count > 3)
+        {
+            int bombType = GenerateColorBomb();
+            if (bombType == 1)
+            {
                 if(currentDot != null) {
                     if(currentDot.isMatched && !currentDot.isColorBomb) {
                         currentDot.isMatched = false;
@@ -206,17 +247,16 @@ public class Board : MonoBehaviour
                             Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
                             if (otherDot.isMatched && !otherDot.isColorBomb)
                             {
-                                    otherDot.isMatched = false;
-                                    otherDot.MakeColorBomb();
+                                otherDot.isMatched = false;
+                                otherDot.MakeColorBomb();
                                 
                             }
                         }
                     }
                 }
             } 
-            else 
+            else if (bombType == 2)
             {
-                // adjacent bomb
                 if(currentDot != null) {
                     if(currentDot.isMatched || !currentDot.isAdjacentBomb) {
                         currentDot.isMatched = false;
@@ -232,6 +272,10 @@ public class Board : MonoBehaviour
                         }
                     }
                 }
+            }
+            else if (bombType == 3)
+            {
+                findMatches.CheckDirectionBombs();
             }
         }
     }
@@ -378,8 +422,8 @@ public class Board : MonoBehaviour
     }
 
     private IEnumerator FillBoardCo() {
-        RefillBoard();
         yield return new WaitForSeconds(refillDelay);
+        RefillBoard();
         while(MatchedOnBoard())
         {
             streakValue ++;

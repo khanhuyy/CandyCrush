@@ -241,23 +241,37 @@ public class Dot : MonoBehaviour
     }
 
     public void MakeRowBomb() {
-        isRowBomb = true;
-        GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity, this.transform);
+        if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
+        {
+            isRowBomb = true;
+            Instantiate(rowArrow, transform.position, Quaternion.identity, this.transform);
+
+        }
     }
 
     public void MakeColumnBomb() {
-        isColumnBomb = true;
-        GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity, this.transform);
+        if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
+        {
+            isColumnBomb = true;
+            Instantiate(columnArrow, transform.position, Quaternion.identity, this.transform);
+        }
     }
 
     public void MakeColorBomb() {
-        isColorBomb = true;
-        Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
-        gameObject.tag = "Color";
+        if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
+        {
+            isColorBomb = true;
+            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
+            gameObject.tag = "Color";
+        }
     }
 
     public void MakeAdjacentBomb() {
-        isAdjacentBomb = true;
-        Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+        if (!isColumnBomb && !isRowBomb && !isColorBomb)
+        {
+            isAdjacentBomb = true;
+            Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+        }
+        
     }
 }

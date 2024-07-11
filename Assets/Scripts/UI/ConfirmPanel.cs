@@ -8,13 +8,24 @@ public class ConfirmPanel : MonoBehaviour
 {
     public string levelToLoad;
     public Image[] stars;
-
+    private int starsActive;
     public int level;
+    private GameData gameData;
 
     // Start is called before the first frame update
     void Start()
     {
+        gameData = FindObjectOfType<GameData>();
+        LoadData();
         ActivateStars();
+    }
+
+    void LoadData()
+    {
+        if (gameData != null)
+        {
+            starsActive = gameData.saveData.stars[level - 1];
+        }
     }
     
     void ActivateStars()

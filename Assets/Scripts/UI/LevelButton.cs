@@ -12,27 +12,53 @@ public class LevelButton : MonoBehaviour
     public Sprite lockedSprite;
     private Image buttonImage;
     private Button button;
-    
-    
+    private int starsActive;
+
+    [Header("Level UI")]
     public Image[] stars;
     public TextMeshProUGUI levelText;
     public int level;
     public GameObject confirmPanel;
     
+    
+    private GameData gameData;
+    
     // Start is called before the first frame update
     void Start()
     {
+        gameData = FindObjectOfType<GameData>();
         buttonImage = GetComponent<Image>();
         button = GetComponent<Button>();
+        LoadData();
         ActivateStars();
         ShowLevel();
         DecideSprite();
     }
 
+    void LoadData()
+    {
+        if (gameData != null)
+        {
+            // level is unlocked
+            if (gameData.saveData.isActive[level - 1])
+            {
+                isActive = true;
+            }
+            else
+            {
+                isActive = false;
+            }
+            
+            // stars
+            starsActive = gameData.saveData.stars[level - 1];
+        }
+    }
+    
     void ActivateStars()
     {
-        for (int i = 0; i < stars.Length; i++)
+        for (int i = 0; i < starsActive; i++)
         {
+            
             stars[i].gameObject.SetActive(enabled = true);
         }
     }

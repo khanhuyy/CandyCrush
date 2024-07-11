@@ -128,7 +128,6 @@ public class Board : MonoBehaviour
                         dotToUse = Random.Range(0, dots.Length);
                         maxIterations++;
                     }
-                    maxIterations = 0; // todo consider
                     GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
                     dot.GetComponent<Dot>().column = column;
                     dot.GetComponent<Dot>().row = row;
@@ -136,6 +135,10 @@ public class Board : MonoBehaviour
                     allDots[column, row] = dot;
                 }
             }
+        }
+        if (IsDeadlocked())
+        {
+            ShuffleBoard();
         }
     }
 
@@ -294,7 +297,10 @@ public class Board : MonoBehaviour
                         // if a dot is found
                         if (allDots[column, k] != null) {
                             // move this dot to this empty space
-                            allDots[column, k].GetComponent<Dot>().row = row;
+                            if (allDots[column, k].TryGetComponent(out Dot dot))
+                            {
+                                dot.row = row;
+                            }
                             // set that spot to be null
                             allDots[column, k] = null;
                             // break out of the loop;
@@ -344,11 +350,6 @@ public class Board : MonoBehaviour
                             maxIterations++;
                             dotToUse = Random.Range(0, dots.Length);
                         }
-                        // GameObject dotObject = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform);
-                        // if (dotObject.TryGetComponent(out Dot dot))
-                        // allDots[column, row] = dotObject;
-                        // dotObject.GetComponent<Dot>().column = column;
-                        // dotObject.GetComponent<Dot>().row = row;
                         if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform)
                             .TryGetComponent(out Dot dot))
                         {
@@ -367,7 +368,7 @@ public class Board : MonoBehaviour
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if(allDots[column, row] != null) {
-                    if(allDots[column, row].GetComponent<Dot>().isMatched) {
+                    if(allDots[column, row].TryGetComponent(out Dot dot) && dot.isMatched) {
                         return true;
                     }
                 }
@@ -390,7 +391,6 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(refillDelay);
         if(IsDeadlocked()) {
             ShuffleBoard();
-            Debug.Log("hello");
         }
         yield return new WaitForSeconds(refillDelay);
         currentState = GameState.Move;

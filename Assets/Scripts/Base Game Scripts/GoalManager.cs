@@ -36,6 +36,10 @@ public class GoalManager : MonoBehaviour
             if (board.world.levels[board.level] != null)
             {
                 levelGoals = board.world.levels[board.level].levelGoals;
+                foreach (var goal in levelGoals)
+                {
+                    goal.numberCollected = 0;
+                }
             }
         }
     }

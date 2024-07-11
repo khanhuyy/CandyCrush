@@ -60,6 +60,10 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
+        if (PlayerPrefs.HasKey("Current Level"))
+        {
+            level = PlayerPrefs.GetInt("Current Level");
+        }
         if (world != null)
         {
             if (Mathf.Abs(level) < world.levels.Length && world.levels[level] != null)
@@ -340,11 +344,19 @@ public class Board : MonoBehaviour
                             maxIterations++;
                             dotToUse = Random.Range(0, dots.Length);
                         }
-                        GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform);
-                        // GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity);
-                        allDots[column, row] = dot;
-                        dot.GetComponent<Dot>().column = column;
-                        dot.GetComponent<Dot>().row = row;
+                        // GameObject dotObject = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform);
+                        // if (dotObject.TryGetComponent(out Dot dot))
+                        // allDots[column, row] = dotObject;
+                        // dotObject.GetComponent<Dot>().column = column;
+                        // dotObject.GetComponent<Dot>().row = row;
+                        if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform)
+                            .TryGetComponent(out Dot dot))
+                        {
+                            allDots[column, row] = dot.gameObject;
+                            dot.column = column;
+                            dot.row = row;
+                        }
+                        
                     }
                 }
             }   

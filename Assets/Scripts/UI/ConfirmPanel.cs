@@ -1,23 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class ConfirmPanel : MonoBehaviour
 {
+    [Header("Level Information")]
     public string levelToLoad;
-    public Image[] stars;
-    private int starsActive;
     public int level;
     private GameData gameData;
+    private int starsActive;
+    private int highScore;
 
-    // Start is called before the first frame update
-    void Start()
+    [Header("UI stuff")]
+    public Image[] stars;
+    public TextMeshProUGUI highScoreText;
+    public TextMeshProUGUI starText;
+    
+    void OnEnable()
     {
         gameData = FindObjectOfType<GameData>();
         LoadData();
         ActivateStars();
+        SetText();
     }
 
     void LoadData()
@@ -25,7 +32,14 @@ public class ConfirmPanel : MonoBehaviour
         if (gameData != null)
         {
             starsActive = gameData.saveData.stars[level - 1];
+            highScore = gameData.saveData.highScroes[level - 1];
         }
+    }
+
+    void SetText()
+    {
+        highScoreText.text = "" + highScore;
+        starText.text = "" + starText + "/3";
     }
     
     void ActivateStars()

@@ -17,7 +17,7 @@ public class GameData : MonoBehaviour
 {
     public static GameData instance;
     public SaveData saveData;
-    // Start is called before the first frame update
+    
     void Awake()
     {
         if (instance == null)
@@ -56,6 +56,14 @@ public class GameData : MonoBehaviour
             saveData = formatter.Deserialize(file) as SaveData;
             file.Close();
             Debug.Log("Loaded");
+        }
+        else
+        {
+            saveData = new SaveData();
+            saveData.isActive = new bool[100];
+            saveData.stars = new int[100];
+            saveData.highScroes = new int[100];
+            saveData.isActive[0] = true;
         }
     }
 

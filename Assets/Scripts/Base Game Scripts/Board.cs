@@ -333,6 +333,45 @@ public class Board : MonoBehaviour
         }
     }
 
+    // todo refactor
+    // damage all special tile in row
+    public void BombRow(int destroyRow)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            for (int row = 0; row < height; row++)
+            {
+                if (concreteTiles[column, row])
+                {
+                    concreteTiles[column, destroyRow].TakeDamage(1);
+                    if (concreteTiles[column, destroyRow].hitPoints <= 0)
+                    {
+                        concreteTiles[column, destroyRow] = null;
+                    }
+                }
+            }            
+        }
+    }
+    
+    // damage all special tile in column
+    public void BombColumn(int destroyColumn)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            for (int row = 0; row < height; row++)
+            {
+                if (concreteTiles[column, row])
+                {
+                    concreteTiles[destroyColumn, row].TakeDamage(1);
+                    if (concreteTiles[destroyColumn, row].hitPoints <= 0)
+                    {
+                        concreteTiles[destroyColumn, row] = null;
+                    }
+                }
+            }            
+        }
+    }
+    
     private void DestroyMatchesAt(int column, int row) {
         if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
@@ -443,7 +482,7 @@ public class Board : MonoBehaviour
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 // if the current spot isn't blank and is empty. . .
-                if(!blankSpaces[column, row] && allDots[column, row] == null) {
+                if(!blankSpaces[column, row] && allDots[column, row] == null && !concreteTiles[column, row]) {
                     for(int k = row + 1; k < height; k++) {
                         // if a dot is found
                         if (allDots[column, k] != null) {
@@ -489,7 +528,7 @@ public class Board : MonoBehaviour
     private void RefillBoard() {
         for (int column = 0; column < width; column ++) {
             for (int row = 0; row < height; row++) {
-                if (allDots[column, row] == null && !blankSpaces[column, row])
+                if (allDots[column, row] == null && !blankSpaces[column, row] && !concreteTiles[column, row])
                 {
                     if (allDots[column, row] == null)
                     {
@@ -541,8 +580,7 @@ public class Board : MonoBehaviour
         }
         currentDot = null;
         if(IsDeadlocked()) {
-            ShuffleBoard();
-            // StartCoroutine(ShuffleBoard());
+            StartCoroutine(ShuffleBoard());
         }
         yield return new WaitForSeconds(refillDelay);
         System.GC.Collect();
@@ -552,11 +590,14 @@ public class Board : MonoBehaviour
 
     private void SwitchPieces(int column, int row, Vector2 direction) 
     {
-        // take the second piece and save it in a holder
-        GameObject holder = allDots[column + (int)direction.x, row + (int)direction.y] as GameObject;
-        // switch the first dot to be
-        allDots[column + (int)direction.x, row + (int)direction.y] = allDots[column, row];
-        allDots[column, row] = holder;
+        if (allDots[column + (int)direction.x, row + (int)direction.y] != null)
+        {
+            // take the second piece and save it in a holder
+            GameObject holder = allDots[column + (int)direction.x, row + (int)direction.y] as GameObject;
+            // switch the first dot to be
+            allDots[column + (int)direction.x, row + (int)direction.y] = allDots[column, row];
+            allDots[column, row] = holder;
+        }
     }
 
     private bool CheckForMatches()
@@ -639,8 +680,9 @@ public class Board : MonoBehaviour
         return true;
     }
 
-    private void ShuffleBoard()
+    private IEnumerator ShuffleBoard()
     {
+        yield return new WaitForSeconds(0.5f);
         List<GameObject> newBoardTiles = new List<GameObject>();
         for (int column = 0; column < width; column++)
         {
@@ -652,14 +694,14 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        // yield return new WaitForSeconds(0.5f); // ???
+        yield return new WaitForSeconds(0.5f);
         // for every spot on the board
         for (int column = 0; column < width; column++)
         {
             for (int row = 0; row < height; row++)
             {
                 // if this spot shouldn't be blank
-                if(!blankSpaces[column, row])
+                if(!blankSpaces[column, row] && !concreteTiles[column, row])
                 {
                     // pick a random number
                     int pieceToUse = Random.Range(0, newBoardTiles.Count);
@@ -684,7 +726,7 @@ public class Board : MonoBehaviour
         // check if it's still deadlock
         if(IsDeadlocked())
         {
-            ShuffleBoard();
+            StartCoroutine(ShuffleBoard());
         }
     }
 }

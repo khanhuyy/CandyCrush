@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1591,6 +1590,7 @@ MonoBehaviour:
   tilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
   breakableTilePrefab: {fileID: 6693946532121589710, guid: 1ea11cc6df4434249a49a4cc54b37929, type: 3}
   lockTilePrefab: {fileID: 6693946532121589710, guid: e0f1bb839a6c68f49a932938462aa478, type: 3}
+  concreteTilePrefab: {fileID: 6693946532121589710, guid: 92883cd0bf2e1bbe3be8438b970465c2, type: 3}
   dots:
   - {fileID: 8197473084841504685, guid: 1732a420377238545b1140ad36127f5a, type: 3}
   - {fileID: 8197473084841504685, guid: 211653414fbc34144b82b21a0b90a641, type: 3}

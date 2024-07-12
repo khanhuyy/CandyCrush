@@ -18,6 +18,7 @@ TagManager:
   - Yellow
   - Board
   - Licorice
+  - Freeze Tile
   layers:
   - Default
   - TransparentFX

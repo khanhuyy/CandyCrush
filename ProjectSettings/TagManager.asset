@@ -19,6 +19,7 @@ TagManager:
   - Board
   - Licorice
   - Freeze Tile
+  - Chocolate
   layers:
   - Default
   - TransparentFX

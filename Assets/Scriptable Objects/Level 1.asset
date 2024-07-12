@@ -45,6 +45,15 @@ MonoBehaviour:
   - x: 4
     y: 4
     tileKind: 3
+  - x: 5
+    y: 5
+    tileKind: 4
+  - x: 5
+    y: 6
+    tileKind: 4
+  - x: 6
+    y: 5
+    tileKind: 4
   dots:
   - {fileID: 8197473084841504685, guid: 1732a420377238545b1140ad36127f5a, type: 3}
   - {fileID: 8197473084841504685, guid: 4ed1b7f7e334f284a93f4149ac021e3d, type: 3}

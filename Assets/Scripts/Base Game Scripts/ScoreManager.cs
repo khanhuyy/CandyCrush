@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class ScoreManager : MonoBehaviour
     public int score;
     public Image scoreBar;
     private GameData gameData;
+    private int numberStars;
     
     void Start()
     {
@@ -27,13 +29,25 @@ public class ScoreManager : MonoBehaviour
     public void IncreaseScore(int amountToIncrease)
     {
         score += amountToIncrease;
+        for (int i = 0; i < board.scoreGoals.Length; i++)
+        {
+            if (score > board.scoreGoals[i] && numberStars < i + 1)
+            {
+                numberStars++;
+            }
+        }
         if (gameData != null)
         {
             int highScore = gameData.saveData.highScroes[board.level];
             if (score > highScore)
             {
                 gameData.saveData.highScroes[board.level] = score;
+            }
 
+            int currentStars = gameData.saveData.stars[board.level];
+            if (numberStars > currentStars)
+            {
+                gameData.saveData.stars[board.level] = numberStars;
             }
             gameData.Save();
         }

@@ -57,11 +57,11 @@ public class SoundManager : MonoBehaviour
                     destroyNoise[clipToPlay].Play();    
                 }
             }
-        }
-        else
-        {
-            int clipToPlay = Random.Range(0, destroyNoise.Length);
-            destroyNoise[clipToPlay].Play(); 
+            else
+            {
+                int clipToPlay = Random.Range(0, destroyNoise.Length);
+                destroyNoise[clipToPlay].Play(); 
+            }
         }
     }
 }

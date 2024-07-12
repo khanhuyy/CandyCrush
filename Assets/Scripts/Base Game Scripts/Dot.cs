@@ -20,8 +20,8 @@ public class Dot : MonoBehaviour
     private FindMatches findMatches;
     private Board board;
     [FormerlySerializedAs("otherDot")] public GameObject otherDotGo;
-    private Vector2 firstTouchPosition;
-    private Vector2 finalTouchPosition;
+    private Vector2 firstTouchPosition = Vector2.zero;
+    private Vector2 finalTouchPosition = Vector2.zero;
     private Vector2 tempPosition;
 
     [Header("Swipe Stuff")]
@@ -76,21 +76,19 @@ public class Dot : MonoBehaviour
         
         targetX = column;
         targetY = row;
-        
-        
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
             // Move towars the target
             tempPosition = new Vector2(targetX, transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
             if(board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
+                findMatches.FindAllMatches();
             }
-            findMatches.FindAllMatches();
         } else {
             // Directly set position, todo check
             tempPosition = new Vector2(targetX, transform.position.y);
             transform.position = tempPosition;
-            board.allDots[column, row] = this.gameObject;
+            // board.allDots[column, row] = this.gameObject;
         }
         if(Mathf.Abs(targetY - transform.position.y) > 0.1) {
             // Move towars the target
@@ -98,13 +96,13 @@ public class Dot : MonoBehaviour
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
             if(board.allDots[column, row] != this.gameObject) {
                 board.allDots[column, row] = this.gameObject;
+                findMatches.FindAllMatches();
             }
-            findMatches.FindAllMatches();
         } else {
             // Directly set position, todo check
             tempPosition = new Vector2(transform.position.x, targetY);
             transform.position = tempPosition;
-            board.allDots[column, row] = this.gameObject;
+            // board.allDots[column, row] = this.gameObject;
         }
 
     }

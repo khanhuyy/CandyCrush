@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public enum GameState {
     Wait,
@@ -14,7 +16,17 @@ public enum GameState {
 public enum TileKind {
     Breakable,
     Blank,
+    Lock,
+    Concrete,
+    Slime,
     Normal
+}
+
+[Serializable]
+public class MatchType
+{
+    public int type;
+    public string color;
 }
 
 [System.Serializable]
@@ -39,16 +51,20 @@ public class Board : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject tilePrefab;
     public GameObject breakableTilePrefab;
+    public GameObject lockTilePrefab;
     public GameObject [] dots;
     public GameObject destroyEffect;
     
     [Header("Layout")]
     public TileType[] boardLayout;
     public GameObject [,] allDots;
-    public Dot currentDot; // calculate first selected dot
-
     private bool[,] blankSpaces;
     private BackgroundTile[,] breakableTiles; // ~ jelly in candy crush
+    public BackgroundTile[,] lockTiles; // ~ locked tile in candy crush
+
+    [Header("Match Stuff")] 
+    public MatchType matchType;
+    public Dot currentDot; // calculate first selected dot
     private FindMatches findMatches;
     public int basePieceValue = 20;
     private int streakValue = 1;
@@ -83,6 +99,7 @@ public class Board : MonoBehaviour
         soundManager = FindObjectOfType<SoundManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         breakableTiles = new BackgroundTile[width, height];
+        lockTiles = new BackgroundTile[width, height];
         findMatches = FindObjectOfType<FindMatches>();
         blankSpaces = new bool[width, height];  
         allDots = new GameObject[width, height]; 
@@ -109,10 +126,23 @@ public class Board : MonoBehaviour
             }
         }
     }
+    
+    private void GenerateLockTiles() {
+        // look at all the tiles in the layout
+        for (int i = 0; i < boardLayout.Length; i++) {
+            // if a tile is a "locked" tile
+            if(boardLayout[i].tileKind == TileKind.Lock) {
+                Vector2 tempPosition = new Vector2(boardLayout[i].x, boardLayout[i].y);
+                GameObject tile = Instantiate(lockTilePrefab, tempPosition, Quaternion.identity);
+                lockTiles[boardLayout[i].x, boardLayout[i].y] = tile.GetComponent<BackgroundTile>();
+            }
+        }
+    }
 
     private void Setup() {
         GenerateBlankSpace();
         GenerateBreakableTiles();
+        GenerateLockTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if(!blankSpaces[column, row]) {
@@ -173,10 +203,13 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private int GenerateColorBomb()
+    private MatchType GenerateBomb()
     {
         // Make a copy of the current matches
         List<GameObject> simulateMatch = findMatches.currentMatches;
+
+        matchType.type = 0;
+        matchType.color = "";
         
         // Cycle through all of match Copy and decide if a bomb needs to
         for (int i = 0; i < simulateMatch.Count; i++)
@@ -184,6 +217,7 @@ public class Board : MonoBehaviour
             // store this dot
             if (simulateMatch[i].TryGetComponent(out Dot currentSimulateDot))
             {
+                string currentColor = currentSimulateDot.tag;
                 int column = currentSimulateDot.column;
                 int row = currentSimulateDot.row;
                 int columnMatch = 0;
@@ -198,12 +232,12 @@ public class Board : MonoBehaviour
                             continue;
                         }
 
-                        if (nextDot.column == currentSimulateDot.column && nextDot.CompareTag(currentSimulateDot.tag))
+                        if (nextDot.column == currentSimulateDot.column && nextDot.CompareTag(currentColor))
                         {
                             columnMatch++;
                         }
 
-                        if (nextDot.row == currentSimulateDot.row && nextDot.CompareTag(currentSimulateDot.tag))
+                        if (nextDot.row == currentSimulateDot.row && nextDot.CompareTag(currentColor))
                         {
                             rowMatch++;
                         }
@@ -215,67 +249,70 @@ public class Board : MonoBehaviour
                 // return 1 if color bomb
                 if (columnMatch == 4 || rowMatch == 4)
                 {
-                    return 1;
+                    matchType.type = 1;
+                    matchType.color = currentColor;
+                    return matchType;
                 }
                 if (columnMatch == 2 && rowMatch == 2)
                 {
-                    return 2;
+                    matchType.type = 2;
+                    matchType.color = currentColor;
+                    return matchType;
                 }
-
                 if (columnMatch == 3 || rowMatch == 3)
                 {
-                    return 3;
+                    matchType.type = 3;
+                    matchType.color = currentColor;
+                    return matchType;
                 }
             }
         }
         
-        return 0;
+        matchType.type = 0;
+        matchType.color = "";
+        return matchType;
     }
 
     private void CheckToMakeBomb() {
         if (findMatches.currentMatches.Count > 3)
         {
-            int bombType = GenerateColorBomb();
-            if (bombType == 1)
+            MatchType bombType = GenerateBomb();
+            if (bombType.type == 1)
             {
-                if(currentDot != null) {
-                    if(currentDot.isMatched && !currentDot.isColorBomb) {
-                        currentDot.isMatched = false;
-                        currentDot.MakeColorBomb();
-                    } else {
-                        if(currentDot.otherDotGo != null) {
-                            Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if (otherDot.isMatched && !otherDot.isColorBomb)
-                            {
-                                otherDot.isMatched = false;
-                                otherDot.MakeColorBomb();
-                                
-                            }
+                if(currentDot != null && currentDot.isMatched && currentDot.CompareTag(bombType.color)) {
+                    currentDot.isMatched = false;
+                    currentDot.MakeColorBomb();
+                } else {
+                    if(currentDot.otherDotGo != null) {
+                        Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
+                        if (otherDot.isMatched && otherDot.CompareTag(bombType.color))
+                        {
+                            otherDot.isMatched = false;
+                            otherDot.MakeColorBomb();
+                            
                         }
                     }
                 }
             } 
-            else if (bombType == 2)
+            else if (bombType.type == 2)
             {
-                if(currentDot != null) {
-                    if(currentDot.isMatched || !currentDot.isAdjacentBomb) {
-                        currentDot.isMatched = false;
-                        currentDot.MakeAdjacentBomb();
-                        
-                    } else {
-                        if(currentDot.otherDotGo != null) {
-                            Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
-                            if(otherDot.isMatched && !otherDot.isAdjacentBomb) {
-                                otherDot.isMatched = false;
-                                otherDot.MakeAdjacentBomb();
-                            }
+                if(currentDot != null && currentDot.isMatched && currentDot.CompareTag(bombType.color)) {
+                    currentDot.isMatched = false;
+                    currentDot.MakeAdjacentBomb();
+                } else {
+                    if(currentDot.otherDotGo != null) {
+                        Dot otherDot = currentDot.otherDotGo.GetComponent<Dot>();
+                        if(otherDot.isMatched && otherDot.CompareTag(bombType.color)) {
+                            otherDot.isMatched = false;
+                            otherDot.MakeAdjacentBomb();
                         }
                     }
+                    
                 }
             }
-            else if (bombType == 3)
+            else if (bombType.type == 3)
             {
-                findMatches.CheckDirectionBombs();
+                findMatches.CheckDirectionBombs(matchType);
             }
         }
     }
@@ -283,14 +320,8 @@ public class Board : MonoBehaviour
     private void DestroyMatchesAt(int column, int row) {
         if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
-            // define how many pieces are destroyed
-            if(findMatches.currentMatches.Count >= 4) {
-                // findMatches.CheckDirectionBombs();
-                CheckToMakeBomb();
-            }
-            findMatches.currentMatches.Remove(allDots[column, row]);
-            
             // check if tile is bounded jelly
+            // findMatches.currentMatches.Remove(allDots[column, row]);
             if(breakableTiles[column, row] != null)
             {
                 breakableTiles[column, row].TakeDamage(1);
@@ -318,6 +349,11 @@ public class Board : MonoBehaviour
     }
 
     public void DestroyMatches() {
+        // define how many pieces are destroyed
+        if(findMatches.currentMatches.Count >= 4) {
+            CheckToMakeBomb();
+        }
+
         for ( int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if (allDots[column, row] != null) {
@@ -326,7 +362,6 @@ public class Board : MonoBehaviour
             }
         }
         findMatches.currentMatches.Clear();
-        // StartCoroutine(DecreaseRowCo());
         StartCoroutine(DecreaseRowCo2());
     }
 
@@ -408,7 +443,8 @@ public class Board : MonoBehaviour
         }
     }
 
-    private bool MatchedOnBoard() {
+    private bool MatchesOnBoard() {
+        findMatches.FindAllMatches();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if(allDots[column, row] != null) {
@@ -424,19 +460,20 @@ public class Board : MonoBehaviour
     private IEnumerator FillBoardCo() {
         yield return new WaitForSeconds(refillDelay);
         RefillBoard();
-        while(MatchedOnBoard())
-        {
+        yield return new WaitForSeconds(refillDelay);
+        while(MatchesOnBoard())
+        {  
             streakValue ++;
             DestroyMatches();
-            yield return new WaitForSeconds(2 * refillDelay);
+            yield break;
         }
-        findMatches.currentMatches.Clear();
         currentDot = null;
-        yield return new WaitForSeconds(refillDelay);
         if(IsDeadlocked()) {
             ShuffleBoard();
+            // StartCoroutine(ShuffleBoard());
         }
         yield return new WaitForSeconds(refillDelay);
+        System.GC.Collect();
         currentState = GameState.Move;
         streakValue = 1;
     }

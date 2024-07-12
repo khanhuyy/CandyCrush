@@ -39,12 +39,12 @@ public class ConfirmPanel : MonoBehaviour
     void SetText()
     {
         highScoreText.text = "" + highScore;
-        starText.text = "" + starText + "/3";
+        starText.text = "" + starsActive + "/3";
     }
     
     void ActivateStars()
     {
-        for (int i = 0; i < stars.Length; i++)
+        for (int i = 0; i < starsActive; i++)
         {
             stars[i].gameObject.SetActive(enabled = true);
         }

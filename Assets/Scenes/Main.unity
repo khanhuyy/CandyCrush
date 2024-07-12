@@ -1565,7 +1565,7 @@ GameObject:
   m_Layer: 0
   m_Name: Board
   m_TagString: Board
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1590,6 +1590,7 @@ MonoBehaviour:
   rowOffSet: 10
   tilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
   breakableTilePrefab: {fileID: 6693946532121589710, guid: 1ea11cc6df4434249a49a4cc54b37929, type: 3}
+  lockTilePrefab: {fileID: 6693946532121589710, guid: e0f1bb839a6c68f49a932938462aa478, type: 3}
   dots:
   - {fileID: 8197473084841504685, guid: 1732a420377238545b1140ad36127f5a, type: 3}
   - {fileID: 8197473084841504685, guid: 211653414fbc34144b82b21a0b90a641, type: 3}
@@ -1597,6 +1598,9 @@ MonoBehaviour:
   - {fileID: 4996280020185814671, guid: 0ed9316610f7f3a409af3e154bc1ea0b, type: 3}
   destroyEffect: {fileID: 2809334069459502985, guid: aa38cac8ad6434f4c9e72c8aba7eb584, type: 3}
   boardLayout: []
+  matchType:
+    type: 0
+    color: 
   currentDot: {fileID: 0}
   basePieceValue: 20
   refillDelay: 0.5
@@ -1611,8 +1615,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 850461161}
   - {fileID: 1344178053}

@@ -17,6 +17,7 @@ TagManager:
   - Orange
   - Yellow
   - Board
+  - Licorice
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Test
   - Water
   - UI
-  - 
+  - Marker
   - 
   - 
   - 
@@ -56,4 +57,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Markers
+    uniqueID: 168602103
     locked: 0

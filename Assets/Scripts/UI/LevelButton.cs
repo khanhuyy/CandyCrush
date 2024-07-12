@@ -92,10 +92,10 @@ public class LevelButton : MonoBehaviour
 
     public void ConfirmPanel()
     {
-        confirmPanel.SetActive(true);
         if (confirmPanel.TryGetComponent(out ConfirmPanel script))
         {
             script.level = level;
         }
+        confirmPanel.SetActive(true);
     }
 }

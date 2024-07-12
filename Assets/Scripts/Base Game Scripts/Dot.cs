@@ -181,16 +181,26 @@ public class Dot : MonoBehaviour
         otherDotGo = board.allDots[column + (int)direction.x, row + (int)direction.y];
         previousColumn = column;
         previousRow = row;
-        if(otherDotGo != null) {
-            otherDotGo.GetComponent<Dot>().column += (-1) * (int)direction.x;
-            otherDotGo.GetComponent<Dot>().row += (-1) * (int)direction.y;
-            column += (int)direction.x;
-            row += (int)direction.y;
-            StartCoroutine(CheckMoveCo());
-        } else {
+        if (board.lockTiles[column, row] == null &&
+            board.lockTiles[column + (int)direction.x, row + (int)direction.y] == null)
+        {
+            if (otherDotGo != null)
+            {
+                otherDotGo.GetComponent<Dot>().column += (-1) * (int)direction.x;
+                otherDotGo.GetComponent<Dot>().row += (-1) * (int)direction.y;
+                column += (int)direction.x;
+                row += (int)direction.y;
+                StartCoroutine(CheckMoveCo());
+            }
+            else
+            {
+                board.currentState = GameState.Move;
+            }
+        } 
+        else
+        {
             board.currentState = GameState.Move;
         }
-        
     }
 
     void MovePieces() {

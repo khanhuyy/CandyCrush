@@ -321,13 +321,20 @@ public class Board : MonoBehaviour
         if(allDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
             // check if tile is bounded jelly
-            // findMatches.currentMatches.Remove(allDots[column, row]);
             if(breakableTiles[column, row] != null)
             {
                 breakableTiles[column, row].TakeDamage(1);
                 if(breakableTiles[column, row].hitPoints <= 0)
                 {
                     breakableTiles[column, row] = null;
+                }
+            }
+            if(lockTiles[column, row] != null)
+            {
+                lockTiles[column, row].TakeDamage(1);
+                if(lockTiles[column, row].hitPoints <= 0)
+                {
+                    lockTiles[column, row] = null;
                 }
             }
             

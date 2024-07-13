@@ -14,23 +14,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 6
   height: 8
-  boardLayout: []
+  boardLayout:
+  - x: 0
+    y: 1
+    tileKind: 0
+  - x: 0
+    y: 2
+    tileKind: 0
+  - x: 0
+    y: 3
+    tileKind: 0
+  - x: 0
+    y: 4
+    tileKind: 0
+  - x: 1
+    y: 0
+    tileKind: 0
+  - x: 1
+    y: 1
+    tileKind: 0
+  - x: 1
+    y: 2
+    tileKind: 0
+  - x: 1
+    y: 3
+    tileKind: 0
+  - x: 1
+    y: 4
+    tileKind: 0
+  - x: 2
+    y: 0
+    tileKind: 0
+  - x: 2
+    y: 1
+    tileKind: 0
+  - x: 2
+    y: 2
+    tileKind: 0
+  - x: 2
+    y: 3
+    tileKind: 0
+  - x: 2
+    y: 4
+    tileKind: 0
+  - x: 3
+    y: 0
+    tileKind: 0
+  - x: 3
+    y: 1
+    tileKind: 0
+  - x: 3
+    y: 2
+    tileKind: 0
+  - x: 3
+    y: 3
+    tileKind: 0
+  - x: 3
+    y: 4
+    tileKind: 0
   dots:
-  - {fileID: 8197473084841504685, guid: 1732a420377238545b1140ad36127f5a, type: 3}
-  - {fileID: 4996280020185814671, guid: 0ed9316610f7f3a409af3e154bc1ea0b, type: 3}
-  - {fileID: 8197473084841504685, guid: 4ed1b7f7e334f284a93f4149ac021e3d, type: 3}
-  - {fileID: 8197473084841504685, guid: 211653414fbc34144b82b21a0b90a641, type: 3}
-  - {fileID: 8197473084841504685, guid: 5cfd94fc696284d49983956cd431b3a3, type: 3}
-  scoreGoals: e803000088130000581b0000
+  - {fileID: 8197473084841504685, guid: e40a5e01f8692834680af69fd41d0e92, type: 3}
+  - {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
+  - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
+  - {fileID: 8197473084841504685, guid: d562efe84edd1984285461d34f9fe7e0, type: 3}
+  scoreGoals: 10270000204e000030750000
   endGameRequirements:
-    gameType: 1
-    counterValue: 10
+    gameType: 0
+    counterValue: 22
   levelGoals:
-  - numberNeeded: 2
+  - numberNeeded: 28
     numberCollected: 0
     goalSprite: {fileID: 21300000, guid: f1b727ed2d08edc46b623ebe0c25a723, type: 3}
     matchValue: Yellow
-  - numberNeeded: 5
-    numberCollected: 0
-    goalSprite: {fileID: 21300000, guid: e28462047c1c2454aa739c924a366415, type: 3}
-    matchValue: Red

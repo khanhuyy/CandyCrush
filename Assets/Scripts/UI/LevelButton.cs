@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -15,6 +13,7 @@ public class LevelButton : MonoBehaviour
     private int starsActive;
 
     [Header("Level UI")]
+    public Image starsContainer;
     public Image[] stars;
     public TextMeshProUGUI levelText;
     public int level;
@@ -23,7 +22,6 @@ public class LevelButton : MonoBehaviour
     
     private GameData gameData;
     
-    // Start is called before the first frame update
     void Start()
     {
         gameData = FindObjectOfType<GameData>();
@@ -70,12 +68,14 @@ public class LevelButton : MonoBehaviour
             buttonImage.sprite = activeSprite;
             button.enabled = true;
             levelText.enabled = true;
+            starsContainer.enabled = true;
         }
         else
         {
             buttonImage.sprite = lockedSprite;
             button.enabled = false;
             levelText.enabled = false;
+            starsContainer.enabled = false;
         }
     }
 

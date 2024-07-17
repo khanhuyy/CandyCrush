@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelSelectManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class LevelSelectManager : MonoBehaviour
     public int page;
     private GameData gameData;
     public int currentLevel = 0;
+    public TextMeshProUGUI paginationText;
     private const int LevelPerPage = 9;
     
     // Start is called before the first frame update
@@ -32,6 +34,7 @@ public class LevelSelectManager : MonoBehaviour
         }
 
         page = Mathf.FloorToInt(currentLevel / LevelPerPage);
+        UpdatePaginationText();
         currentPanel = panels[page];
         panels[page].SetActive(true);
     }
@@ -50,6 +53,7 @@ public class LevelSelectManager : MonoBehaviour
             page++;
             currentPanel = panels[page];
             currentPanel.SetActive(true);
+            UpdatePaginationText();
         }
     }
     
@@ -61,6 +65,12 @@ public class LevelSelectManager : MonoBehaviour
             page--;
             currentPanel = panels[page];
             currentPanel.SetActive(true);
+            UpdatePaginationText();
         }
+    }
+
+    private void UpdatePaginationText()
+    {
+        paginationText.text = (page + 1) + "/" + panels.Length;
     }
 }

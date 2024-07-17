@@ -26,10 +26,4 @@ public class StartDashboardManager : MonoBehaviour
         startPanel.SetActive(true);
         levelPanel.SetActive(false);
     }
-    
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

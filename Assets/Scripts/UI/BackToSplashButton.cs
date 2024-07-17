@@ -30,10 +30,4 @@ public class BackToSplashButton : MonoBehaviour
         gameData = FindObjectOfType<GameData>();
         board = FindObjectOfType<Board>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

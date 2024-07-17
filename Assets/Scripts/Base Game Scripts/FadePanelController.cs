@@ -7,6 +7,13 @@ public class FadePanelController : MonoBehaviour
     public Animator panelAnim;
     public Animator gameInfoAnim;
 
+    private Board board;
+
+    private void Start()
+    {
+        board = FindObjectOfType<Board>();
+    }
+    
     public void Confirm() {
         if(panelAnim != null && gameInfoAnim != null)
         {
@@ -25,7 +32,6 @@ public class FadePanelController : MonoBehaviour
     IEnumerator GameStartCo()
     {
         yield return new WaitForSeconds(1f);
-        Board board = FindObjectOfType<Board>();
         board.currentState = GameState.Move;
     }
 }

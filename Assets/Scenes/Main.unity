@@ -578,9 +578,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 626128475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -555, y: 1300}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -555, y: -130}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &228669737
@@ -1468,7 +1468,7 @@ MonoBehaviour:
   height: 10
   offset: 0
   rowOffSet: 10
-  tilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
+  backgroundTilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
   breakableTilePrefab: {fileID: 6693946532121589710, guid: 1ea11cc6df4434249a49a4cc54b37929, type: 3}
   lockTilePrefab: {fileID: 6693946532121589710, guid: e0f1bb839a6c68f49a932938462aa478, type: 3}
   concreteTilePrefab: {fileID: 6693946532121589710, guid: 92883cd0bf2e1bbe3be8438b970465c2, type: 3}

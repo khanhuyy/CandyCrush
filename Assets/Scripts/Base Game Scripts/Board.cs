@@ -49,7 +49,7 @@ public class Board : MonoBehaviour
     public int rowOffSet; // dot offset position vertical to fall down
     
     [Header("Prefabs")]
-    [SerializeField] private GameObject tilePrefab;
+    [SerializeField] private GameObject backgroundTilePrefab;
     public GameObject breakableTilePrefab;
     public GameObject lockTilePrefab;
     public GameObject concreteTilePrefab;
@@ -178,20 +178,19 @@ public class Board : MonoBehaviour
         GenerateSlimeTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
+                Vector2 tilePosition = new Vector2(column, row);
+                GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
+                backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
+                Debug.Log(backgroundTile.name);
                 if(!blankSpaces[column, row] && !concreteTiles[column, row] && !slimeTiles[column, row]) {
-                    // Vector2 tempPosition = new Vector2(column, row + offset);
-                    Vector2 tempPosition = new Vector2(column, row);
-                    Vector2 tilePosition = new Vector2(column, row);
-                    GameObject backgroundTile = Instantiate(tilePrefab, tempPosition, Quaternion.identity, this.transform) as GameObject;
-                    backgroundTile.transform.parent = this.transform;
-                    backgroundTile.name = "( " + column + ", " + row + " )";
+                    Vector2 dotPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
                     int maxIterations = 0;
                     while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100) {
                         dotToUse = Random.Range(0, dots.Length);
                         maxIterations++;
                     }
-                    GameObject dot = Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, this.transform);
+                    GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, this.transform);
                     dot.GetComponent<Dot>().column = column;
                     dot.GetComponent<Dot>().row = row;
                     dot.name = "( " + column + ", " + row + " )";

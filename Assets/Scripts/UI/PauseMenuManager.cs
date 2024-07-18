@@ -55,7 +55,7 @@ public class PauseMenuManager : MonoBehaviour
             board.currentState = GameState.Move;
         }
     }
-
+    
     public void SoundButton()
     {
         if (PlayerPrefs.HasKey("Sound"))
@@ -88,6 +88,6 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ToMainMenu()
     {
-        
+        SceneManager.LoadScene("Scenes/Splash");
     }
 }

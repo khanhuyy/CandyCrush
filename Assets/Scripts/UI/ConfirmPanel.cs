@@ -32,7 +32,7 @@ public class ConfirmPanel : MonoBehaviour
         if (gameData != null)
         {
             starsActive = gameData.saveData.stars[level - 1];
-            highScore = gameData.saveData.highScroes[level - 1];
+            highScore = gameData.saveData.highScores[level - 1];
         }
     }
 
@@ -48,12 +48,6 @@ public class ConfirmPanel : MonoBehaviour
         {
             stars[i].gameObject.SetActive(enabled = true);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Cancel()

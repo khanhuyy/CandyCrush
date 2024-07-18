@@ -19,9 +19,8 @@ public class LevelButton : MonoBehaviour
     public int level;
     public GameObject confirmPanel;
     
-    
     private GameData gameData;
-    
+
     void Start()
     {
         gameData = FindObjectOfType<GameData>();
@@ -46,7 +45,6 @@ public class LevelButton : MonoBehaviour
             {
                 isActive = false;
             }
-            
             // stars
             starsActive = gameData.saveData.stars[level - 1];
         }
@@ -55,8 +53,7 @@ public class LevelButton : MonoBehaviour
     void ActivateStars()
     {
         for (int i = 0; i < starsActive; i++)
-        {
-            
+        { 
             stars[i].gameObject.SetActive(enabled = true);
         }
     }
@@ -82,12 +79,6 @@ public class LevelButton : MonoBehaviour
     void ShowLevel()
     {
         levelText.text = "" + level;
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ConfirmPanel()

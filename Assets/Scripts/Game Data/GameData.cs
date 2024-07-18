@@ -4,12 +4,13 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class SaveData
 {
     public bool[] isActive;
-    public int[] highScroes;
+    public int[] highScores;
     public int[] stars;
 }
 
@@ -25,21 +26,17 @@ public class GameData : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             instance = this;
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-    }
-
-    private void Start()
-    {
+        // else
+        // {
+        //     Destroy(this.gameObject);
+        // }
         Load();
     }
 
     public void Save()
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + "/player.dat", FileMode.Create);
+        FileStream file = File.Open(Application.persistentDataPath + "/player.dat", FileMode.Open);
         SaveData data = new SaveData();
         data = saveData;
         formatter.Serialize(file, data);
@@ -57,11 +54,15 @@ public class GameData : MonoBehaviour
         }
         else
         {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/player.dat", FileMode.Create);
             saveData = new SaveData();
             saveData.isActive = new bool[100];
             saveData.stars = new int[100];
-            saveData.highScroes = new int[100];
+            saveData.highScores = new int[100];
             saveData.isActive[0] = true;
+            formatter.Serialize(file, saveData);
+            file.Close();
         }
     }
 

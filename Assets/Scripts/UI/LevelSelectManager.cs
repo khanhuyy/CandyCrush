@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -37,12 +35,6 @@ public class LevelSelectManager : MonoBehaviour
         UpdatePaginationText();
         currentPanel = panels[page];
         panels[page].SetActive(true);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void PageRight()

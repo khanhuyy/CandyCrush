@@ -38,10 +38,10 @@ public class ScoreManager : MonoBehaviour
         }
         if (gameData != null)
         {
-            int highScore = gameData.saveData.highScroes[board.level];
+            int highScore = gameData.saveData.highScores[board.level];
             if (score > highScore)
             {
-                gameData.saveData.highScroes[board.level] = score;
+                gameData.saveData.highScores[board.level] = score;
             }
 
             int currentStars = gameData.saveData.stars[board.level];

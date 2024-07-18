@@ -201,7 +201,7 @@ public class Board : MonoBehaviour
         }
         if (IsDeadlocked())
         {
-            ShuffleBoard();
+            StartCoroutine(ShuffleBoard());
         }
     }
 
@@ -437,6 +437,8 @@ public class Board : MonoBehaviour
         }
         findMatches.currentMatches.Clear();
         StartCoroutine(DecreaseRowCo2());
+
+        // miss some case when refill board, todo fix
     }
 
     private void DamageConcrete(int column, int row)

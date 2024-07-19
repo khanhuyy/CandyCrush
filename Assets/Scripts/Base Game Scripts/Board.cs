@@ -130,7 +130,7 @@ public class Board : MonoBehaviour
 
     #endregion
 
-#region "generate special tiles"
+    #region "Special tiles generator"
     public void GenerateBlankSpace() {
         for (int i = 0; i < boardLayout.Length; i++) {
             if(boardLayout[i].tileKind == TileKind.Blank) {
@@ -199,7 +199,7 @@ public class Board : MonoBehaviour
             }
         }
     }
-#endregion
+    #endregion
 
     private void Setup() {
         GenerateFrostingTiles();
@@ -210,9 +210,12 @@ public class Board : MonoBehaviour
         GenerateSlimeTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                Vector2 tilePosition = new Vector2(column, row);
-                GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
-                backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
+                if (!blankSpaces[column, row])
+                {
+                    Vector2 tilePosition = new Vector2(column, row);
+                    GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
+                    backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
+                }
                 if(IsMovable(column, row)) {
                     Vector2 dotPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
@@ -411,7 +414,9 @@ public class Board : MonoBehaviour
         {
             if (frostingTiles[destroyColumn, row])
             {
+                // Debug.Log("Column: " + destroyColumn + ", Row: " + row);
                 frostingTiles[destroyColumn, row].TakeDamage(1);
+                // Debug.Log(frostingTiles[destroyColumn, row].hitPoints);
                 if (frostingTiles[destroyColumn, row].hitPoints <= 0)
                 {
                     frostingTiles[destroyColumn, row] = null;
@@ -730,6 +735,7 @@ public class Board : MonoBehaviour
     }
 
     private bool MatchesOnBoard() {
+        Debug.Log("From Board");
         findMatches.FindAllMatches();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {

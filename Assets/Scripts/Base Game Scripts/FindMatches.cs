@@ -51,14 +51,17 @@ public class FindMatches : MonoBehaviour
     private List<GameObject> IsColumnBomb(Dot dot1, Dot dot2, Dot dot3) {
         List<GameObject> currentDots = new List<GameObject>();
         if(dot1.isColumnBomb) {
+            Debug.Log("Dot 1");
             currentMatches.Union(GetColumnDots(dot1.column));
             board.BombColumn(dot1.column);
         }
         if(dot2.isColumnBomb) {
+            Debug.Log("Dot 2");
             currentMatches.Union(GetColumnDots(dot2.column));
             board.BombColumn(dot2.column);
         }
         if(dot3.isColumnBomb) {
+            Debug.Log("Dot 3");
             currentMatches.Union(GetColumnDots(dot3.column));
             board.BombColumn(dot3.column);
         }
@@ -82,9 +85,9 @@ public class FindMatches : MonoBehaviour
     }
 
     private IEnumerator FindAllMatchesCo() {
-        // yield return new WaitForSeconds(0.2f);
-        // todo more test
         yield return null;
+        // todo more test
+        Debug.Log("Runing......");
         for (int column = 0; column < board.width; column++) {
             for (int row = 0; row < board.height; row++) {
                 GameObject currentDotObject = board.allDots[column, row];
@@ -99,6 +102,7 @@ public class FindMatches : MonoBehaviour
                             if(leftDotObject.CompareTag(currentDotObject.tag) && rightDotObject.CompareTag(currentDotObject.tag))
                             {
                                 currentMatches.Union(IsRowBomb(leftDot, currentDot, rightDot));
+                                Debug.Log("From Row Check");
                                 currentMatches.Union(IsColumnBomb(leftDot, currentDot, rightDot));
                                 currentMatches.Union(IsAdjacentBomb(leftDot, currentDot, rightDot));
                                 MatchNearbyPieces(leftDotObject, currentDotObject, rightDotObject);
@@ -115,6 +119,7 @@ public class FindMatches : MonoBehaviour
                             if(upDotGo.CompareTag(currentDotObject.tag) && downDotGo.CompareTag(currentDotObject.tag))
                             {
                                 currentMatches.Union(IsRowBomb(downDot, currentDot, upDot));
+                                Debug.Log("From Column Check");
                                 currentMatches.Union(IsColumnBomb(downDot, currentDot, upDot));
                                 currentMatches.Union(IsAdjacentBomb(downDot, currentDot, upDot));
                                 MatchNearbyPieces(downDotGo, currentDotObject, upDotGo);

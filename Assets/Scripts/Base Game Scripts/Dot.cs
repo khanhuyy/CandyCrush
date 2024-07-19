@@ -67,42 +67,33 @@ public class Dot : MonoBehaviour
 
     void Update()
     {
-        // todo remove
-        // FindMatches();
-        // if(isMatched) {
-        //     SpriteRenderer mySrite = GetComponent<SpriteRenderer>();
-        //     mySrite.color = new Vector4(255f, 255f, 255f, 0.2f);
-        // }
-        
         targetX = column;
         targetY = row;
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
-            // Move towars the target
             tempPosition = new Vector2(targetX, transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
-            if(board.allDots[column, row] != this.gameObject) {
-                board.allDots[column, row] = this.gameObject;
+            if(board.allDots[column, row] != gameObject) {
+                board.allDots[column, row] = gameObject;
+                Debug.Log(gameObject.tag);
+                Debug.Log(gameObject.name);
                 findMatches.FindAllMatches();
             }
         } else {
-            // Directly set position, todo check
             tempPosition = new Vector2(targetX, transform.position.y);
             transform.position = tempPosition;
-            // board.allDots[column, row] = this.gameObject;
         }
         if(Mathf.Abs(targetY - transform.position.y) > 0.1) {
-            // Move towars the target
             tempPosition = new Vector2(transform.position.x, targetY);
             transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
-            if(board.allDots[column, row] != this.gameObject) {
-                board.allDots[column, row] = this.gameObject;
+            if(board.allDots[column, row] != gameObject) {
+                board.allDots[column, row] = gameObject;
+                Debug.Log(gameObject.tag);
+                Debug.Log(gameObject.name);
                 findMatches.FindAllMatches();
             }
         } else {
-            // Directly set position, todo check
             tempPosition = new Vector2(transform.position.x, targetY);
             transform.position = tempPosition;
-            // board.allDots[column, row] = this.gameObject;
         }
 
     }

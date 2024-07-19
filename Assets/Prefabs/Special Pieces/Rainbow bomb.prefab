@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5070880125205853147}
   - component: {fileID: 6573781931137319958}
   - component: {fileID: 5655286447200699498}
+  - component: {fileID: -5111476932361603599}
   m_Layer: 0
   m_Name: Rainbow bomb
   m_TagString: Untagged
@@ -106,3 +107,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-5111476932361603599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648130534546897170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8edcc8921c2cc4448af12430677581be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  column: 0
+  row: 0
+  previousColumn: 0
+  previousRow: 0
+  targetX: 0
+  targetY: 0
+  isMatched: 0
+  otherDotGo: {fileID: 0}
+  swipeAngle: 0
+  swipeResist: 1
+  isColorBomb: 1
+  isColumnBomb: 0
+  isRowBomb: 0
+  isAdjacentBomb: 0
+  rowArrow: {fileID: 0}
+  columnArrow: {fileID: 0}
+  colorBomb: {fileID: 0}
+  adjacentMarker: {fileID: 0}

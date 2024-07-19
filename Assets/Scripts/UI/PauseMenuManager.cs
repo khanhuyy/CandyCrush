@@ -17,8 +17,9 @@ public class PauseMenuManager : MonoBehaviour
     public Sprite musicOffSprite;
     private SoundManager sound;
     private Animator pausePanelAnimator;
+
+    private GameManager gameManager;
     
-    // Start is called before the first frame update
     void Start()
     {
         if (PlayerPrefs.HasKey("Sound"))
@@ -37,6 +38,7 @@ public class PauseMenuManager : MonoBehaviour
             soundButton.sprite = musicOnSprite;
         }
 
+        gameManager = FindObjectOfType<GameManager>();
         pausePanelAnimator = pausePanel.GetComponentInChildren<Animator>();
         pausePanel.SetActive(false);
         board = FindObjectOfType<Board>();
@@ -92,6 +94,9 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ToMainMenu()
     {
+        gameManager.dashboardPanelIsActive = true;
+        gameManager.confirmPlayPanelIsActive = false;
+        gameManager.levelSelectPanelIsActive = false;
         SceneManager.LoadScene("Scenes/Splash");
     }
 }

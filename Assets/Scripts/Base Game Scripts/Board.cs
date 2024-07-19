@@ -210,9 +210,12 @@ public class Board : MonoBehaviour
         GenerateSlimeTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                Vector2 tilePosition = new Vector2(column, row);
-                GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
-                backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
+                if (!blankSpaces[column, row])
+                {
+                    Vector2 tilePosition = new Vector2(column, row);
+                    GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
+                    backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
+                }
                 if(IsMovable(column, row)) {
                     Vector2 dotPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
@@ -411,7 +414,9 @@ public class Board : MonoBehaviour
         {
             if (frostingTiles[destroyColumn, row])
             {
+                Debug.Log(destroyColumn + "," + row);
                 frostingTiles[destroyColumn, row].TakeDamage(1);
+                Debug.Log(frostingTiles[destroyColumn, row].hitPoints);
                 if (frostingTiles[destroyColumn, row].hitPoints <= 0)
                 {
                     frostingTiles[destroyColumn, row] = null;
@@ -448,19 +453,11 @@ public class Board : MonoBehaviour
                     lockTiles[column, row] = null;
                 }
             }
-            // if(frostingTiles[column, row] != null)
-            // {
-            //     frostingTiles[column, row].TakeDamage(1);
-            //     if(frostingTiles[column, row].hitPoints <= 0)
-            //     {
-            //         frostingTiles[column, row] = null;
-            //     }
-            // }
             DamageBlocker(column, row);
             
             if(goalManager != null)
             {
-                goalManager.CompareGoal(allDots[column, row].tag.ToString());
+                goalManager.CompareGoal(allDots[column, row].tag);
                 goalManager.UpdateGoals();
             }
             if(soundManager != null)
@@ -489,8 +486,9 @@ public class Board : MonoBehaviour
             }
         }
         findMatches.currentMatches.Clear();
+        Debug.Log("before" + findMatches.currentMatches.Count);
         StartCoroutine(DecreaseRowCo2());
-
+        Debug.Log("after" + findMatches.currentMatches.Count);
         // miss some case when refill board, todo fix
     }
 

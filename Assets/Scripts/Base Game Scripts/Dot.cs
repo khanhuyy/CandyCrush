@@ -19,6 +19,7 @@ public class Dot : MonoBehaviour
     private HintManager hintManager;
     private FindMatches findMatches;
     private Board board;
+    
     [FormerlySerializedAs("otherDot")] public GameObject otherDotGo;
     private Vector2 firstTouchPosition = Vector2.zero;
     private Vector2 finalTouchPosition = Vector2.zero;
@@ -32,11 +33,13 @@ public class Dot : MonoBehaviour
     public bool isColorBomb; // 5 similar in row or column
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
-    public bool isAdjacentBomb; // L shape, 3 length in both cordinate
+    public bool isAdjacentBomb; // L shape, 3 length in both coordinate
     public GameObject rowArrow;
     public GameObject columnArrow;
     public GameObject colorBomb;
     public GameObject adjacentMarker;
+
+    private SpriteRenderer sprite;
     void Start()
     {
         isColumnBomb = false;
@@ -47,7 +50,9 @@ public class Dot : MonoBehaviour
         endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
-        findMatches = FindObjectOfType<FindMatches>();    
+        findMatches = FindObjectOfType<FindMatches>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        
         // targetX = (int) transform.position.x;
         // targetY = (int) transform.position.y;
         // column = targetX;
@@ -61,6 +66,8 @@ public class Dot : MonoBehaviour
         if(Input.GetMouseButtonDown(1)) {
             isColorBomb = true;
             Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
+            // board[]
+            Destroy(this);
         }
     }
 
@@ -140,7 +147,6 @@ public class Dot : MonoBehaviour
                 }
                 board.DestroyMatches();
             }
-            // otherDotGo = null;
         }
     }
 
@@ -220,31 +226,6 @@ public class Dot : MonoBehaviour
         else
         {
             board.currentState = GameState.Move;
-        }
-    }
-
-    void FindMatches() {
-        if(column > 0 && column < board.width - 1) {
-            GameObject leftDot = board.allDots[column - 1, row];
-            GameObject rightDot = board.allDots[column + 1, row];
-            if(leftDot != null && rightDot != null) {
-                if(leftDot.CompareTag(this.gameObject.tag) && rightDot.CompareTag(this.gameObject.tag)) {
-                    leftDot.GetComponent<Dot>().isMatched = true;
-                    rightDot.GetComponent<Dot>().isMatched = true;
-                    isMatched = true;
-                }
-            }
-        }
-        if(row > 0 && row < board.height - 1) {
-            GameObject upDot= board.allDots[column, row + 1];
-            GameObject downDot = board.allDots[column, row - 1];
-            if(upDot != null && downDot != null) {
-                if(upDot.CompareTag(this.gameObject.tag) && downDot.CompareTag(this.gameObject.tag)) {
-                    upDot.GetComponent<Dot>().isMatched = true;
-                    downDot.GetComponent<Dot>().isMatched = true;
-                    isMatched = true;
-                }
-            }
         }
     }
 

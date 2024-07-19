@@ -73,10 +73,7 @@ public class EndGameManager : MonoBehaviour
                 LoseGame();
             }
         } 
-        else 
-        {
-            Debug.Log("You lose");
-        }    
+        // Do something
     }
 
     public void WinGame()
@@ -93,7 +90,6 @@ public class EndGameManager : MonoBehaviour
     {
         tryAgainPanel.SetActive(true);
         board.currentState = GameState.Lose;
-        Debug.Log("You lose!");
         currentCounterValue = 0;
         counter.SetText("" + currentCounterValue);
     }

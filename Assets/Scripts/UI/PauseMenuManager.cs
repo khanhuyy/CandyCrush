@@ -10,12 +10,13 @@ public class PauseMenuManager : MonoBehaviour
     public GameObject pausePanel;
     private Board board;
     public bool paused = false;
-    [FormerlySerializedAs("soundButtonSprite")] public Image soundButton;
+    public Image soundButton;
     
     // todo make animation
     public Sprite musicOnSprite;
     public Sprite musicOffSprite;
     private SoundManager sound;
+    private Animator pausePanelAnimator;
     
     // Start is called before the first frame update
     void Start()
@@ -35,6 +36,8 @@ public class PauseMenuManager : MonoBehaviour
         {
             soundButton.sprite = musicOnSprite;
         }
+
+        pausePanelAnimator = pausePanel.GetComponentInChildren<Animator>();
         pausePanel.SetActive(false);
         board = FindObjectOfType<Board>();
         sound = FindObjectOfType<SoundManager>();
@@ -53,6 +56,7 @@ public class PauseMenuManager : MonoBehaviour
         {
             pausePanel.SetActive(false);
             board.currentState = GameState.Move;
+            pausePanelAnimator.SetTrigger("Close");
         }
     }
     

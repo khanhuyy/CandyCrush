@@ -20,6 +20,7 @@ TagManager:
   - Licorice
   - Freeze Tile
   - Chocolate
+  - Frosting
   layers:
   - Default
   - TransparentFX
@@ -28,9 +29,9 @@ TagManager:
   - Water
   - UI
   - Marker
-  - 
-  - 
-  - 
+  - ' Dot'
+  - Blocker
+  - Background Tile
   - 
   - 
   - 
@@ -62,4 +63,13 @@ TagManager:
     locked: 0
   - name: Markers
     uniqueID: 168602103
+    locked: 0
+  - name: Blocker
+    uniqueID: 1880875881
+    locked: 0
+  - name: Dot
+    uniqueID: 1345072411
+    locked: 0
+  - name: Background Tile
+    uniqueID: 2469692129
     locked: 0

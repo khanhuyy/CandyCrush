@@ -14,6 +14,7 @@ public enum GameState {
 }
 
 public enum TileKind {
+    Frosting,
     Breakable,
     Blank,
     Lock,
@@ -50,6 +51,7 @@ public class Board : MonoBehaviour
     
     [Header("Prefabs")]
     [SerializeField] private GameObject backgroundTilePrefab;
+    public GameObject frostingTilePrefab;
     public GameObject breakableTilePrefab;
     public GameObject lockTilePrefab;
     public GameObject concreteTilePrefab;
@@ -65,7 +67,8 @@ public class Board : MonoBehaviour
     public BackgroundTile[,] lockTiles; // ~ locked tile in candy crush
     private BackgroundTile[,] concreteTiles; // ~ blocked tile in candy crush
     private BackgroundTile[,] slimeTiles; // ~ chocolate tile in candy crush
-
+    private BackgroundTile[,] frostingTiles; // ~ frosting tile in candy crush
+    
     [Header("Match Stuff")] 
     public MatchType matchType;
     public Dot currentDot; // calculate first selected dot
@@ -103,6 +106,7 @@ public class Board : MonoBehaviour
         goalManager = FindObjectOfType<GoalManager>();
         soundManager = FindObjectOfType<SoundManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
+        frostingTiles = new BackgroundTile[width, height];
         breakableTiles = new BackgroundTile[width, height];
         lockTiles = new BackgroundTile[width, height];
         concreteTiles = new BackgroundTile[width, height];
@@ -114,6 +118,19 @@ public class Board : MonoBehaviour
         currentState = GameState.Pause;
     }
 
+    #region "Helper"
+
+    // check blocker tiles
+    private bool IsMovable(int column, int row)
+    {
+        return !frostingTiles[column, row] && !blankSpaces[column, row] && !concreteTiles[column, row] &&
+               !slimeTiles[column, row];
+    }
+    
+
+    #endregion
+
+#region "generate special tiles"
     public void GenerateBlankSpace() {
         for (int i = 0; i < boardLayout.Length; i++) {
             if(boardLayout[i].tileKind == TileKind.Blank) {
@@ -122,6 +139,19 @@ public class Board : MonoBehaviour
         }
     }
 
+    private void GenerateFrostingTiles() {
+        // look at all the tiles in the layout
+        for (int i = 0; i < boardLayout.Length; i++) {
+            // if a tile is a "frosting" tile
+            if(boardLayout[i].tileKind == TileKind.Frosting) {
+                Vector2 tempPosition = new Vector2(boardLayout[i].x, boardLayout[i].y);
+                GameObject tile = Instantiate(frostingTilePrefab, tempPosition, Quaternion.identity, transform);
+                tile.name = "FrostingTile(" + boardLayout[i].x + ", " + boardLayout[i].y + ")";
+                frostingTiles[boardLayout[i].x, boardLayout[i].y] = tile.GetComponent<BackgroundTile>();
+            }
+        }
+    }
+    
     public void GenerateBreakableTiles() {
         // look at all the tiles in the layout
         for (int i = 0; i < boardLayout.Length; i++) {
@@ -169,8 +199,10 @@ public class Board : MonoBehaviour
             }
         }
     }
+#endregion
 
     private void Setup() {
+        GenerateFrostingTiles();
         GenerateBlankSpace();
         GenerateBreakableTiles();
         GenerateLockTiles();
@@ -181,8 +213,7 @@ public class Board : MonoBehaviour
                 Vector2 tilePosition = new Vector2(column, row);
                 GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
                 backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
-                Debug.Log(backgroundTile.name);
-                if(!blankSpaces[column, row] && !concreteTiles[column, row] && !slimeTiles[column, row]) {
+                if(IsMovable(column, row)) {
                     Vector2 dotPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
                     int maxIterations = 0;
@@ -354,6 +385,14 @@ public class Board : MonoBehaviour
     {
         for (int column = 0; column < width; column++)
         {
+            if (frostingTiles[column, destroyRow])
+            {
+                frostingTiles[column, destroyRow].TakeDamage(1);
+                if (frostingTiles[column, destroyRow].hitPoints <= 0)
+                {
+                    frostingTiles[column, destroyRow] = null;
+                }
+            }
             if (concreteTiles[column, destroyRow])
             {
                 concreteTiles[column, destroyRow].TakeDamage(1);
@@ -361,7 +400,7 @@ public class Board : MonoBehaviour
                 {
                     concreteTiles[column, destroyRow] = null;
                 }
-            }          
+            }     
         }
     }
     
@@ -370,6 +409,14 @@ public class Board : MonoBehaviour
     {
         for (int row = 0; row < height; row++)
         {
+            if (frostingTiles[destroyColumn, row])
+            {
+                frostingTiles[destroyColumn, row].TakeDamage(1);
+                if (frostingTiles[destroyColumn, row].hitPoints <= 0)
+                {
+                    frostingTiles[destroyColumn, row] = null;
+                }
+            }
             if (concreteTiles[destroyColumn, row])
             {
                 concreteTiles[destroyColumn, row].TakeDamage(1);
@@ -401,8 +448,15 @@ public class Board : MonoBehaviour
                     lockTiles[column, row] = null;
                 }
             }
-            DamageConcrete(column, row);
-            DamageSlime(column, row);
+            // if(frostingTiles[column, row] != null)
+            // {
+            //     frostingTiles[column, row].TakeDamage(1);
+            //     if(frostingTiles[column, row].hitPoints <= 0)
+            //     {
+            //         frostingTiles[column, row] = null;
+            //     }
+            // }
+            DamageBlocker(column, row);
             
             if(goalManager != null)
             {
@@ -440,6 +494,62 @@ public class Board : MonoBehaviour
         // miss some case when refill board, todo fix
     }
 
+    #region "Damage Blocker Manager"
+    private void DamageBlocker(int column, int row)
+    {
+        DamageFrosting(column, row);
+        DamageConcrete(column, row);
+        DamageSlime(column, row);
+    }
+    
+    private void DamageFrosting(int column, int row)
+    {
+        if (column > 0)
+        {
+            if (frostingTiles[column - 1, row])
+            {
+                frostingTiles[column - 1, row].TakeDamage(1);
+                if (frostingTiles[column - 1, row].hitPoints <= 0)
+                {
+                    frostingTiles[column - 1, row] = null;
+                }
+            }
+        }
+        if (column < width - 1)
+        {
+            if (frostingTiles[column + 1, row])
+            {
+                frostingTiles[column + 1, row].TakeDamage(1);
+                if (frostingTiles[column + 1, row].hitPoints <= 0)
+                {
+                    frostingTiles[column + 1, row] = null;
+                }
+            }
+        }
+        if (row > 0)
+        {
+            if (frostingTiles[column, row - 1])
+            {
+                frostingTiles[column, row - 1].TakeDamage(1);
+                if (frostingTiles[column, row - 1].hitPoints <= 0)
+                {
+                    frostingTiles[column, row - 1] = null;
+                }
+            }
+        }
+        if (row < height - 1)
+        {
+            if (frostingTiles[column, row + 1])
+            {
+                frostingTiles[column, row + 1].TakeDamage(1);
+                if (frostingTiles[column, row + 1].hitPoints <= 0)
+                {
+                    frostingTiles[column, row + 1] = null;
+                }
+            }
+        }
+    }
+    
     private void DamageConcrete(int column, int row)
     {
         if (column > 0)
@@ -499,7 +609,6 @@ public class Board : MonoBehaviour
                 {
                     slimeTiles[column - 1, row] = null;
                 }
-
                 makeSlime = false;
             }
         }
@@ -540,6 +649,7 @@ public class Board : MonoBehaviour
             }
         }
     }
+    #endregion
     
     // todo refactor O(n^3)
     // row down with blank tile
@@ -547,7 +657,7 @@ public class Board : MonoBehaviour
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 // if the current spot isn't blank and is empty. . .
-                if(!blankSpaces[column, row] && allDots[column, row] == null && !concreteTiles[column, row] && !slimeTiles[column, row]) {
+                if(allDots[column, row] == null && IsMovable(column, row)) {
                     for(int k = row + 1; k < height; k++) {
                         // if a dot is found
                         if (allDots[column, k] != null) {
@@ -593,7 +703,7 @@ public class Board : MonoBehaviour
     private void RefillBoard() {
         for (int column = 0; column < width; column ++) {
             for (int row = 0; row < height; row++) {
-                if (allDots[column, row] == null && !blankSpaces[column, row] && !concreteTiles[column, row] && !slimeTiles[column, row])
+                if (allDots[column, row] == null && IsMovable(column, row))
                 {
                     if (allDots[column, row] == null)
                     {
@@ -833,7 +943,7 @@ public class Board : MonoBehaviour
             for (int row = 0; row < height; row++)
             {
                 // if this spot shouldn't be blank
-                if(!blankSpaces[column, row] && !concreteTiles[column, row] && !slimeTiles[column, row])
+                if(IsMovable(column, row))
                 {
                     // pick a random number
                     int pieceToUse = Random.Range(0, newBoardTiles.Count);

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 44149873948258004}
   - component: {fileID: 6303656534165742378}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4764769859971873323}
   - component: {fileID: 8379157946395021189}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7518084921736522731}
   - component: {fileID: -5724816322179632511}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: TileBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

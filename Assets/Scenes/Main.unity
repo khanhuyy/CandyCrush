@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -890,7 +891,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &346309658
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1469,6 +1470,7 @@ MonoBehaviour:
   offset: 0
   rowOffSet: 10
   backgroundTilePrefab: {fileID: 8257221799454182088, guid: f8e67837e54397846bfaead813db347e, type: 3}
+  frostingTilePrefab: {fileID: 6693946532121589710, guid: 85d4abd175038ce4b9287374fcaf0f6e, type: 3}
   breakableTilePrefab: {fileID: 6693946532121589710, guid: 1ea11cc6df4434249a49a4cc54b37929, type: 3}
   lockTilePrefab: {fileID: 6693946532121589710, guid: e0f1bb839a6c68f49a932938462aa478, type: 3}
   concreteTilePrefab: {fileID: 6693946532121589710, guid: 92883cd0bf2e1bbe3be8438b970465c2, type: 3}
@@ -3737,6 +3739,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 346309657}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1890289392
 MonoBehaviour:

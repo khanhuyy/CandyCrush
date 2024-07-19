@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6395136280328262315}
   - component: {fileID: 3429404894762207635}
   - component: {fileID: 4788827268476459279}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Purple
   m_TagString: Purple
   m_Icon: {fileID: 0}

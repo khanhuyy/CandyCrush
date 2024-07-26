@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -55,7 +56,7 @@ public class Board : MonoBehaviour
     public GameObject lockTilePrefab;
     public GameObject concreteTilePrefab;
     public GameObject slimePrefab;
-    public GameObject [] dots;
+    public GameObject[] dots;
     public GameObject destroyEffect;
     
     [Header("Layout")]
@@ -67,6 +68,12 @@ public class Board : MonoBehaviour
     private BackgroundTile[,] concreteTiles; // ~ blocked tile in candy crush
     private BackgroundTile[,] slimeTiles; // ~ chocolate tile in candy crush
     private BackgroundTile[,] frostingTiles; // ~ frosting tile in candy crush
+    
+    [Header("Scene Splitter Object")]
+    [SerializeField] private GameObject backgroundTilesContainer;
+    [SerializeField] private GameObject dotsContainer;
+    [SerializeField] private GameObject frostingTilesContainer;
+    
     
     [Header("Match Stuff")] 
     public MatchType matchType;
@@ -80,6 +87,8 @@ public class Board : MonoBehaviour
     public float refillDelay = 0.5f;
     public int[] scoreGoals;
     private bool makeSlime = true;
+
+    private String checkFunc = "Not call yet";
     
     private void Awake()
     {
@@ -146,7 +155,7 @@ public class Board : MonoBehaviour
             // if a tile is a "frosting" tile
             if(frostingTile.tileKind == TileKind.Frosting) {
                 Vector2 tempPosition = new Vector2(frostingTile.x, frostingTile.y);
-                GameObject tile = Instantiate(frostingTilePrefab, tempPosition, Quaternion.identity, transform);
+                GameObject tile = Instantiate(frostingTilePrefab, tempPosition, Quaternion.identity, frostingTilesContainer.transform);
                 tile.name = "FrostingTile(" + frostingTile.x + ", " + frostingTile.y + ")";
                 frostingTiles[frostingTile.x, frostingTile.y] = tile.GetComponent<BackgroundTile>();
             }
@@ -214,21 +223,22 @@ public class Board : MonoBehaviour
                 if (!blankSpaces[column, row])
                 {
                     Vector2 tilePosition = new Vector2(column, row);
-                    GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, this.transform);
+                    GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, backgroundTilesContainer.transform);
                     backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
                 }
                 if(IsMovable(column, row)) {
                     Vector2 dotPosition = new Vector2(column, row);
                     int dotToUse = Random.Range(0, dots.Length);
                     int maxIterations = 0;
-                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100) {
+                    // todo refactor this, board still has bug when dots is too few
+                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 200) {
                         dotToUse = Random.Range(0, dots.Length);
                         maxIterations++;
                     }
-                    GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, this.transform);
+                    GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, dotsContainer.transform);
                     dot.GetComponent<Dot>().column = column;
                     dot.GetComponent<Dot>().row = row;
-                    dot.name = "( " + column + ", " + row + " )";
+                    dot.name = dot.tag + "(" + column + ", " + row + ")";
                     AllDots[column, row] = dot;
                 }
             }
@@ -486,7 +496,6 @@ public class Board : MonoBehaviour
         }
         findMatches.currentMatches.Clear();
         StartCoroutine(DecreaseRowCo2());
-
         // miss some case when refill board, todo fix
     }
 
@@ -673,6 +682,7 @@ public class Board : MonoBehaviour
         }
         yield return new WaitForSeconds(refillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
+        Debug.Log(findMatches.currentMatches.Count);
     }
 
     // Delete and row down if board has matches
@@ -703,17 +713,19 @@ public class Board : MonoBehaviour
                 {
                     Vector2 tempPosition = new Vector2(column, row + rowOffSet);
                     int dotToUse = Random.Range(0, dots.Length);
-                    // todo refactor
-                    // while(MatchesAt(column, row, dots[dotToUse]))
-                    // {
-                    //     dotToUse = Random.Range(0, dots.Length);
-                    // }
-                    if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform)
+                    int maxIterator = 100;
+                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterator > 0)
+                    {
+                        dotToUse = Random.Range(0, dots.Length);
+                        maxIterator--;
+                    }
+                    if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, dotsContainer.transform)
                         .TryGetComponent(out Dot dot))
                     {
                         AllDots[column, row] = dot.gameObject;
                         dot.column = column;
                         dot.row = row;
+                        dot.name = dot.tag + "(" + column + ", " + row + ")";
                     }
                 }
             }   
@@ -721,7 +733,14 @@ public class Board : MonoBehaviour
     }
 
     private bool MatchesOnBoard() {
+        Debug.Log(checkFunc);
         findMatches.FindAllMatches();
+        Debug.Log(findMatches.currentMatches.Count());
+        // if (findMatches.currentMatches.Count > 0)
+        // {
+        //     return true;
+        // }
+        Debug.Log(findMatches.currentMatches.Count);
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if(AllDots[column, row] != null) {
@@ -738,20 +757,22 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(refillDelay);
         RefillBoard();
         yield return new WaitForSeconds(refillDelay);
+        // problem is here
+        checkFunc = "From Fill Board Co";
         while(MatchesOnBoard())
-        {  
+        {
+            checkFunc = "In loop";
             streakValue ++;
             DestroyMatches();
             yield break;
         }
-        Debug.Log(findMatches.currentMatches.Count);
         currentDot = null;
         CheckToMakeSlime();
         if(IsDeadlocked()) {
             StartCoroutine(ShuffleBoard());
         }
         yield return new WaitForSeconds(refillDelay);
-        GC.Collect();
+        // GC.Collect();
         if (currentState != GameState.Pause)
         {
             currentState = GameState.Move;
@@ -827,10 +848,8 @@ public class Board : MonoBehaviour
         if (AllDots[column + (int)direction.x, row + (int)direction.y] != null)
         {
             // take the second piece and save it in a holder
-            GameObject holder = AllDots[column + (int)direction.x, row + (int)direction.y];
-            // switch the first dot to be
-            AllDots[column + (int)direction.x, row + (int)direction.y] = AllDots[column, row];
-            AllDots[column, row] = holder;
+            (AllDots[column + (int)direction.x, row + (int)direction.y], AllDots[column, row]) =
+                (AllDots[column, row], AllDots[column + (int)direction.x, row + (int)direction.y]);
         }
     }
 
@@ -929,7 +948,6 @@ public class Board : MonoBehaviour
             }
         }
         yield return new WaitForSeconds(0.5f);
-        // for every spot on the board
         for (int column = 0; column < width; column++)
         {
             for (int row = 0; row < height; row++)
@@ -941,7 +959,7 @@ public class Board : MonoBehaviour
                     int pieceToUse = Random.Range(0, newBoardTiles.Count);
                     
                     int maxIterations = 0;
-                    while(MatchesAt(column, row, newBoardTiles[pieceToUse]) && maxIterations < 100) {
+                    while(MatchesAt(column, row, newBoardTiles[pieceToUse]) && maxIterations < 200) {
                         pieceToUse = Random.Range(0, newBoardTiles.Count);
                         maxIterations++;
                     }

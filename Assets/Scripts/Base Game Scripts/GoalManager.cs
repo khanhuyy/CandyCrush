@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -46,17 +45,17 @@ public class GoalManager : MonoBehaviour
     
     public void SetupGoals()
     {
-        for(int i = 0; i < levelGoals.Length; i++)
+        foreach (var levelGoal in levelGoals)
         {
             GameObject goal = Instantiate(goalPrefab, goalIntroParent.transform.position, Quaternion.identity, goalIntroParent.transform);
             GoalPanel panel = goal.GetComponent<GoalPanel>();
-            panel.thisSprite = levelGoals[i].goalSprite;
-            panel.thisString = "0/" + levelGoals[i].numberNeeded;
+            panel.thisSprite = levelGoal.goalSprite;
+            panel.thisString = "0/" + levelGoal.numberNeeded;
             GameObject gameGoal = Instantiate(goalPrefab, goalGameParent.transform.position, Quaternion.identity, goalGameParent.transform);
             panel = gameGoal.GetComponent<GoalPanel>();
             currentGoals.Add(panel);
-            panel.thisSprite = levelGoals[i].goalSprite;
-            panel.thisString = "0/" + levelGoals[i].numberNeeded;
+            panel.thisSprite = levelGoal.goalSprite;
+            panel.thisString = "0/" + levelGoal.numberNeeded;
         }
     }
 
@@ -85,11 +84,11 @@ public class GoalManager : MonoBehaviour
 
     public void CompareGoal(string goalToCompare)
     {
-        for(int i = 0; i < levelGoals.Length; i++)
+        foreach (var levelGoal in levelGoals)
         {
-            if(goalToCompare == levelGoals[i].matchValue)
+            if(goalToCompare == levelGoal.matchValue)
             {
-                levelGoals[i].numberCollected++;
+                levelGoal.numberCollected++;
             }
         }
     }

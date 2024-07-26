@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class StartDashboardManager : MonoBehaviour
 {
+    // [SerializeField] private GameManager gameManager;
+    
     public GameObject startPanel;
 
     public GameObject levelPanel;
@@ -11,8 +13,8 @@ public class StartDashboardManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startPanel.SetActive(true);
-        levelPanel.SetActive(false);
+        // startPanel.SetActive(true);
+        // levelPanel.SetActive(false);
     }
 
     public void PlayGame()
@@ -23,7 +25,7 @@ public class StartDashboardManager : MonoBehaviour
 
     public void Home()
     {
-        startPanel.SetActive(true);
-        levelPanel.SetActive(false);
+        // startPanel.SetActive(true);
+        // levelPanel.SetActive(false);
     }
 }

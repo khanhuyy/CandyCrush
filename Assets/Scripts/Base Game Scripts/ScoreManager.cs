@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -59,7 +56,7 @@ public class ScoreManager : MonoBehaviour
         if(board != null && scoreBar != null)
         {
             int length = board.scoreGoals.Length;
-            scoreBar.fillAmount = (float)score/(float)board.scoreGoals[length - 1];
+            scoreBar.fillAmount = (float)score/board.scoreGoals[length - 1];
         } 
     }
 }

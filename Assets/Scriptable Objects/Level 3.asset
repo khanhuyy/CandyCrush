@@ -18,12 +18,10 @@ MonoBehaviour:
   dots:
   - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
   - {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
-  - {fileID: 8197473084841504685, guid: c09817fec026df4458e49f4ebcc32aeb, type: 3}
-  - {fileID: 8197473084841504685, guid: 01db9e2fc0e9f3744a1be5052ab5dea5, type: 3}
   scoreGoals: 8c13000090dc0100400d0300
   endGameRequirements:
     gameType: 0
-    counterValue: 40
+    counterValue: 100
   levelGoals:
   - numberNeeded: 60
     numberCollected: 0

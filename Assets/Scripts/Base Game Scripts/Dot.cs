@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -120,10 +119,10 @@ public class Dot : MonoBehaviour
         }
         yield return new WaitForSeconds(0.5f);
         if(otherDotGo) {
-            if(!isMatched && !otherDotGo.GetComponent<Dot>().isMatched) 
+            if(!isMatched && otherDotGo.TryGetComponent(out Dot otherDot) && !otherDot.isMatched) 
             {
-                otherDotGo.GetComponent<Dot>().row = row;
-                otherDotGo.GetComponent<Dot>().column = column;
+                otherDot.row = row;
+                otherDot.column = column;
                 row = previousRow;
                 column = previousColumn;
                 yield return new WaitForSeconds(0.5f);
@@ -227,7 +226,7 @@ public class Dot : MonoBehaviour
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
             isRowBomb = true;
-            Instantiate(rowArrow, transform.position, Quaternion.identity, this.transform);
+            Instantiate(rowArrow, transform.position, Quaternion.identity, transform);
 
         }
     }
@@ -236,7 +235,7 @@ public class Dot : MonoBehaviour
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
             isColumnBomb = true;
-            Instantiate(columnArrow, transform.position, Quaternion.identity, this.transform);
+            Instantiate(columnArrow, transform.position, Quaternion.identity, transform);
         }
     }
 

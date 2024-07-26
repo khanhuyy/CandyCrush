@@ -19,10 +19,13 @@ public class LevelButton : MonoBehaviour
     public int level;
     public GameObject confirmPanel;
     
+    [Header("Manager")]
+    private GameManager gameManager;
     private GameData gameData;
 
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         gameData = FindObjectOfType<GameData>();
         buttonImage = GetComponent<Image>();
         button = GetComponent<Button>();
@@ -87,6 +90,8 @@ public class LevelButton : MonoBehaviour
         {
             script.level = level;
         }
-        confirmPanel.SetActive(true);
+
+        gameManager.confirmPlayPanelIsActive = true;
+        // confirmPanel.SetActive(true);
     }
 }

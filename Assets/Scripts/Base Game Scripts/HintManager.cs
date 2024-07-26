@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,8 +57,7 @@ public class HintManager : MonoBehaviour
 
     GameObject PickOneRandomly()
     {
-        List<GameObject> possibleMoves = new List<GameObject>();
-        possibleMoves = FindAllMatches();
+        var possibleMoves = FindAllMatches();
         if(possibleMoves.Count > 0)
         {
             int pieceToUse = Random.Range(0, possibleMoves.Count);

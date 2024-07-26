@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -30,18 +27,11 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void AdjustVolumn()
+    public void AdjustVolume()
     {
         if (PlayerPrefs.HasKey("Sound"))
         {
-            if (PlayerPrefs.GetInt("Sound") == 0)
-            {
-                backgroundMusic.volume = 0;
-            }
-            else
-            {
-                backgroundMusic.volume = 1;
-            }
+            backgroundMusic.volume = PlayerPrefs.GetInt("Sound") == 0 ? 0 : 1;
         }
     }
     

@@ -117,5 +117,5 @@ MonoBehaviour:
   levelGoals:
   - numberNeeded: 28
     numberCollected: 0
-    goalSprite: {fileID: -2073952913, guid: 2cf36467347dcca42bc8c69ea7977376, type: 3}
-    matchValue: Green
+    goalSprite: {fileID: 21300000, guid: 2981dc6903f420c479d17c657c3b0a87, type: 3}
+    matchValue: Frosting

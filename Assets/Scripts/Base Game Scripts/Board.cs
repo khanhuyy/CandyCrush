@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public enum GameState {
@@ -30,7 +29,7 @@ public class MatchType
     public string color;
 }
 
-[System.Serializable]
+[Serializable]
 public class TileType {
     public int x;
     public int y;
@@ -279,7 +278,7 @@ public class Board : MonoBehaviour
         matchType.type = 0;
         matchType.color = "";
         
-        // Cycle through all of match Copy and decide if a bomb needs to
+        // Cycle through all match Copy and decide if a bomb needs to
         for (int i = 0; i < simulateMatch.Count; i++)
         {
             // store this dot
@@ -290,7 +289,7 @@ public class Board : MonoBehaviour
                 int row = currentSimulateDot.row;
                 int columnMatch = 0;
                 int rowMatch = 0;
-                // Cycle throu the rest of the dots in match to compare
+                // Cycle through the rest of the dots in match to compare
                 for (int j = 0; j < simulateMatch.Count; j++)
                 {
                     if (simulateMatch[j].TryGetComponent(out Dot nextDot))
@@ -312,7 +311,7 @@ public class Board : MonoBehaviour
                     }
                 }
                 // todo enum
-                // return 3 if columb or row bomb
+                // return 3 if direct bomb
                 // return 2 if adjacent bomb
                 // return 1 if color bomb
                 if (columnMatch == 4 || rowMatch == 4)
@@ -676,7 +675,7 @@ public class Board : MonoBehaviour
         StartCoroutine(FillBoardCo());
     }
 
-    // Delete and row down if have matches
+    // Delete and row down if board has matches
     private IEnumerator DecreaseRowCo() {
         int totalNullRows = 0;
         for (int column = 0; column < width; column++) {
@@ -702,24 +701,19 @@ public class Board : MonoBehaviour
             for (int row = 0; row < height; row++) {
                 if (AllDots[column, row] == null && IsMovable(column, row))
                 {
-                    if (AllDots[column, row] == null)
+                    Vector2 tempPosition = new Vector2(column, row + rowOffSet);
+                    int dotToUse = Random.Range(0, dots.Length);
+                    // todo refactor
+                    // while(MatchesAt(column, row, dots[dotToUse]))
+                    // {
+                    //     dotToUse = Random.Range(0, dots.Length);
+                    // }
+                    if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform)
+                        .TryGetComponent(out Dot dot))
                     {
-                        Vector2 tempPosition = new Vector2(column, row + rowOffSet);
-                        int dotToUse = Random.Range(0, dots.Length);
-                        int maxIterations = 0;
-                        while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 100)
-                        {
-                            maxIterations++;
-                            dotToUse = Random.Range(0, dots.Length);
-                        }
-                        if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, transform)
-                            .TryGetComponent(out Dot dot))
-                        {
-                            AllDots[column, row] = dot.gameObject;
-                            dot.column = column;
-                            dot.row = row;
-                        }
-                        
+                        AllDots[column, row] = dot.gameObject;
+                        dot.column = column;
+                        dot.row = row;
                     }
                 }
             }   
@@ -750,13 +744,14 @@ public class Board : MonoBehaviour
             DestroyMatches();
             yield break;
         }
+        Debug.Log(findMatches.currentMatches.Count);
         currentDot = null;
         CheckToMakeSlime();
         if(IsDeadlocked()) {
             StartCoroutine(ShuffleBoard());
         }
         yield return new WaitForSeconds(refillDelay);
-        System.GC.Collect();
+        GC.Collect();
         if (currentState != GameState.Pause)
         {
             currentState = GameState.Move;

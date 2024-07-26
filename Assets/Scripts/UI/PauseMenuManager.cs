@@ -70,20 +70,20 @@ public class PauseMenuManager : MonoBehaviour
             {
                 soundButton.sprite = musicOnSprite;
                 PlayerPrefs.SetInt("Sound", 1);
-                sound.AdjustVolumn();
+                sound.AdjustVolume();
             }
             else
             {
                 soundButton.sprite = musicOffSprite;
                 PlayerPrefs.SetInt("Sound", 0);
-                sound.AdjustVolumn();
+                sound.AdjustVolume();
             }
         }
         else
         {
             soundButton.sprite = musicOnSprite;
             PlayerPrefs.SetInt("Sound", 1);
-            sound.AdjustVolumn();
+            sound.AdjustVolume();
         }
     }
     

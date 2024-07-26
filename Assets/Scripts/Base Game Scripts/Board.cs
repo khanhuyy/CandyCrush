@@ -414,9 +414,7 @@ public class Board : MonoBehaviour
         {
             if (frostingTiles[destroyColumn, row])
             {
-                // Debug.Log("Column: " + destroyColumn + ", Row: " + row);
                 frostingTiles[destroyColumn, row].TakeDamage(1);
-                // Debug.Log(frostingTiles[destroyColumn, row].hitPoints);
                 if (frostingTiles[destroyColumn, row].hitPoints <= 0)
                 {
                     frostingTiles[destroyColumn, row] = null;
@@ -453,14 +451,6 @@ public class Board : MonoBehaviour
                     lockTiles[column, row] = null;
                 }
             }
-            // if(frostingTiles[column, row] != null)
-            // {
-            //     frostingTiles[column, row].TakeDamage(1);
-            //     if(frostingTiles[column, row].hitPoints <= 0)
-            //     {
-            //         frostingTiles[column, row] = null;
-            //     }
-            // }
             DamageBlocker(column, row);
             
             if(goalManager != null)

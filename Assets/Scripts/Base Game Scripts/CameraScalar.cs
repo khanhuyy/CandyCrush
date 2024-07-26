@@ -5,10 +5,10 @@ using UnityEngine;
 public class CameraScalar : MonoBehaviour
 {
     private Board board;
-    public float cameraOffset;
-    public float aspectRatio = 0.625f;
-    public float padding = 2f;
-    public float yOffset = 1f;
+    [SerializeField] private float cameraOffset;
+    [SerializeField] private float aspectRatio;
+    [SerializeField] private float padding;
+    [SerializeField] private float yOffset;
     
     void Start()
     {
@@ -17,20 +17,21 @@ public class CameraScalar : MonoBehaviour
             RepositionCamera(board.width - 1, board.height - 1);
         }    
     }
-    
-    void RepositionCamera(float x, float y) {
-        Vector3 tempPosition = new Vector3(x/2, y/2 + yOffset, cameraOffset);
-        transform.position = tempPosition;
-        if(board.width >= board.height) {
-            Camera.main.orthographicSize = (board.width / 2 + padding) / aspectRatio;
-        } else {
-            Camera.main.orthographicSize = board.height / 2 + padding;
-        }
-    }
 
-    // Update is called once per frame
-    void Update()
+    void RepositionCamera(float x, float y)
     {
-        
+        Vector3 tempPosition = new Vector3(x / 2, y / 2 + yOffset, cameraOffset);
+        transform.position = tempPosition;
+        if (Camera.main != null)
+        {
+            if (board.width >= board.height)
+            {
+                Camera.main.orthographicSize = (board.width / 2 + padding) / aspectRatio;
+            }
+            else
+            {
+                Camera.main.orthographicSize = board.height / 2 + padding;
+            }
+        }
     }
 }

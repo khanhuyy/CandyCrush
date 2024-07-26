@@ -34,20 +34,20 @@ public class HintManager : MonoBehaviour
         {
             for (int row = 0; row < board.height; row++)
             {
-                if(board.allDots[column, row] != null)
+                if(board.AllDots[column, row] != null)
                 {
                     if(column < board.width - 1)
                     {
                         if(board.SwitchAndCheck(column, row, Vector2.right))
                         {
-                            possibleMoves.Add(board.allDots[column, row]);
+                            possibleMoves.Add(board.AllDots[column, row]);
                         }
                     }
                     if(row < board.height - 1)
                     {
                         if(board.SwitchAndCheck(column, row, Vector2.up))
                         {
-                            possibleMoves.Add(board.allDots[column, row]);
+                            possibleMoves.Add(board.AllDots[column, row]);
                         }
                     }
                 }

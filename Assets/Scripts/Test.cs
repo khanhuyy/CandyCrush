@@ -74,13 +74,13 @@ public class Test : MonoBehaviour {
         yield return new WaitForSeconds(.2f);
         for (int i = 0; i < board.width; i ++){
             for (int j = 0; j < board.height; j ++){
-                GameObject currentDot = board.allDots[i, j];
+                GameObject currentDot = board.AllDots[i, j];
                 Dot currentDotDot = currentDot.GetComponent<Dot>();
                 if(currentDot != null){
                     if(i > 0 && i < board.width - 1){
-                        GameObject leftDot = board.allDots[i - 1, j];
+                        GameObject leftDot = board.AllDots[i - 1, j];
                         Dot leftDotDot = leftDot.GetComponent<Dot>();
-                        GameObject rightDot = board.allDots[i + 1, j];
+                        GameObject rightDot = board.AllDots[i + 1, j];
                         Dot rightDotDot = rightDot.GetComponent<Dot>();
                         if(leftDot != null && rightDot != null){
                             if(leftDot.tag == currentDot.tag && rightDot.tag == currentDot.tag){
@@ -97,9 +97,9 @@ public class Test : MonoBehaviour {
 
                     if (j > 0 && j < board.height - 1)
                     {
-                        GameObject upDot = board.allDots[i, j + 1];
+                        GameObject upDot = board.AllDots[i, j + 1];
                         Dot upDotDot = upDot.GetComponent<Dot>();
-                        GameObject downDot = board.allDots[i, j - 1];
+                        GameObject downDot = board.AllDots[i, j - 1];
                         Dot downDotDot = downDot.GetComponent<Dot>();
                         if (upDot != null && downDot != null)
                         {
@@ -126,11 +126,11 @@ public class Test : MonoBehaviour {
         for (int i = 0; i < board.width; i ++){
             for (int j = 0; j < board.height; j ++){
                 //Check if that piece exists
-                if(board.allDots[i, j] != null){
+                if(board.AllDots[i, j] != null){
                     //Check the tag on that dot
-                    if(board.allDots[i, j].tag == color){
+                    if(board.AllDots[i, j].tag == color){
                         //Set that dot to be matched
-                        board.allDots[i, j].GetComponent<Dot>().isMatched = true;
+                        board.AllDots[i, j].GetComponent<Dot>().isMatched = true;
                     }
                 }
             }
@@ -140,9 +140,9 @@ public class Test : MonoBehaviour {
     List<GameObject> GetColumnPieces(int column){
         List<GameObject> dots = new List<GameObject>();
         for (int i = 0; i < board.height; i ++){
-            if(board.allDots[column, i]!= null){
-                dots.Add(board.allDots[column, i]);
-                board.allDots[column, i].GetComponent<Dot>().isMatched = true;
+            if(board.AllDots[column, i]!= null){
+                dots.Add(board.AllDots[column, i]);
+                board.AllDots[column, i].GetComponent<Dot>().isMatched = true;
             }
         }
         return dots;
@@ -153,10 +153,10 @@ public class Test : MonoBehaviour {
         List<GameObject> dots = new List<GameObject>();
         for (int i = 0; i < board.width; i++)
         {
-            if (board.allDots[i, row] != null)
+            if (board.AllDots[i, row] != null)
             {
-                dots.Add(board.allDots[i, row]);
-                board.allDots[i, row].GetComponent<Dot>().isMatched = true;
+                dots.Add(board.AllDots[i, row]);
+                board.AllDots[i, row].GetComponent<Dot>().isMatched = true;
             }
         }
         return dots;

@@ -446,7 +446,7 @@ public class Board : MonoBehaviour
         if(AllDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
             // check if tile is bounded jelly
-            if(breakableTiles[column, row] != null)
+            if(breakableTiles[column, row])
             {
                 breakableTiles[column, row].TakeDamage(1);
                 if(breakableTiles[column, row].hitPoints <= 0)
@@ -454,7 +454,7 @@ public class Board : MonoBehaviour
                     breakableTiles[column, row] = null;
                 }
             }
-            if(LockTiles[column, row] != null)
+            if(LockTiles[column, row])
             {
                 LockTiles[column, row].TakeDamage(1);
                 if(LockTiles[column, row].hitPoints <= 0)
@@ -464,12 +464,12 @@ public class Board : MonoBehaviour
             }
             DamageBlocker(column, row);
             
-            if(goalManager != null)
+            if(goalManager)
             {
-                goalManager.CompareGoal(AllDots[column, row].tag);
+                goalManager.CompareGoal(destroyDot.gameObject.tag, destroyDot.isAdjacentBomb, destroyDot.isColumnBomb || destroyDot.isRowBomb);
                 goalManager.UpdateGoals();
             }
-            if(soundManager != null)
+            if(soundManager)
             {
                 soundManager.PlayRandomDestroyNoise();
             }

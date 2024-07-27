@@ -67,8 +67,7 @@ public class EndGameManager : MonoBehaviour
             {
                 LoseGame();
             }
-        } 
-        // Do something
+        }
     }
 
     public void WinGame()

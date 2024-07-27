@@ -12,24 +12,141 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88823f78b65673348b31d8263ce1707c, type: 3}
   m_Name: Level 5
   m_EditorClassIdentifier: 
-  width: 4
-  height: 4
-  boardLayout: []
+  width: 7
+  height: 8
+  boardLayout:
+  - x: 0
+    y: 0
+    tileKind: 2
+  - x: 6
+    y: 0
+    tileKind: 2
+  - x: 0
+    y: 4
+    tileKind: 2
+  - x: 6
+    y: 4
+    tileKind: 2
+  - x: 0
+    y: 5
+    tileKind: 2
+  - x: 6
+    y: 5
+    tileKind: 2
+  - x: 0
+    y: 6
+    tileKind: 2
+  - x: 1
+    y: 6
+    tileKind: 2
+  - x: 5
+    y: 6
+    tileKind: 2
+  - x: 6
+    y: 6
+    tileKind: 2
+  - x: 0
+    y: 7
+    tileKind: 2
+  - x: 1
+    y: 7
+    tileKind: 2
+  - x: 5
+    y: 7
+    tileKind: 2
+  - x: 6
+    y: 7
+    tileKind: 2
+  - x: 1
+    y: 0
+    tileKind: 0
+  - x: 2
+    y: 0
+    tileKind: 0
+  - x: 4
+    y: 0
+    tileKind: 0
+  - x: 5
+    y: 0
+    tileKind: 0
+  - x: 1
+    y: 1
+    tileKind: 0
+  - x: 2
+    y: 1
+    tileKind: 0
+  - x: 3
+    y: 1
+    tileKind: 0
+  - x: 4
+    y: 1
+    tileKind: 0
+  - x: 5
+    y: 1
+    tileKind: 0
+  - x: 1
+    y: 2
+    tileKind: 0
+  - x: 3
+    y: 2
+    tileKind: 0
+  - x: 5
+    y: 2
+    tileKind: 0
+  - x: 1
+    y: 3
+    tileKind: 0
+  - x: 3
+    y: 3
+    tileKind: 0
+  - x: 5
+    y: 3
+    tileKind: 0
+  - x: 1
+    y: 4
+    tileKind: 0
+  - x: 2
+    y: 4
+    tileKind: 0
+  - x: 4
+    y: 4
+    tileKind: 0
+  - x: 5
+    y: 4
+    tileKind: 0
+  - x: 1
+    y: 5
+    tileKind: 0
+  - x: 2
+    y: 5
+    tileKind: 0
+  - x: 4
+    y: 5
+    tileKind: 0
+  - x: 5
+    y: 5
+    tileKind: 0
+  - x: 2
+    y: 7
+    tileKind: 0
+  - x: 4
+    y: 7
+    tileKind: 0
   dots:
   - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
   - {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
   - {fileID: 8197473084841504685, guid: c09817fec026df4458e49f4ebcc32aeb, type: 3}
   - {fileID: 8197473084841504685, guid: 01db9e2fc0e9f3744a1be5052ab5dea5, type: 3}
-  scoreGoals: 8c13000090dc0100400d0300
+  scoreGoals: d0070000e02e000050460000
   endGameRequirements:
     gameType: 0
-    counterValue: 40
+    counterValue: 16
   levelGoals:
-  - numberNeeded: 60
+  - numberNeeded: 3
     numberCollected: 0
-    goalSprite: {fileID: 1183976804, guid: 2cf36467347dcca42bc8c69ea7977376, type: 3}
-    matchValue: Red
-  - numberNeeded: 60
-    numberCollected: 0
-    goalSprite: {fileID: -1129035529, guid: 2cf36467347dcca42bc8c69ea7977376, type: 3}
-    matchValue: Yellow
+    goalSprite: {fileID: 21300000, guid: bd9c11b5a13c06743b862b79e85cdef8, type: 3}
+    matchValue: Area Bomb
+  - numberNeeded: 25
+    numberCollected: 16
+    goalSprite: {fileID: 21300000, guid: 2981dc6903f420c479d17c657c3b0a87, type: 3}
+    matchValue: Frosting

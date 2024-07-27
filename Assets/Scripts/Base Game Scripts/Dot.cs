@@ -113,7 +113,7 @@ public class Dot : MonoBehaviour
             isMatched = true;
         } else if(otherDotGo.TryGetComponent(out Dot otherDot) && otherDot.isColorBomb) {
             // other piece is color bomb
-            findMatches.MatchDotsOfColor(this.gameObject.tag);
+            findMatches.MatchDotsOfColor(gameObject.tag);
             otherDot.isMatched = true;
         }
         yield return new WaitForSeconds(0.5f);

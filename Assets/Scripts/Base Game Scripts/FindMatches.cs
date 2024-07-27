@@ -77,8 +77,6 @@ public class FindMatches : MonoBehaviour
         if (piece.TryGetComponent(out Dot dot))
         {
             dot.isMatched = true;
-            Debug.Log("Match");
-            Debug.Log(currentMatches.Count);
         }
     }
 
@@ -94,12 +92,12 @@ public class FindMatches : MonoBehaviour
         for (int column = 0; column < board.width; column++) {
             for (int row = 0; row < board.height; row++) {
                 GameObject currentDotObject = board.AllDots[column, row];
-                if(currentDotObject != null) {
+                if(currentDotObject) {
                     Dot currentDot = currentDotObject.GetComponent<Dot>();
                     if(column > 0 && column < board.width - 1) {
                         GameObject leftDotObject = board.AllDots[column - 1, row];
                         GameObject rightDotObject = board.AllDots[column + 1, row];
-                        if(leftDotObject != null && rightDotObject != null) {
+                        if(leftDotObject && rightDotObject) {
                             Dot leftDot = leftDotObject.GetComponent<Dot>();
                             Dot rightDot = rightDotObject.GetComponent<Dot>();
                             if(leftDotObject.CompareTag(currentDotObject.tag) && rightDotObject.CompareTag(currentDotObject.tag))
@@ -115,7 +113,7 @@ public class FindMatches : MonoBehaviour
                     if(row > 0 && row < board.height - 1) {
                         GameObject upDotGo = board.AllDots[column, row + 1];
                         GameObject downDotGo = board.AllDots[column, row - 1];
-                        if(upDotGo != null && downDotGo != null) {
+                        if(upDotGo && downDotGo) {
                             Dot upDot = upDotGo.GetComponent<Dot>();
                             Dot downDot = downDotGo.GetComponent<Dot>();
                             if(upDotGo.CompareTag(currentDotObject.tag) && downDotGo.CompareTag(currentDotObject.tag))
@@ -136,7 +134,7 @@ public class FindMatches : MonoBehaviour
         for(int i = column - 1; i <= column + 1; i++) {
             for(int j = row - 1; j <= row + 1; j++) {
                 if(i >= 0 && i <board.width && j >= 0 && j < board.height) {
-                    if(board.AllDots[i, j] != null)
+                    if(board.AllDots[i, j])
                     {
                         if (board.AllDots[i, j].TryGetComponent(out Dot dot))
                         {
@@ -152,7 +150,7 @@ public class FindMatches : MonoBehaviour
     // all column dots
     private void GetColumnDots(int column) {
         for (int row = 0; row < board.height; row++) {
-            if(board.AllDots[column, row] != null) {
+            if(board.AllDots[column, row]) {
                 if (board.AllDots[column, row].TryGetComponent(out Dot dot))
                 {
                     if(dot.isRowBomb)
@@ -172,7 +170,7 @@ public class FindMatches : MonoBehaviour
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
                 // check if that dot exists
-                if(board.AllDots[column, row] != null) {
+                if(board.AllDots[column, row]) {
                     // check the tag on that piece
                     if(board.AllDots[column, row].CompareTag(color)) {
                         // set that piece to be matched
@@ -188,7 +186,7 @@ public class FindMatches : MonoBehaviour
 
     private void GetRowDots(int row) {
         for (int column = 0; column < board.width; column++) {
-            if(board.AllDots[column, row] != null) {
+            if(board.AllDots[column, row]) {
                 if (board.AllDots[column, row].TryGetComponent(out Dot dot))
                 {
                     if(dot.isColumnBomb)
@@ -218,7 +216,7 @@ public class FindMatches : MonoBehaviour
                     board.currentDot.MakeColumnBomb();
                 }
             }
-            else if(board.currentDot.otherDotGo != null) {
+            else if(board.currentDot.otherDotGo) {
                 if (board.currentDot.otherDotGo.TryGetComponent(out Dot otherDot))
                 {
                     if(otherDot.isMatched && otherDot.CompareTag(matchType.color)) {
@@ -233,7 +231,6 @@ public class FindMatches : MonoBehaviour
                         otherDot.MakeColumnBomb();
                     }
                 }
-                
             }
         }
     }

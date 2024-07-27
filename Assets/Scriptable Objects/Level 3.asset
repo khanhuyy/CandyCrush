@@ -12,22 +12,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88823f78b65673348b31d8263ce1707c, type: 3}
   m_Name: Level 3
   m_EditorClassIdentifier: 
-  width: 4
-  height: 4
-  boardLayout: []
+  width: 7
+  height: 6
+  boardLayout:
+  - x: 0
+    y: 0
+    tileKind: 2
+  - x: 2
+    y: 0
+    tileKind: 0
+  - x: 4
+    y: 0
+    tileKind: 0
+  - x: 6
+    y: 0
+    tileKind: 2
+  - x: 1
+    y: 1
+    tileKind: 0
+  - x: 3
+    y: 1
+    tileKind: 0
+  - x: 5
+    y: 1
+    tileKind: 0
+  - x: 0
+    y: 2
+    tileKind: 0
+  - x: 3
+    y: 2
+    tileKind: 0
+  - x: 2
+    y: 3
+    tileKind: 0
+  - x: 3
+    y: 3
+    tileKind: 0
+  - x: 4
+    y: 3
+    tileKind: 0
+  - x: 0
+    y: 4
+    tileKind: 2
+  - x: 2
+    y: 4
+    tileKind: 0
+  - x: 3
+    y: 4
+    tileKind: 0
+  - x: 4
+    y: 4
+    tileKind: 0
+  - x: 6
+    y: 4
+    tileKind: 0
+  - x: 0
+    y: 5
+    tileKind: 2
+  - x: 3
+    y: 5
+    tileKind: 0
+  - x: 6
+    y: 5
+    tileKind: 2
   dots:
-  - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
+  - {fileID: 8197473084841504685, guid: e40a5e01f8692834680af69fd41d0e92, type: 3}
   - {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
-  scoreGoals: 8c13000090dc0100400d0300
+  - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
+  - {fileID: 8197473084841504685, guid: d562efe84edd1984285461d34f9fe7e0, type: 3}
+  scoreGoals: 10270000204e000030750000
   endGameRequirements:
     gameType: 0
-    counterValue: 100
+    counterValue: 21
   levelGoals:
-  - numberNeeded: 60
-    numberCollected: 0
-    goalSprite: {fileID: 1183976804, guid: 2cf36467347dcca42bc8c69ea7977376, type: 3}
-    matchValue: Red
-  - numberNeeded: 60
-    numberCollected: 0
-    goalSprite: {fileID: -1129035529, guid: 2cf36467347dcca42bc8c69ea7977376, type: 3}
-    matchValue: Yellow
+  - numberNeeded: 6
+    numberCollected: 7
+    goalSprite: {fileID: 21300000, guid: 8705d6125a0825140a75f5e92aab7e5b, type: 3}
+    matchValue: Direct Bomb

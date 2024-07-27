@@ -31,11 +31,10 @@ public class EndGameManager : MonoBehaviour
     void Start()
     {
         board = FindObjectOfType<Board>();
-        SetGameType();
         SetupGame();
     }
-
-    void SetGameType()
+    
+    public void SetupGame()
     {
         if (board.world != null)
         {
@@ -44,10 +43,6 @@ public class EndGameManager : MonoBehaviour
                 requirements = board.world.levels[board.level].endGameRequirements;
             }
         }
-    }
-    
-    void SetupGame()
-    {
         currentCounterValue = requirements.counterValue;
         if(requirements.gameType == GameType.Moves)
         {
@@ -72,8 +67,7 @@ public class EndGameManager : MonoBehaviour
             {
                 LoseGame();
             }
-        } 
-        // Do something
+        }
     }
 
     public void WinGame()

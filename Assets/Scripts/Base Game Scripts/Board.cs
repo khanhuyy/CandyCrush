@@ -70,8 +70,9 @@ public class Board : MonoBehaviour
     private BackgroundTile[,] frostingTiles; // ~ frosting tile in candy crush
     
     [Header("Scene Splitter Object")]
+    [SerializeField] private CameraScalar cameraScalar;
     [SerializeField] private GameObject backgroundTilesContainer;
-    [SerializeField] private GameObject dotsContainer;
+    public GameObject dotsContainer;
     [SerializeField] private GameObject frostingTilesContainer;
     
     
@@ -87,10 +88,22 @@ public class Board : MonoBehaviour
     public float refillDelay = 0.5f;
     public int[] scoreGoals;
     private bool makeSlime = true;
-
-    private String checkFunc = "Not call yet";
     
     private void Awake()
+    {
+        Reset();
+    }
+
+    #region "Helper"
+
+    // check blocker tiles
+    private bool IsMovable(int column, int row)
+    {
+        return !frostingTiles[column, row] && !blankSpaces[column, row] && !concreteTiles[column, row] &&
+               !slimeTiles[column, row];
+    }
+
+    public void Reset()
     {
         if (PlayerPrefs.HasKey("Current Level"))
         {
@@ -107,10 +120,6 @@ public class Board : MonoBehaviour
                 boardLayout = world.levels[level].boardLayout;
             }
         }
-    }
-    
-    void Start()
-    {
         goalManager = FindObjectOfType<GoalManager>();
         soundManager = FindObjectOfType<SoundManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
@@ -123,21 +132,12 @@ public class Board : MonoBehaviour
         blankSpaces = new bool[width, height];  
         AllDots = new GameObject[width, height]; 
         Setup(); 
+        // cameraScalar.RepositionCamera();
         currentState = GameState.Pause;
     }
 
-    #region "Helper"
-
-    // check blocker tiles
-    private bool IsMovable(int column, int row)
-    {
-        return !frostingTiles[column, row] && !blankSpaces[column, row] && !concreteTiles[column, row] &&
-               !slimeTiles[column, row];
-    }
-    
-
     #endregion
-
+    
     #region "Special tiles generator"
     public void GenerateBlankSpace() {
         for (int i = 0; i < boardLayout.Length; i++) {
@@ -446,7 +446,7 @@ public class Board : MonoBehaviour
         if(AllDots[column, row].TryGetComponent(out Dot destroyDot) && destroyDot.isMatched)
         {
             // check if tile is bounded jelly
-            if(breakableTiles[column, row] != null)
+            if(breakableTiles[column, row])
             {
                 breakableTiles[column, row].TakeDamage(1);
                 if(breakableTiles[column, row].hitPoints <= 0)
@@ -454,7 +454,7 @@ public class Board : MonoBehaviour
                     breakableTiles[column, row] = null;
                 }
             }
-            if(LockTiles[column, row] != null)
+            if(LockTiles[column, row])
             {
                 LockTiles[column, row].TakeDamage(1);
                 if(LockTiles[column, row].hitPoints <= 0)
@@ -464,12 +464,12 @@ public class Board : MonoBehaviour
             }
             DamageBlocker(column, row);
             
-            if(goalManager != null)
+            if(goalManager)
             {
-                goalManager.CompareGoal(AllDots[column, row].tag);
+                goalManager.CompareGoal(destroyDot.gameObject.tag, destroyDot.isAdjacentBomb, destroyDot.isColumnBomb || destroyDot.isRowBomb);
                 goalManager.UpdateGoals();
             }
-            if(soundManager != null)
+            if(soundManager)
             {
                 soundManager.PlayRandomDestroyNoise();
             }
@@ -661,18 +661,19 @@ public class Board : MonoBehaviour
     private IEnumerator DecreaseRowCo2() {
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
+                // todo fix not allow row down if row has frosting
                 // if the current spot isn't blank and is empty. . .
-                if(AllDots[column, row] == null && IsMovable(column, row)) {
-                    for(int k = row + 1; k < height; k++) {
+                if(!AllDots[column, row] && IsMovable(column, row)) {
+                    for(int aboveRow = row + 1; aboveRow < height; aboveRow++) {
                         // if a dot is found
-                        if (AllDots[column, k] != null) {
+                        if (AllDots[column, aboveRow]) {
                             // move this dot to this empty space
-                            if (AllDots[column, k].TryGetComponent(out Dot dot))
+                            if (AllDots[column, aboveRow].TryGetComponent(out Dot dot))
                             {
                                 dot.row = row;
                             }
                             // set that spot to be null
-                            AllDots[column, k] = null;
+                            AllDots[column, aboveRow] = null;
                             // break out of the loop;
                             break;
                         }
@@ -682,7 +683,6 @@ public class Board : MonoBehaviour
         }
         yield return new WaitForSeconds(refillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
-        Debug.Log(findMatches.currentMatches.Count);
     }
 
     // Delete and row down if board has matches
@@ -733,17 +733,10 @@ public class Board : MonoBehaviour
     }
 
     private bool MatchesOnBoard() {
-        Debug.Log(checkFunc);
         findMatches.FindAllMatches();
-        Debug.Log(findMatches.currentMatches.Count());
-        // if (findMatches.currentMatches.Count > 0)
-        // {
-        //     return true;
-        // }
-        Debug.Log(findMatches.currentMatches.Count);
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                if(AllDots[column, row] != null) {
+                if(AllDots[column, row]) {
                     if(AllDots[column, row].TryGetComponent(out Dot dot) && dot.isMatched) {
                         return true;
                     }
@@ -757,11 +750,9 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(refillDelay);
         RefillBoard();
         yield return new WaitForSeconds(refillDelay);
-        // problem is here
-        checkFunc = "From Fill Board Co";
+        // has problem here
         while(MatchesOnBoard())
         {
-            checkFunc = "In loop";
             streakValue ++;
             DestroyMatches();
             yield break;
@@ -772,7 +763,7 @@ public class Board : MonoBehaviour
             StartCoroutine(ShuffleBoard());
         }
         yield return new WaitForSeconds(refillDelay);
-        // GC.Collect();
+        GC.Collect();
         if (currentState != GameState.Pause)
         {
             currentState = GameState.Move;
@@ -787,9 +778,8 @@ public class Board : MonoBehaviour
         {
             for (int row = 0; row < height; row++)
             {
-                if (slimeTiles[column, row] != null && makeSlime)
+                if (slimeTiles[column, row] && makeSlime)
                 {
-                    // call sub method 
                     MakeNewSlime();
                     makeSlime = false;
                 }
@@ -834,8 +824,11 @@ public class Board : MonoBehaviour
                 {
                     Destroy(AllDots[newColumn + (int)adjacent.x, newRow + (int)adjacent.y]);
                     Vector2 tempPosition = new Vector2(newColumn + (int)adjacent.x, newRow + (int)adjacent.y);
-                    GameObject tile = Instantiate(slimePrefab, tempPosition, Quaternion.identity);
-                    slimeTiles[newColumn + (int)adjacent.x, newRow + (int)adjacent.y] = tile.GetComponent<BackgroundTile>();
+                    if (Instantiate(slimePrefab, tempPosition, Quaternion.identity)
+                        .TryGetComponent(out BackgroundTile newSlimeTile))
+                    {
+                        slimeTiles[newColumn + (int)adjacent.x, newRow + (int)adjacent.y] = newSlimeTile;
+                    }
                     slime = true;
                 }
             }

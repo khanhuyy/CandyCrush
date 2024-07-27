@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager instance;
+    public static GameManager instance;
     public bool levelSelectPanelIsActive;
     public bool dashboardPanelIsActive;
     public bool confirmPlayPanelIsActive;
@@ -14,14 +14,13 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
             instance = this;
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        // else
+        // {
+        //     Destroy(this.gameObject);
+        // }
     }
 
     #region "Scene state"
-
     public void ToSplashHomePanel()
     {
         levelSelectPanelIsActive = false;

@@ -31,15 +31,17 @@ public class Dot : MonoBehaviour
     public float swipeAngle;
     public float swipeResist = 1f; // swipe distance must greater than 1
 
-    [Header("Power Up Stuff")]
+    [Header("Power Up Stuff And Animation")] 
+    [SerializeField] private SpriteRenderer spriteRenderer;
     public bool isColorBomb; // 5 similar in row or column
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
     public bool isAdjacentBomb; // L shape, 3 length in both coordinate
-    public GameObject rowArrow;
-    public GameObject columnArrow;
-    public GameObject colorBomb;
-    public GameObject adjacentMarker;
+    [SerializeField] private Sprite rowBombSprite;
+    [SerializeField] private Sprite columnBombSprite;
+    [SerializeField] private Sprite areaBombSprite;
+    [SerializeField] private GameObject colorBombPrefab;
+    
     void Start()
     {
         camera = Camera.main;
@@ -52,26 +54,23 @@ public class Dot : MonoBehaviour
         endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
-        findMatches = FindObjectOfType<FindMatches>();    
-        // targetX = (int) transform.position.x;
-        // targetY = (int) transform.position.y;
-        // column = targetX;
-        // row = targetY;
-        // previousColumn = column;
-        // previousRow = row;
+        findMatches = FindObjectOfType<FindMatches>();   
     }
 
     // for testing and debug
     private void OnMouseOver() {
         if(Input.GetMouseButtonDown(1)) {
-            isColorBomb = true;
-            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
+            MakeColorBomb();
         }
     }
 
 
     void Update()
     {
+        if (CompareTag("Color"))
+        {
+            isColorBomb = true;
+        }
         targetX = column;
         targetY = row;
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
@@ -114,7 +113,7 @@ public class Dot : MonoBehaviour
             isMatched = true;
         } else if(otherDotGo.TryGetComponent(out Dot otherDot) && otherDot.isColorBomb) {
             // other piece is color bomb
-            findMatches.MatchDotsOfColor(this.gameObject.tag);
+            findMatches.MatchDotsOfColor(gameObject.tag);
             otherDot.isMatched = true;
         }
         yield return new WaitForSeconds(0.5f);
@@ -226,8 +225,7 @@ public class Dot : MonoBehaviour
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
             isRowBomb = true;
-            Instantiate(rowArrow, transform.position, Quaternion.identity, transform);
-
+            spriteRenderer.sprite = rowBombSprite;
         }
     }
 
@@ -235,16 +233,25 @@ public class Dot : MonoBehaviour
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
             isColumnBomb = true;
-            Instantiate(columnArrow, transform.position, Quaternion.identity, transform);
+            spriteRenderer.sprite = columnBombSprite;
         }
     }
 
     public void MakeColorBomb() {
         if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
         {
-            isColorBomb = true;
-            Instantiate(colorBomb, transform.position, Quaternion.identity, this.transform);
-            gameObject.tag = "Color";
+            if (Instantiate(colorBombPrefab, transform.position, Quaternion.identity, board.dotsContainer.transform).TryGetComponent(out Dot colorBomb))
+            {
+                colorBomb.column = column;
+                colorBomb.row = row;
+                colorBomb.targetX = targetX;
+                colorBomb.targetY = targetY;
+                colorBomb.previousColumn = previousColumn;
+                colorBomb.previousRow = previousRow;
+                colorBomb.isColorBomb = true;
+                Destroy(board.AllDots[column, row]);
+                board.AllDots[column, row] = colorBomb.gameObject;
+            }
         }
     }
 
@@ -252,8 +259,7 @@ public class Dot : MonoBehaviour
         if (!isColumnBomb && !isRowBomb && !isColorBomb)
         {
             isAdjacentBomb = true;
-            Instantiate(adjacentMarker, transform.position, Quaternion.identity, this.transform);
+            spriteRenderer.sprite = areaBombSprite;
         }
-        
     }
 }

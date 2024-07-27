@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraScalar : MonoBehaviour
 {
-    private Board board;
+    [SerializeField] private Board board;
     [SerializeField] private float cameraOffset;
     [SerializeField] private float aspectRatio;
     [SerializeField] private float padding;
@@ -10,13 +10,12 @@ public class CameraScalar : MonoBehaviour
     
     void Start()
     {
-        board = FindObjectOfType<Board>();
         if(board != null) {
             RepositionCamera(board.width - 1, board.height - 1);
         }    
     }
 
-    void RepositionCamera(float x, float y)
+    public void RepositionCamera(float x, float y)
     {
         Vector3 tempPosition = new Vector3(x / 2, y / 2 + yOffset, cameraOffset);
         transform.position = tempPosition;

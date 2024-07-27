@@ -33,7 +33,7 @@ public class ScoreManager : MonoBehaviour
                 numberStars++;
             }
         }
-        if (gameData != null)
+        if (gameData)
         {
             int highScore = gameData.saveData.highScores[board.level];
             if (score > highScore)
@@ -53,7 +53,7 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateBar()
     {
-        if(board != null && scoreBar != null)
+        if(board && scoreBar)
         {
             int length = board.scoreGoals.Length;
             scoreBar.fillAmount = (float)score/board.scoreGoals[length - 1];

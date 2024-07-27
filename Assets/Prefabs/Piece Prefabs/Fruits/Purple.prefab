@@ -106,15 +106,20 @@ MonoBehaviour:
   targetY: 0
   isMatched: 0
   otherDotGo: {fileID: 0}
+  isSolving: 0
   swipeAngle: 0
   swipeResist: 1
-  isColorBomb: 0
+  spriteRenderer: {fileID: 6395136280328262315}
+  isColorBomb: 1
   isColumnBomb: 0
   isRowBomb: 0
   isAdjacentBomb: 0
+  rowBombSprite: {fileID: 21300000, guid: 00892d8ef27ff734fb5f461ef8ee60d8, type: 3}
+  columnBombSprite: {fileID: 21300000, guid: 95bf636e8b923c04383cc4ea9aa4f9c7, type: 3}
+  areaBombSprite: {fileID: 21300000, guid: d1f733e925d4aea4abdc005941607980, type: 3}
   rowArrow: {fileID: 3295156975526245475, guid: 1eee38e0398e67141b70de2307f92ee3, type: 3}
   columnArrow: {fileID: 5841795449247314045, guid: 475cd40f139f5964396fde8690f3f4cb, type: 3}
-  colorBomb: {fileID: 648130534546897170, guid: 2f2c928fc82378b428596593a5cb25d1, type: 3}
+  colorBombPrefab: {fileID: 648130534546897170, guid: 2f2c928fc82378b428596593a5cb25d1, type: 3}
   adjacentMarker: {fileID: 5515958249895773246, guid: c02517ff98d29064284696d7abe14a83, type: 3}
 --- !u!61 &4788827268476459279
 BoxCollider2D:

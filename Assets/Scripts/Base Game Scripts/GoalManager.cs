@@ -60,6 +60,7 @@ public class GoalManager : MonoBehaviour
     }
 
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void UpdateGoals()
     {
         int goalsCompleted = 0;
@@ -74,18 +75,22 @@ public class GoalManager : MonoBehaviour
         }
         if(goalsCompleted >= levelGoals.Length)
         {
-            if(endGame != null)
+            if(endGame)
             {
                 endGame.WinGame();
             }
-            Debug.Log("You win!");
         }
     }
 
-    public void CompareGoal(string goalToCompare)
+    public void CompareGoal(string goalToCompare, bool isAreaBomb, bool isDirectBomb)
     {
         foreach (var levelGoal in levelGoals)
         {
+            // todo refactor, this will check dot special bomb
+            if ((levelGoal.matchValue == "Direct Bomb" && isDirectBomb) || (levelGoal.matchValue == "Area Bomb" && isAreaBomb))
+            {
+                levelGoal.numberCollected++;
+            }
             if(goalToCompare == levelGoal.matchValue)
             {
                 levelGoal.numberCollected++;

@@ -71,7 +71,7 @@ public class Board : MonoBehaviour
     
     [Header("Scene Splitter Object")]
     [SerializeField] private GameObject backgroundTilesContainer;
-    [SerializeField] private GameObject dotsContainer;
+    public GameObject dotsContainer;
     [SerializeField] private GameObject frostingTilesContainer;
     
     

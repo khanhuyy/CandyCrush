@@ -1,26 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SplashSceneManager : MonoBehaviour
 {
-    [SerializeField] private GameManager gameManager;
-    
-    [SerializeField] private GameObject levelSelectPanel;
-    [SerializeField] private GameObject dashboardPanel;
-    [SerializeField] private GameObject confirmPlayPanel;
+    public GameObject startPanel;
 
-    private void OnEnable()
+    public GameObject levelPanel;
+    
+    // Start is called before the first frame update
+    void Start()
     {
-        gameManager = FindObjectOfType<GameManager>();
+        startPanel.SetActive(true);
+        levelPanel.SetActive(false);
     }
 
-    // todo refactor
-    private void Update()
+    public void PlayGame()
     {
-        levelSelectPanel.SetActive(gameManager.levelSelectPanelIsActive);
-        dashboardPanel.SetActive(gameManager.dashboardPanelIsActive);
-        confirmPlayPanel.SetActive(gameManager.confirmPlayPanelIsActive);
+        startPanel.SetActive(false);
+        levelPanel.SetActive(true);
+    }
+
+    public void Home()
+    {
+        startPanel.SetActive(true);
+        levelPanel.SetActive(false);
     }
 }

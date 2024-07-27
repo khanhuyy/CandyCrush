@@ -90,8 +90,6 @@ public class LevelButton : MonoBehaviour
         {
             script.level = level;
         }
-
-        gameManager.confirmPlayPanelIsActive = true;
-        // confirmPanel.SetActive(true);
+        confirmPanel.SetActive(true);
     }
 }

@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7982,10 +7983,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02cdb07ece8d5e5bf95c7fe70450e637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 424566649}
-  levelSelectPanel: {fileID: 497038367}
-  dashboardPanel: {fileID: 1103779180}
-  confirmPlayPanel: {fileID: 80326565}
+  startPanel: {fileID: 1103779180}
+  levelPanel: {fileID: 497038367}
 --- !u!1 &917120455
 GameObject:
   m_ObjectHideFlags: 0

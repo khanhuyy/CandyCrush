@@ -1,25 +1,39 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
+
+    public GameObject backgroundPanel;
+    public GameObject victoryPanel;
+    public GameObject losePanel;
+
+    public int goal;
+    public int moves;
+    public int points;
+
+    public bool isGameEnded;
+    
     public bool levelSelectPanelIsActive;
     public bool dashboardPanelIsActive;
     public bool confirmPlayPanelIsActive;
     
     void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
             DontDestroyOnLoad(this.gameObject);
-            instance = this;
+            Instance = this;
         }
-        // else
-        // {
-        //     Destroy(this.gameObject);
-        // }
     }
 
+    public void Initialize(int _moves, int _goal)
+    {
+        moves = _moves;
+        goal = _goal;
+    }
+    
     #region "Scene state"
     public void ToSplashHomePanel()
     {
@@ -35,4 +49,15 @@ public class GameManager : MonoBehaviour
         dashboardPanelIsActive = false;
     }
     #endregion
+
+    public void ProcessTurn(int count, bool _substractMoves)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void Update()
+    {
+        
+        
+    }
 }

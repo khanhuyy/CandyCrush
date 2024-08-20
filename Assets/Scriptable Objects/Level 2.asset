@@ -100,16 +100,14 @@ MonoBehaviour:
     y: 4
     tileKind: 0
   dots:
-  - {fileID: 8197473084841504685, guid: e40a5e01f8692834680af69fd41d0e92, type: 3}
   - {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
-  - {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
-  - {fileID: 8197473084841504685, guid: d562efe84edd1984285461d34f9fe7e0, type: 3}
+  - {fileID: 8197473084841504685, guid: e40a5e01f8692834680af69fd41d0e92, type: 3}
   scoreGoals: 10270000204e000030750000
   endGameRequirements:
     gameType: 0
     counterValue: 22
   levelGoals:
   - numberNeeded: 28
-    numberCollected: 1
+    numberCollected: 0
     goalSprite: {fileID: 21300000, guid: 2981dc6903f420c479d17c657c3b0a87, type: 3}
     matchValue: Frosting

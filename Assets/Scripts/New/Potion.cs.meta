@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3cfcceee06774580837adaa77fbafdd4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - rowBomArrow: {instanceID: 0}
+  - columnBomArrow: {instanceID: 0}
+  - areaBombSprite: {instanceID: 0}
+  - colorBombSprite: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

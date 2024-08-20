@@ -3,14 +3,14 @@ using UnityEngine;
 public class BackgroundTile : MonoBehaviour
 {
     public int hitPoints;
-    private SpriteRenderer sprite;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     private GoalManager goalManager;
     public GameObject[] dots;
+    public Sprite[] backgroundSprites;
     
     void Start()
     {
         goalManager = FindObjectOfType<GoalManager>();
-        sprite = GetComponent<SpriteRenderer>();
         Initalize();
     }
     
@@ -30,14 +30,14 @@ public class BackgroundTile : MonoBehaviour
     public void TakeDamage(int damage)
     {
         hitPoints -= damage;
-        MakeLighter();
+        // MakeLighter();
     }
 
     void MakeLighter()
     {
-        Vector4 color = sprite.color;
+        Vector4 color = spriteRenderer.color;
         float newAlpha = color.w * 0.5f;
-        sprite.color = new Vector4(color.x, color.y, color.z, newAlpha);
+        spriteRenderer.color = new Vector4(color.x, color.y, color.z, newAlpha);
     }
 
     void Initalize() {
@@ -45,5 +45,15 @@ public class BackgroundTile : MonoBehaviour
         // GameObject dot = Instantiate(dots[dotToUse], transform.position, Quaternion.identity);
         // dot.transform.parent = this.transform;
         // dot.name = this.gameObject.name;
+    }
+
+    public void UseFirstSprite()
+    {
+        spriteRenderer.sprite = backgroundSprites[0];
+    }
+    
+    public void UseSecondSprite()
+    {
+        spriteRenderer.sprite = backgroundSprites[1];
     }
 }

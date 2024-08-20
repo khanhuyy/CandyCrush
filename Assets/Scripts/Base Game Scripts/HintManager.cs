@@ -33,7 +33,7 @@ public class HintManager : MonoBehaviour
         {
             for (int row = 0; row < board.height; row++)
             {
-                if(board.AllDots[column, row] != null)
+                if(board.AllDots[column, row])
                 {
                     if(column < board.width - 1)
                     {

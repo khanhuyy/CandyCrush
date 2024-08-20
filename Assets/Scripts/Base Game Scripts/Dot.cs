@@ -37,8 +37,8 @@ public class Dot : MonoBehaviour
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
     public bool isAdjacentBomb; // L shape, 3 length in both coordinate
-    [SerializeField] private Sprite rowBombSprite;
-    [SerializeField] private Sprite columnBombSprite;
+    [SerializeField] private GameObject rowBombPrefab;
+    [SerializeField] private GameObject columnBombPrefab;
     [SerializeField] private Sprite areaBombSprite;
     [SerializeField] private GameObject colorBombPrefab;
     
@@ -139,27 +139,27 @@ public class Dot : MonoBehaviour
         }
     }
 
-    private void OnMouseDown() {
-        if(hintManager != null)
-        {
-            hintManager.DestroyHint();
-        }
-        if(board.currentState == GameState.Move) {
-            firstTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-        }
-    }
-    
-    private void OnMouseUp() {
-        if(hintManager != null)
-        {
-            hintManager.DestroyHint();
-        }
-        if(board.currentState == GameState.Move) 
-        {
-            finalTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-            CalculateAngle();
-        }
-    }
+    // private void OnMouseDown() {
+    //     if(hintManager != null)
+    //     {
+    //         hintManager.DestroyHint();
+    //     }
+    //     if(board.currentState == GameState.Move) {
+    //         firstTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+    //     }
+    // }
+    //
+    // private void OnMouseUp() {
+    //     if(hintManager != null)
+    //     {
+    //         hintManager.DestroyHint();
+    //     }
+    //     if(board.currentState == GameState.Move) 
+    //     {
+    //         finalTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+    //         CalculateAngle();
+    //     }
+    // }
 
     void CalculateAngle() {
         // swipe angle range right, top, left, bottom are 315 - 45, 45 - 135, 135 - 225, 225 - 315
@@ -225,7 +225,7 @@ public class Dot : MonoBehaviour
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
             isRowBomb = true;
-            spriteRenderer.sprite = rowBombSprite;
+            rowBombPrefab.SetActive(true);
         }
     }
 
@@ -233,7 +233,7 @@ public class Dot : MonoBehaviour
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
             isColumnBomb = true;
-            spriteRenderer.sprite = columnBombSprite;
+            columnBombPrefab.SetActive(true);
         }
     }
 

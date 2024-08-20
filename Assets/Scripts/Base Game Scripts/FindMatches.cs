@@ -84,6 +84,7 @@ public class FindMatches : MonoBehaviour
         AddToListAndMatch(dot1);
         AddToListAndMatch(dot2);
         AddToListAndMatch(dot3);
+        Debug.Log(currentMatches.Count);
     }
 
     private IEnumerator FindAllMatchesCo() {
@@ -91,37 +92,40 @@ public class FindMatches : MonoBehaviour
         // todo more test
         for (int column = 0; column < board.width; column++) {
             for (int row = 0; row < board.height; row++) {
-                GameObject currentDotObject = board.AllDots[column, row];
-                if(currentDotObject) {
-                    Dot currentDot = currentDotObject.GetComponent<Dot>();
-                    if(column > 0 && column < board.width - 1) {
-                        GameObject leftDotObject = board.AllDots[column - 1, row];
-                        GameObject rightDotObject = board.AllDots[column + 1, row];
-                        if(leftDotObject && rightDotObject) {
-                            Dot leftDot = leftDotObject.GetComponent<Dot>();
-                            Dot rightDot = rightDotObject.GetComponent<Dot>();
-                            if(leftDotObject.CompareTag(currentDotObject.tag) && rightDotObject.CompareTag(currentDotObject.tag))
+                if(board.AllDots[column, row]) {
+                    if (board.AllDots[column, row].TryGetComponent(out Dot currentDot))
+                    {
+                        if (column > 0 && column < board.width - 1) {
+                            if (board.AllDots[column - 1, row] && board.AllDots[column + 1, row])
                             {
-                                IsRowBomb(leftDot, currentDot, rightDot);
-                                IsColumnBomb(leftDot, currentDot, rightDot);
-                                IsAdjacentBomb(leftDot, currentDot, rightDot);
-                                MatchNearbyPieces(leftDotObject, currentDotObject, rightDotObject);
+                                if (board.AllDots[column - 1, row].TryGetComponent(out Dot leftDot) &&
+                                    board.AllDots[column + 1, row].TryGetComponent(out Dot rightDot))
+                                {
+                                    if (leftDot.CompareTag(currentDot.tag) && rightDot.CompareTag(currentDot.tag))
+                                    {
+                                        IsRowBomb(leftDot, currentDot, rightDot);
+                                        IsColumnBomb(leftDot, currentDot, rightDot);
+                                        IsAdjacentBomb(leftDot, currentDot, rightDot);
+                                        MatchNearbyPieces(leftDot.gameObject, currentDot.gameObject,
+                                            rightDot.gameObject);
+                                    }
+                                }
                             }
                         }
-                    }
-
-                    if(row > 0 && row < board.height - 1) {
-                        GameObject upDotGo = board.AllDots[column, row + 1];
-                        GameObject downDotGo = board.AllDots[column, row - 1];
-                        if(upDotGo && downDotGo) {
-                            Dot upDot = upDotGo.GetComponent<Dot>();
-                            Dot downDot = downDotGo.GetComponent<Dot>();
-                            if(upDotGo.CompareTag(currentDotObject.tag) && downDotGo.CompareTag(currentDotObject.tag))
+                        if(row > 0 && row < board.height - 1) {
+                            if (board.AllDots[column, row - 1] && board.AllDots[column, row + 1])
                             {
-                                IsRowBomb(downDot, currentDot, upDot);
-                                IsColumnBomb(downDot, currentDot, upDot);
-                                IsAdjacentBomb(downDot, currentDot, upDot);
-                                MatchNearbyPieces(downDotGo, currentDotObject, upDotGo);
+                                if (board.AllDots[column, row - 1].TryGetComponent(out Dot downDot) &&
+                                    board.AllDots[column, row + 1].TryGetComponent(out Dot upDot))
+                                {
+                                    if (upDot.CompareTag(currentDot.tag) && downDot.CompareTag(currentDot.tag))
+                                    {
+                                        IsRowBomb(downDot, currentDot, upDot);
+                                        IsColumnBomb(downDot, currentDot, upDot);
+                                        IsAdjacentBomb(downDot, currentDot, upDot);
+                                        MatchNearbyPieces(downDot.gameObject, currentDot.gameObject, upDot.gameObject);
+                                    }
+                                }
                             }
                         }
                     }

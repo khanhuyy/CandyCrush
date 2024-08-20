@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using SystemRandom = System.Random;
 
 public enum GameState {
     Wait,
@@ -85,13 +87,17 @@ public class Board : MonoBehaviour
     private ScoreManager scoreManager;
     private SoundManager soundManager;
     private GoalManager goalManager;
-    public float refillDelay = 0.5f;
+    private const float RefillDelay = 0.45f;
     public int[] scoreGoals;
     private bool makeSlime = true;
+
+    [Header("Free Refactor")] 
+    private List<int> distinctDotIndexes;
     
     private void Awake()
     {
         Reset();
+        currentState = GameState.Move;
     }
 
     #region "Helper"
@@ -101,6 +107,17 @@ public class Board : MonoBehaviour
     {
         return !frostingTiles[column, row] && !blankSpaces[column, row] && !concreteTiles[column, row] &&
                !slimeTiles[column, row];
+    }
+    
+    public IEnumerable<TKey> RandomValues<TKey, TValue>(IDictionary<TKey, TValue> dict)
+    {
+        SystemRandom rand = new SystemRandom();
+        List<TKey> values = Enumerable.ToList(dict.Keys);
+        int size = dict.Count;
+        while(true)
+        {
+            yield return values[rand.Next(size)];
+        }
     }
 
     public void Reset()
@@ -118,6 +135,15 @@ public class Board : MonoBehaviour
                 dots = world.levels[level].dots;
                 scoreGoals = world.levels[level].scoreGoals;
                 boardLayout = world.levels[level].boardLayout;
+                // refactor distinct dot to generate
+                // distinctDotIndexes = new List<int>();
+                // Debug.Log(distinctDotIndexes.Count);
+                // Debug.Log(dots.Length);
+                // for (int dot = 0; dot < dots.Length; dot++)
+                // {
+                //     distinctDotIndexes.Add(dot);
+                // }
+                // Debug.Log(distinctDotIndexes.Count);
             }
         }
         goalManager = FindObjectOfType<GoalManager>();
@@ -212,12 +238,12 @@ public class Board : MonoBehaviour
     #endregion
 
     private void Setup() {
-        GenerateFrostingTiles();
-        GenerateBlankSpace();
-        GenerateBreakableTiles();
-        GenerateLockTiles();
-        GenerateConcreteTiles();
-        GenerateSlimeTiles();
+        // GenerateFrostingTiles();
+        // GenerateBlankSpace();
+        // GenerateBreakableTiles();
+        // GenerateLockTiles();
+        // GenerateConcreteTiles();
+        // GenerateSlimeTiles();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if (!blankSpaces[column, row])
@@ -227,20 +253,13 @@ public class Board : MonoBehaviour
                     backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
                 }
                 if(IsMovable(column, row)) {
-                    Vector2 dotPosition = new Vector2(column, row);
-                    int dotToUse = Random.Range(0, dots.Length);
-                    int maxIterations = 0;
-                    // todo refactor this, board still has bug when dots is too few
-                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterations < 200) {
-                        dotToUse = Random.Range(0, dots.Length);
-                        maxIterations++;
-                    }
-                    // Debug.Log(maxIterations);
-                    GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, dotsContainer.transform);
-                    dot.GetComponent<Dot>().column = column;
-                    dot.GetComponent<Dot>().row = row;
-                    dot.name = dot.tag + "(" + column + ", " + row + ")";
-                    AllDots[column, row] = dot;
+                    // Vector2 dotPosition = new Vector2(column, row);
+                    GenerateSingleDot(column, row);
+                    // GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, dotsContainer.transform);
+                    // dot.GetComponent<Dot>().column = column;
+                    // dot.GetComponent<Dot>().row = row;
+                    // dot.name = dot.tag + "(" + column + ", " + row + ")";
+                    // AllDots[column, row] = dot;
                 }
             }
         }
@@ -250,29 +269,63 @@ public class Board : MonoBehaviour
         }
     }
 
+    private void GenerateSingleDot(int column, int row)
+    {
+        int dotToUse = Random.Range(0, dots.Length);
+        Dictionary<int, bool> usedDotDict = new Dictionary<int, bool>();
+        List<int> notUseYet = new List<int>();
+        for (int i = 0; i < dots.Length; i++)
+        {
+            notUseYet.Add(i);
+        }
+        // todo refactor this, board still has bug when dots is too few
+        while(MatchesAt(column, row, dots[dotToUse]))
+        {
+            while (usedDotDict.ContainsKey(dotToUse))
+            {
+                notUseYet.Remove(dotToUse);
+                if (notUseYet.Count == 0) break;
+                // Debug.Log(column + ", " + row);
+                // Debug.Log(notUseYet.Count);
+                dotToUse = notUseYet[Random.Range(0, notUseYet.Count)];
+            }
+            if (notUseYet.Count == 0) break;
+            usedDotDict[dotToUse] = true;
+        }
+        Vector2 dotPosition = new Vector2(column, row);
+        if (Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, dotsContainer.transform)
+            .TryGetComponent(out Dot dot))
+        {
+            dot.column = column;
+            dot.row = row;
+            dot.name = dot.tag + "(" + column + ", " + row + ")";
+            AllDots[column, row] = dot.gameObject;
+        };
+    }
+
     private bool MatchesAt(int column, int row, GameObject dot) {
         if(column > 1 && row > 1) {
             if(AllDots[column - 1, row] && AllDots[column - 2, row]) {
-                if(AllDots[column - 1, row].CompareTag(dot.tag) || AllDots[column - 2, row].CompareTag(dot.tag)) {
+                if(AllDots[column - 1, row].CompareTag(dot.tag) && AllDots[column - 2, row].CompareTag(dot.tag)) {
                     return true;
                 }
             }
             if(AllDots[column, row - 1] && AllDots[column, row - 2]) {
-                if(AllDots[column, row - 1].CompareTag(dot.tag) || AllDots[column, row - 2].CompareTag(dot.tag)) {
+                if(AllDots[column, row - 1].CompareTag(dot.tag) && AllDots[column, row - 2].CompareTag(dot.tag)) {
                     return true;
                 }
             }
         } else if (column <= 1 || row <= 1) {
             if(column > 1) {
                 if(AllDots[column - 1, row] && AllDots[column - 2, row]) {
-                    if(AllDots[column - 1, row].CompareTag(dot.tag) || AllDots[column - 2, row].CompareTag(dot.tag)) {
+                    if(AllDots[column - 1, row].CompareTag(dot.tag) && AllDots[column - 2, row].CompareTag(dot.tag)) {
                         return true;
                     }
                 }
             }
             if(row > 1) {
                 if(AllDots[column, row - 1] && AllDots[column, row - 2]) {
-                    if(AllDots[column, row - 1].CompareTag(dot.tag) || AllDots[column, row - 2].CompareTag(dot.tag)) {
+                    if(AllDots[column, row - 1].CompareTag(dot.tag) && AllDots[column, row - 2].CompareTag(dot.tag)) {
                         return true;
                     }
                 }
@@ -682,7 +735,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        yield return new WaitForSeconds(refillDelay * 0.5f);
+        yield return new WaitForSeconds(RefillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
     }
 
@@ -703,55 +756,86 @@ public class Board : MonoBehaviour
             }
             totalNullRows = 0;
         }
-        yield return new WaitForSeconds(refillDelay * 0.5f);
+        yield return new WaitForSeconds(RefillDelay * 0.5f);
         StartCoroutine(FillBoardCo());
     }
 
     private void RefillBoard() {
-        for (int column = 0; column < width; column ++) {
+        for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                if (AllDots[column, row] == null && IsMovable(column, row))
+                if (!AllDots[column, row] && IsMovable(column, row))
                 {
-                    Vector2 tempPosition = new Vector2(column, row + rowOffSet);
-                    int dotToUse = Random.Range(0, dots.Length);
-                    int maxIterator = 100;
-                    while(MatchesAt(column, row, dots[dotToUse]) && maxIterator > 0)
-                    {
-                        dotToUse = Random.Range(0, dots.Length);
-                        maxIterator--;
-                    }
-                    // Debug.Log(maxIterator);
-                    if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, dotsContainer.transform)
-                        .TryGetComponent(out Dot dot))
-                    {
-                        AllDots[column, row] = dot.gameObject;
-                        dot.column = column;
-                        dot.row = row;
-                        dot.name = dot.tag + "(" + column + ", " + row + ")";
-                    }
+                    GenerateSingleDot(column, row);
+                    // int dotToUse = Random.Range(0, dots.Length);
+                    // Dictionary<int, bool> usedDotDict = new Dictionary<int, bool>();
+                    // List<int> notUseYet = new List<int>();
+                    // for (int i = 0; i < dots.Length; i++)
+                    // {
+                    //     notUseYet.Add(i);
+                    // }
+                    // // todo refactor this, board still has bug when dots is too few
+                    // while(MatchesAt(column, row, dots[dotToUse]))
+                    // {
+                    //     while (usedDotDict.ContainsKey(dotToUse) && notUseYet.Count > 0)
+                    //     {
+                    //         notUseYet.Remove(dotToUse);
+                    //         dotToUse = notUseYet[Random.Range(0, notUseYet.Count)];
+                    //     }
+                    //     usedDotDict[dotToUse] = true;
+                    // }
+                    // Vector2 dotPosition = new Vector2(column, row);
+                    // GameObject dot = Instantiate(dots[dotToUse], dotPosition, Quaternion.identity, dotsContainer.transform);
+                    // dot.GetComponent<Dot>().column = column;
+                    // dot.GetComponent<Dot>().row = row;
+                    // dot.name = dot.tag + "(" + column + ", " + row + ")";
+                    // AllDots[column, row] = dot;
+                    
+                    
+                    // Vector2 tempPosition = new Vector2(column, row + rowOffSet);
+                    // int dotToUse = Random.Range(0, dots.Length);
+                    // int maxIterator = 100;
+                    // while(MatchesAt(column, row, dots[dotToUse]) && maxIterator > 0)
+                    // {
+                    //     dotToUse = Random.Range(0, dots.Length);
+                    //     maxIterator--;
+                    // }
+                    // // Debug.Log(maxIterator);
+                    // if (Instantiate(dots[dotToUse], tempPosition, Quaternion.identity, dotsContainer.transform)
+                    //     .TryGetComponent(out Dot dot))
+                    // {
+                    //     AllDots[column, row] = dot.gameObject;
+                    //     dot.column = column;
+                    //     dot.row = row;
+                    //     dot.name = dot.tag + "(" + column + ", " + row + ")";
+                    // }
                 }
             }   
         }
     }
 
     private bool MatchesOnBoard() {
+        Debug.Log("From board");
         findMatches.FindAllMatches();
-        for (int column = 0; column < width; column++) {
-            for (int row = 0; row < height; row++) {
-                if(AllDots[column, row]) {
-                    if(AllDots[column, row].TryGetComponent(out Dot dot) && dot.isMatched) {
-                        return true;
-                    }
-                }
-            }
+        if (findMatches.currentMatches.Count > 0)
+        {
+            return true;
         }
+        // for (int column = 0; column < width; column++) {
+        //     for (int row = 0; row < height; row++) {
+        //         if(AllDots[column, row]) {
+        //             if(AllDots[column, row].TryGetComponent(out Dot dot) && dot.isMatched) {
+        //                 return true;
+        //             }
+        //         }
+        //     }
+        // }
         return false;
     }
 
     private IEnumerator FillBoardCo() {
-        yield return new WaitForSeconds(refillDelay);
+        yield return new WaitForSeconds(RefillDelay);
         RefillBoard();
-        yield return new WaitForSeconds(refillDelay);
+        yield return new WaitForSeconds(RefillDelay);
         // has problem here
         while(MatchesOnBoard())
         {
@@ -759,12 +843,13 @@ public class Board : MonoBehaviour
             DestroyMatches();
             yield break;
         }
+        // DestroyMatches();
         currentDot = null;
         CheckToMakeSlime();
         if(IsDeadlocked()) {
             StartCoroutine(ShuffleBoard());
         }
-        yield return new WaitForSeconds(refillDelay);
+        yield return new WaitForSeconds(RefillDelay);
         GC.Collect();
         if (currentState != GameState.Pause)
         {
@@ -951,7 +1036,6 @@ public class Board : MonoBehaviour
                 {
                     // pick a random number
                     int pieceToUse = Random.Range(0, newBoardTiles.Count);
-                    
                     int maxIterations = 0;
                     while(MatchesAt(column, row, newBoardTiles[pieceToUse]) && maxIterations < 200) {
                         pieceToUse = Random.Range(0, newBoardTiles.Count);

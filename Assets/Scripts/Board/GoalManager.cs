@@ -49,7 +49,7 @@ public class GoalManager : MonoBehaviour
         {
             GameObject goal = Instantiate(goalPrefab, goalIntroParent.transform.position, Quaternion.identity, goalIntroParent.transform);
             GoalPanel panel = goal.GetComponent<GoalPanel>();
-            panel.thisSprite = levelGoal.goalSprite;
+            panel.thisImage.sprite = levelGoal.goalSprite;
             panel.thisString = "0/" + levelGoal.numberNeeded;
             GameObject gameGoal = Instantiate(goalPrefab, goalGameParent.transform.position, Quaternion.identity, goalGameParent.transform);
             panel = gameGoal.GetComponent<GoalPanel>();

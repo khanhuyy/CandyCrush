@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Controller;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -21,7 +23,7 @@ public class Dot : MonoBehaviour
     private HintManager hintManager;
     private FindMatches findMatches;
     private Board board;
-    public GameObject otherDotGo;
+    public GameObject otherDotObject;
     private Vector2 firstTouchPosition = Vector2.zero;
     private Vector2 finalTouchPosition = Vector2.zero;
     private Vector2 tempPosition;
@@ -32,37 +34,69 @@ public class Dot : MonoBehaviour
     public float swipeResist = 1f; // swipe distance must greater than 1
 
     [Header("Power Up Stuff And Animation")] 
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
     public bool isColorBomb; // 5 similar in row or column
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
-    public bool isAdjacentBomb; // L shape, 3 length in both coordinate
-    [SerializeField] private GameObject rowBombPrefab;
-    [SerializeField] private GameObject columnBombPrefab;
+    public bool isAdjacentBomb; // L shape, > 3 length in both coordinate
+    [SerializeField] private GameObject directBombIdleEffect;
+    [SerializeField] private GameObject directBombDestroyEffect;
     [SerializeField] private Sprite areaBombSprite;
+    [SerializeField] private Sprite colorBombSprite;
     [SerializeField] private GameObject colorBombPrefab;
+
+    [Header("Destroy Asset")] public GameObject destroyDestination;
+
+    private void OnEnable()
+    {
+        GameEvent.DestroyPiece += GameEvent_DestroyPiece;
+    }
     
+    private void OnDisable()
+    {
+        GameEvent.DestroyPiece -= GameEvent_DestroyPiece;
+    }
+
+    private void GameEvent_DestroyPiece(int arg1, int arg2)
+    {
+        if ((isColumnBomb || isRowBomb) && isMatched)
+        {
+            var destroyEff = Instantiate(directBombDestroyEffect, transform.position, Quaternion.identity);
+            if (destroyEff.TryGetComponent(out Animator animator))
+            {
+                if (isColumnBomb)
+                    animator.SetTrigger("Column");
+                else if (isRowBomb)
+                    animator.SetTrigger("Row");
+            }
+            Destroy(destroyEff, 1f);
+        }
+        else if (isColorBomb)
+        {
+            
+        }
+        else if (isAdjacentBomb)
+        {
+            
+        }
+        else
+        {
+            // transform.localScale = Vector3.zero;
+        }
+    }
+
     void Start()
     {
         camera = Camera.main;
-        
-        isColumnBomb = false;
-        isRowBomb = false;
-        isColorBomb = false;
-        isAdjacentBomb = false;
-        
+
+        spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
         endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
-        findMatches = FindObjectOfType<FindMatches>();   
+        findMatches = FindObjectOfType<FindMatches>();
+        destroyDestination = GameObject.Find("PieceDestroyDestination");
     }
-
-    // for testing and debug
-    private void OnMouseOver() {
-        if(Input.GetMouseButtonDown(1)) {
-            MakeColorBomb();
-        }
-    }
+    
 
 
     void Update()
@@ -75,7 +109,7 @@ public class Dot : MonoBehaviour
         targetY = row;
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
             tempPosition = new Vector2(targetX, transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
+            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
             if(board.AllDots[column, row] != gameObject) {
                 board.AllDots[column, row] = gameObject;
                 findMatches.FindAllMatches();
@@ -90,7 +124,7 @@ public class Dot : MonoBehaviour
         }
         if(Mathf.Abs(targetY - transform.position.y) > 0.1) {
             tempPosition = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
+            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
             if(board.AllDots[column, row] != gameObject && !isSolving) {
                 board.AllDots[column, row] = gameObject;
                 findMatches.FindAllMatches();
@@ -103,22 +137,41 @@ public class Dot : MonoBehaviour
             tempPosition = new Vector2(transform.position.x, targetY);
             transform.position = tempPosition;
         }
-
+        if (transform.localScale == Vector3.zero)
+            Destroy(gameObject);
     }
 
     public IEnumerator CheckMoveCo() {
         if(isColorBomb) {
             // this piece is a color bomb and the other pieces the color to destroy
-            findMatches.MatchDotsOfColor(otherDotGo.tag);
-            isMatched = true;
-        } else if(otherDotGo.TryGetComponent(out Dot otherDot) && otherDot.isColorBomb) {
+            if (otherDotObject.TryGetComponent(out Dot otherDot))
+            {
+                if (otherDot.isColorBomb)
+                {
+                    findMatches.MatchAllBoard();
+                } 
+                else if (otherDot.isAdjacentBomb)
+                {
+                    findMatches.MakeAdjacentSameColor(otherDot.tag);
+                }
+                else if (otherDot.isColumnBomb || otherDot.isRowBomb)
+                {
+                    findMatches.MakeDirectionBombSameColor(otherDot.tag);
+                }
+                else
+                {
+                    findMatches.MatchDotsSameColor(otherDotObject.tag);
+                    isMatched = true;
+                }
+            }
+        } else if(otherDotObject.TryGetComponent(out Dot otherDot) && otherDot.isColorBomb) {
             // other piece is color bomb
-            findMatches.MatchDotsOfColor(gameObject.tag);
+            findMatches.MatchDotsSameColor(gameObject.tag);
             otherDot.isMatched = true;
         }
         yield return new WaitForSeconds(0.5f);
-        if(otherDotGo) {
-            if(!isMatched && otherDotGo.TryGetComponent(out Dot otherDot) && !otherDot.isMatched) 
+        if(otherDotObject) {
+            if(!isMatched && otherDotObject.TryGetComponent(out Dot otherDot) && !otherDot.isMatched) 
             {
                 otherDot.row = row;
                 otherDot.column = column;
@@ -139,27 +192,32 @@ public class Dot : MonoBehaviour
         }
     }
 
-    // private void OnMouseDown() {
-    //     if(hintManager != null)
-    //     {
-    //         hintManager.DestroyHint();
-    //     }
-    //     if(board.currentState == GameState.Move) {
-    //         firstTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-    //     }
-    // }
-    //
-    // private void OnMouseUp() {
-    //     if(hintManager != null)
-    //     {
-    //         hintManager.DestroyHint();
-    //     }
-    //     if(board.currentState == GameState.Move) 
-    //     {
-    //         finalTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-    //         CalculateAngle();
-    //     }
-    // }
+    private void ValidateSpecialBombMove()
+    {
+        
+    }
+
+    private void OnMouseDown() {
+        if(hintManager != null)
+        {
+            hintManager.DestroyHint();
+        }
+        if(board.currentState == GameState.Move) {
+            firstTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+        }
+    }
+    
+    private void OnMouseUp() {
+        if(hintManager != null)
+        {
+            hintManager.DestroyHint();
+        }
+        if(board.currentState == GameState.Move) 
+        {
+            finalTouchPosition = camera.ScreenToWorldPoint(Input.mousePosition);
+            CalculateAngle();
+        }
+    }
 
     void CalculateAngle() {
         // swipe angle range right, top, left, bottom are 315 - 45, 45 - 135, 135 - 225, 225 - 315
@@ -176,16 +234,16 @@ public class Dot : MonoBehaviour
     }
 
     void MovePiecesActual(Vector2 direction) {
-        otherDotGo = board.AllDots[column + (int)direction.x, row + (int)direction.y];
+        otherDotObject = board.AllDots[column + (int)direction.x, row + (int)direction.y];
         previousColumn = column;
         previousRow = row;
         if (board.LockTiles[column, row] == null &&
             board.LockTiles[column + (int)direction.x, row + (int)direction.y] == null)
         {
-            if (otherDotGo != null)
+            if (otherDotObject != null)
             {
-                otherDotGo.GetComponent<Dot>().column += (-1) * (int)direction.x;
-                otherDotGo.GetComponent<Dot>().row += (-1) * (int)direction.y;
+                otherDotObject.GetComponent<Dot>().column += (-1) * (int)direction.x;
+                otherDotObject.GetComponent<Dot>().row += (-1) * (int)direction.y;
                 column += (int)direction.x;
                 row += (int)direction.y;
                 StartCoroutine(CheckMoveCo());
@@ -221,45 +279,57 @@ public class Dot : MonoBehaviour
         }
     }
 
-    public void MakeRowBomb() {
+    public void MakeRowBomb()
+    {
+        Debug.Log("Making Row Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
+            isMatched = false;
             isRowBomb = true;
-            rowBombPrefab.SetActive(true);
+            directBombIdleEffect.SetActive(true);
+            if (directBombIdleEffect.TryGetComponent(out Animator animator))
+            {
+                animator.SetTrigger("Row");
+            }
         }
     }
 
     public void MakeColumnBomb() {
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
+            Debug.Log("Making Column Bomb at (" + column + ", " + row + ")");
+            isMatched = false;
             isColumnBomb = true;
-            columnBombPrefab.SetActive(true);
-        }
-    }
-
-    public void MakeColorBomb() {
-        if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
-        {
-            if (Instantiate(colorBombPrefab, transform.position, Quaternion.identity, board.dotsContainer.transform).TryGetComponent(out Dot colorBomb))
+            directBombIdleEffect.SetActive(true);
+            if (directBombIdleEffect.TryGetComponent(out Animator animator))
             {
-                colorBomb.column = column;
-                colorBomb.row = row;
-                colorBomb.targetX = targetX;
-                colorBomb.targetY = targetY;
-                colorBomb.previousColumn = previousColumn;
-                colorBomb.previousRow = previousRow;
-                colorBomb.isColorBomb = true;
-                Destroy(board.AllDots[column, row]);
-                board.AllDots[column, row] = colorBomb.gameObject;
+                animator.SetTrigger("Column");
             }
         }
     }
 
+    public void MakeColorBomb() {
+        Debug.Log("Making Color Bomb at (" + column + ", " + row + ")");
+        if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
+        {
+            isMatched = false;
+            isColorBomb = true;
+            spriteRenderer.sprite = colorBombSprite;
+        }
+    }
+
     public void MakeAdjacentBomb() {
+        Debug.Log("Making Adjacent Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isRowBomb && !isColorBomb)
         {
+            isMatched = false;
             isAdjacentBomb = true;
             spriteRenderer.sprite = areaBombSprite;
         }
+    }
+
+    public bool IsBomb()
+    {
+        return isColorBomb || isAdjacentBomb || isColumnBomb || isRowBomb;
     }
 }

@@ -8,6 +8,12 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
+// [Serializable]
+// public class MidGroundTileType {
+//     public int x;
+//     public int y;
+//     // public MidGroundTileKind tileKind;
+// }
 
 public class PotionBoard : MonoBehaviour
 {
@@ -18,10 +24,13 @@ public class PotionBoard : MonoBehaviour
     public float spacingX;
     public float spacingY;
 
+    public GameObject freezeTilePrefab;
     public GameObject[] potionPrefabs;
     public GameObject backgroundTile;
-    
+
+    // private MidGroundTileType[] layout;
     private Node[,] potionBoard;
+    // private MidGroundTile[,] freezeTiles;
     public GameObject potionBoardGO;
 
     public List<GameObject> potionsToDestroy = new();
@@ -71,6 +80,7 @@ public class PotionBoard : MonoBehaviour
     private void InitializeBoard()
     {
         DestroyPotions();
+        GenerateFreezeTile();
         potionBoard = new Node[width, height];
         spacingX = (float)(width - 1) / 2;
         spacingY = (float)(height - 1) / 2;
@@ -114,6 +124,19 @@ public class PotionBoard : MonoBehaviour
         {
             // todo check deadlock
         }
+    }
+
+    private void GenerateFreezeTile()
+    {
+        // for (int i = 0; i < layout.Length; i++)
+        // {
+        //     // if (layout[i].tileKind == MidGroundTileKind.Freeze)
+        //     // {
+        //     //     Vector2 tempPosition = new Vector2(layout[i].x, layout[i].y);
+        //     //     GameObject tile = Instantiate(freezeTilePrefab, tempPosition, Quaternion.identity);
+        //     //     freezeTiles[layout[i].x, layout[i].y] = tile.GetComponent<MidGroundTile>();
+        //     // }
+        // }
     }
 
     private void DestroyPotions()

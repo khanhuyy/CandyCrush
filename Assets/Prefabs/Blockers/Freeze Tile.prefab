@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7379428174192607864}
   - component: {fileID: 548423903468135264}
-  - component: {fileID: -4330552611191433682}
+  - component: {fileID: 702342981470149438}
   m_Layer: 8
   m_Name: Freeze Tile
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-4330552611191433682
+--- !u!114 &702342981470149438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,8 +94,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6693946532121589710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e667cf15bb9427498d1dd02bb297b6d, type: 3}
+  m_Script: {fileID: 11500000, guid: b9c37ab39994311419f1bd53c8fd1c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hitPoints: 1
+  spriteRenderer: {fileID: 548423903468135264}
   dots: []
+  backgroundSprites: []

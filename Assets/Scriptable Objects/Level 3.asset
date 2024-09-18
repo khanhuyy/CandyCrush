@@ -89,3 +89,7 @@ MonoBehaviour:
     numberCollected: 7
     goalSprite: {fileID: 21300000, guid: 8705d6125a0825140a75f5e92aab7e5b, type: 3}
     matchValue: Direct Bomb
+  - numberNeeded: 6
+    numberCollected: 7
+    goalSprite: {fileID: 21300000, guid: 8705d6125a0825140a75f5e92aab7e5b, type: 3}
+    matchValue: Direct Bomb

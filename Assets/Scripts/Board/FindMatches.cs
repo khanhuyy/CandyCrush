@@ -84,12 +84,56 @@ public class FindMatches : MonoBehaviour
         AddToListAndMatch(dot1);
         AddToListAndMatch(dot2);
         AddToListAndMatch(dot3);
-        Debug.Log(currentMatches.Count);
     }
 
     private IEnumerator FindAllMatchesCo() {
         yield return null;
         // todo more test
+        for (int column = 0; column < board.width; column++) {
+            for (int row = 0; row < board.height; row++) {
+                if(board.AllDots[column, row]) {
+                    if (board.AllDots[column, row].TryGetComponent(out Dot currentDot))
+                    {
+                        if (column > 0 && column < board.width - 1) {
+                            if (board.AllDots[column - 1, row] && board.AllDots[column + 1, row])
+                            {
+                                if (board.AllDots[column - 1, row].TryGetComponent(out Dot leftDot) &&
+                                    board.AllDots[column + 1, row].TryGetComponent(out Dot rightDot))
+                                {
+                                    if (leftDot.CompareTag(currentDot.tag) && rightDot.CompareTag(currentDot.tag))
+                                    {
+                                        IsRowBomb(leftDot, currentDot, rightDot);
+                                        IsColumnBomb(leftDot, currentDot, rightDot);
+                                        IsAdjacentBomb(leftDot, currentDot, rightDot);
+                                        MatchNearbyPieces(leftDot.gameObject, currentDot.gameObject,
+                                            rightDot.gameObject);
+                                    }
+                                }
+                            }
+                        }
+                        if(row > 0 && row < board.height - 1) {
+                            if (board.AllDots[column, row - 1] && board.AllDots[column, row + 1])
+                            {
+                                if (board.AllDots[column, row - 1].TryGetComponent(out Dot downDot) &&
+                                    board.AllDots[column, row + 1].TryGetComponent(out Dot upDot))
+                                {
+                                    if (upDot.CompareTag(currentDot.tag) && downDot.CompareTag(currentDot.tag))
+                                    {
+                                        IsRowBomb(downDot, currentDot, upDot);
+                                        IsColumnBomb(downDot, currentDot, upDot);
+                                        IsAdjacentBomb(downDot, currentDot, upDot);
+                                        MatchNearbyPieces(downDot.gameObject, currentDot.gameObject, upDot.gameObject);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void FindAllMatches2() {
         for (int column = 0; column < board.width; column++) {
             for (int row = 0; row < board.height; row++) {
                 if(board.AllDots[column, row]) {
@@ -167,10 +211,8 @@ public class FindMatches : MonoBehaviour
             }
         }
     }
-
-    // match the same color dot
-    // todo refactor name
-    public void MatchDotsOfColor(string color) {
+    
+    public void MatchDotsSameColor(string color) {
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
                 // check if that dot exists
@@ -182,6 +224,66 @@ public class FindMatches : MonoBehaviour
                         {
                             otherDot.isMatched = true;
                         }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void MakeAdjacentSameColor(string color) {
+        for(int column = 0; column < board.width; column++) {
+            for (int row = 0; row< board.height; row++) {
+                // check if that dot exists
+                if(board.AllDots[column, row]) {
+                    // check the tag on that piece
+                    if(board.AllDots[column, row].CompareTag(color)) {
+                        // set that piece to be matched
+                        if (board.AllDots[column, row].TryGetComponent(out Dot otherDot))
+                        {
+                            otherDot.isMatched = true;
+                            otherDot.MakeAdjacentBomb();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void MakeDirectionBombSameColor(string color) {
+        for(int column = 0; column < board.width; column++) {
+            for (int row = 0; row< board.height; row++) {
+                // check if that dot exists
+                if(board.AllDots[column, row]) {
+                    // check the tag on that piece
+                    if(board.AllDots[column, row].CompareTag(color)) {
+                        // set that piece to be matched
+                        if (board.AllDots[column, row].TryGetComponent(out Dot otherDot))
+                        {
+                            var columnOrRow = Random.Range(0, 2);
+                            otherDot.isMatched = true;
+                            if (columnOrRow == 0)
+                            {
+                                otherDot.MakeColumnBomb();
+                            }
+                            else
+                            {
+                                otherDot.MakeRowBomb();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void MatchAllBoard() {
+        for(int column = 0; column < board.width; column++) {
+            for (int row = 0; row< board.height; row++) {
+                // check if that dot exists
+                if(board.AllDots[column, row]) {
+                    if (board.AllDots[column, row].TryGetComponent(out Dot dot))
+                    {
+                        dot.isMatched = true;
                     }
                 }
             }
@@ -207,7 +309,7 @@ public class FindMatches : MonoBehaviour
 
     // gen row or column bomb
     public void CheckDirectionBombs(MatchType matchType) {
-        if(board.currentDot != null) {
+        if(!board.currentDot) {
             if (board.currentDot.isMatched && board.currentDot.CompareTag(matchType.color))
             {
                 board.currentDot.isMatched = false;
@@ -220,8 +322,8 @@ public class FindMatches : MonoBehaviour
                     board.currentDot.MakeColumnBomb();
                 }
             }
-            else if(board.currentDot.otherDotGo) {
-                if (board.currentDot.otherDotGo.TryGetComponent(out Dot otherDot))
+            else if(board.currentDot.otherDotObject) {
+                if (board.currentDot.otherDotObject.TryGetComponent(out Dot otherDot))
                 {
                     if(otherDot.isMatched && otherDot.CompareTag(matchType.color)) {
                         otherDot.isMatched = false;

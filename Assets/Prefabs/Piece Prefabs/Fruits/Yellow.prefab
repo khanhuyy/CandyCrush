@@ -151,11 +151,10 @@ MonoBehaviour:
   targetX: 0
   targetY: 0
   isMatched: 0
-  otherDotGo: {fileID: 0}
+  otherDotObject: {fileID: 0}
   isSolving: 0
   swipeAngle: 0
   swipeResist: 1
-  spriteRenderer: {fileID: 0}
   isColorBomb: 0
   isColumnBomb: 0
   isRowBomb: 0
@@ -163,7 +162,7 @@ MonoBehaviour:
   directBombIdleEffect: {fileID: 4993429102602037831}
   directBombDestroyEffect: {fileID: 2191978771857421615, guid: 7df6ec2a1c698f646968f87008c2d7de, type: 3}
   areaBombSprite: {fileID: 21300004, guid: eac7e1cdd756b32418e2d9afd6871172, type: 3}
-  colorBombSprite: {fileID: 21300000, guid: 140169fe467b8b649aa2541e0c8d6c09, type: 3}
+  colorBombSprite: {fileID: 21300000, guid: c1d5a6c1ade19d340922e895b71ec629, type: 3}
   colorBombPrefab: {fileID: 0}
   destroyDestination: {fileID: 0}
 --- !u!1001 &5867655161032369562

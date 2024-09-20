@@ -13,7 +13,7 @@ public class LevelButton : MonoBehaviour
     private int starsActive;
 
     [Header("Level UI")]
-    public Image starsContainer;
+    public GameObject starsContainer;
     public Image[] stars;
     public TextMeshProUGUI levelText;
     public int level;
@@ -32,7 +32,7 @@ public class LevelButton : MonoBehaviour
         LoadData();
         ActivateStars();
         ShowLevel();
-        DecideSprite();
+        // DecideSprite();
     }
 
     void LoadData()
@@ -57,7 +57,7 @@ public class LevelButton : MonoBehaviour
     {
         for (int i = 0; i < starsActive; i++)
         { 
-            stars[i].gameObject.SetActive(enabled = true);
+            stars[i].gameObject.SetActive(true);
         }
     }
 
@@ -68,14 +68,14 @@ public class LevelButton : MonoBehaviour
             buttonImage.sprite = activeSprite;
             button.enabled = true;
             levelText.enabled = true;
-            starsContainer.enabled = true;
+            starsContainer.SetActive(true);
         }
         else
         {
             buttonImage.sprite = lockedSprite;
             button.enabled = false;
             levelText.enabled = false;
-            starsContainer.enabled = false;
+            starsContainer.SetActive(false);
         }
     }
 

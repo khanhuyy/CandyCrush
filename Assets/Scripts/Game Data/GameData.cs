@@ -7,11 +7,27 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.Serialization;
 
 [Serializable]
+public enum PowerUp
+{
+    Lightning,
+    Rainbow,
+    Doom
+}
+
+[Serializable]
+public class PowerUpData
+{
+    public PowerUp type;
+    public int quantity;
+}
+
+[Serializable]
 public class SaveData
 {
     public bool[] isActive;
     public int[] highScores;
     public int[] stars;
+    public PowerUpData[] powerUps;
 }
 
 public class GameData : MonoBehaviour
@@ -61,6 +77,22 @@ public class GameData : MonoBehaviour
             saveData.stars = new int[100];
             saveData.highScores = new int[100];
             saveData.isActive[0] = true;
+            saveData.powerUps = new PowerUpData[3];
+            saveData.powerUps[0] = new PowerUpData
+            {
+                type = PowerUp.Lightning,
+                quantity = 0
+            };
+            saveData.powerUps[1] = new PowerUpData
+            {
+                type = PowerUp.Rainbow,
+                quantity = 0
+            };
+            saveData.powerUps[2] = new PowerUpData
+            {
+                type = PowerUp.Doom,
+                quantity = 0
+            };
             formatter.Serialize(file, saveData);
             file.Close();
         }

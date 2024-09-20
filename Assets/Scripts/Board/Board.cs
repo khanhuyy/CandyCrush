@@ -130,8 +130,8 @@ public class Board : MonoBehaviour
     {
         if (PlayerPrefs.HasKey("Current Level"))
         {
-            // level = PlayerPrefs.GetInt("Current Level");
-            level = 3;
+            level = PlayerPrefs.GetInt("Current Level");
+            // level = 3;
         }
         if (world != null)
         {
@@ -248,6 +248,14 @@ public class Board : MonoBehaviour
                 {
                     Vector2 tilePosition = new Vector2(column, row);
                     GameObject backgroundTile = Instantiate(backgroundTilePrefab, tilePosition, Quaternion.identity, backgroundTilesContainer.transform);
+                    if ((column + row) % 2 == 0)
+                    {
+                        backgroundTile.GetComponent<BackgroundTile>().UseFirstSprite();
+                    }
+                    else
+                    {
+                        backgroundTile.GetComponent<BackgroundTile>().UseSecondSprite();
+                    }
                     backgroundTile.name = "BackgroundTile( " + column + ", " + row + " )";
                 }
                 if(IsMovable(column, row)) {

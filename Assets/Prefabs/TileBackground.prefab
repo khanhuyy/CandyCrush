@@ -219,8 +219,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 598536345526693673}
   dots: []
   backgroundSprites:
-  - {fileID: 21300000, guid: 12ef16a1d684edb41885075b813d8122, type: 3}
-  - {fileID: 21300000, guid: 58bc30570482d1e4f9faf4906c8d8d5a, type: 3}
+  - {fileID: 21300000, guid: 4d536efe128a1a34e934a81f9e7a0505, type: 3}
+  - {fileID: 21300000, guid: ce413f5c8ce764647b4eeac9d081ae7a, type: 3}
 --- !u!212 &598536345526693673
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -262,7 +262,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 12ef16a1d684edb41885075b813d8122, type: 3}
+  m_Sprite: {fileID: 1823117361, guid: a422b408c8c8ce14d86d2a701bcddb7c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

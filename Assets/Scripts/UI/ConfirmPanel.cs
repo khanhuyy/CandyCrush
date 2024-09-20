@@ -15,9 +15,12 @@ public class ConfirmPanel : MonoBehaviour
     private int highScore;
 
     [Header("UI stuff")]
+    public TextMeshProUGUI levelTitle;
     public Image[] stars;
     public TextMeshProUGUI highScoreText;
     public TextMeshProUGUI starText;
+    public TextMeshProUGUI targetScoreAccordingStar;
+    public GameObject goals;
     
     void OnEnable()
     {
@@ -25,6 +28,12 @@ public class ConfirmPanel : MonoBehaviour
         LoadData();
         ActivateStars();
         SetText();
+        SetGoals();
+    }
+
+    private void SetGoals()
+    {
+        
     }
 
     void LoadData()
@@ -38,15 +47,17 @@ public class ConfirmPanel : MonoBehaviour
 
     void SetText()
     {
-        highScoreText.text = "" + highScore;
-        starText.text = "" + starsActive + "/3";
+        levelTitle.text = "Level " + level;
+        highScoreText.text = highScore.ToString();
+        starText.text = "x" + (starsActive == 3 ? starsActive : starsActive + 1);
+        // targetScoreAccordingStar = "Target: " + g;
     }
     
     void ActivateStars()
     {
         for (int i = 0; i < starsActive; i++)
         {
-            stars[i].gameObject.SetActive(enabled = true);
+            stars[i].gameObject.SetActive(true);
         }
     }
 

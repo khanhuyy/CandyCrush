@@ -156,6 +156,7 @@ MonoBehaviour:
   isSolving: 0
   swipeAngle: 0
   swipeResist: 1
+  spriteRenderer: {fileID: 5014311133023143215}
   isColorBomb: 0
   isColumnBomb: 0
   isRowBomb: 0

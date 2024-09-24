@@ -21,6 +21,12 @@ TagManager:
   - Freeze Tile
   - Chocolate
   - Frosting
+  - Column Bomb
+  - Direction Bomb
+  - Row Bomb
+  - Adjacent Bomb
+  - Color Bomb
+  - Cross Bomb
   layers:
   - Default
   - TransparentFX

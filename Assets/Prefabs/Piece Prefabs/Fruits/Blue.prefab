@@ -178,6 +178,7 @@ MonoBehaviour:
   isSolving: 0
   swipeAngle: 0
   swipeResist: 1
+  spriteRenderer: {fileID: 6395136280328262315}
   isColorBomb: 0
   isColumnBomb: 0
   isRowBomb: 0

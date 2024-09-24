@@ -47,7 +47,7 @@ public class Dot : MonoBehaviour
     public float swipeResist = 1f; // swipe distance must greater than 1
 
     [Header("Power Up Stuff And Animation")] 
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public bool isColorBomb; // 5 similar in row or column
     public bool isColumnBomb; // 4 similar in row
     public bool isRowBomb; // 4 similar in column
@@ -76,15 +76,35 @@ public class Dot : MonoBehaviour
     {
         if ((isColumnBomb || isRowBomb) && isMatched)
         {
-            var destroyEff = Instantiate(directBombDestroyEffect, transform.position, Quaternion.identity);
-            if (destroyEff.TryGetComponent(out Animator animator))
+            if (isColumnBomb && isRowBomb)
             {
-                if (isColumnBomb)
-                    animator.SetTrigger("Column");
-                else if (isRowBomb)
-                    animator.SetTrigger("Row");
+                var destroyEffColumn = Instantiate(directBombDestroyEffect, transform.position, Quaternion.identity);
+                var destroyEffRow = Instantiate(directBombDestroyEffect, transform.position, Quaternion.identity);
+                if (destroyEffColumn.TryGetComponent(out Animator columnAnimator))
+                {
+                    columnAnimator.SetTrigger("Column");
+                }
+                if (destroyEffRow.TryGetComponent(out Animator rowAnimator))
+                {
+                    rowAnimator.SetTrigger("Row");
+                }
+                Destroy(destroyEffColumn, 1f);
+                Destroy(destroyEffRow, 1f);
             }
-            Destroy(destroyEff, 1f);
+            else
+            {
+                var destroyEff = Instantiate(directBombDestroyEffect, transform.position, Quaternion.identity);
+                if (destroyEff.TryGetComponent(out Animator animator))
+                {
+                    if (isColumnBomb)
+                    {
+                        animator.SetTrigger("Column");
+                    }
+                    else if (isRowBomb)
+                        animator.SetTrigger("Row");
+                }
+                Destroy(destroyEff, 1f);
+            }
         }
         else if (isColorBomb)
         {
@@ -103,8 +123,6 @@ public class Dot : MonoBehaviour
     void Start()
     {
         camera = Camera.main;
-
-        spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
         endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = FindObjectOfType<Board>();    
@@ -124,7 +142,9 @@ public class Dot : MonoBehaviour
         targetY = row;
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
             tempPosition = new Vector2(targetX, transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
+            // transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
+            // Debug
+            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
             if(board.AllDots[column, row] != gameObject) {
                 board.AllDots[column, row] = gameObject;
                 findMatches.FindAllMatches();
@@ -139,7 +159,9 @@ public class Dot : MonoBehaviour
         }
         if(Mathf.Abs(targetY - transform.position.y) > 0.1) {
             tempPosition = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
+            // transform.position = Vector2.Lerp(transform.position, tempPosition, 0.06f);
+            // Debug
+            transform.position = Vector2.Lerp(transform.position, tempPosition, 0.2f);
             if(board.AllDots[column, row] != gameObject && !isSolving) {
                 board.AllDots[column, row] = gameObject;
                 findMatches.FindAllMatches();
@@ -163,7 +185,7 @@ public class Dot : MonoBehaviour
         {
             ValidateSpecialBombMove(this, otherDotComponent);
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         if (otherDotObject)
         {
             if (!isMatched && !otherDotComponent.isMatched)
@@ -182,7 +204,6 @@ public class Dot : MonoBehaviour
                 {
                     endGameManager.DecreaseCounterValue();
                 }
-
                 board.DestroyMatches();
             }
         }
@@ -252,7 +273,7 @@ public class Dot : MonoBehaviour
             }
             else if (secondDot.IsDirectionBomb())
             {
-                findMatches.MatchCross(secondDot);
+                findMatches.MatchCross(firstDot, secondDot);
             }
             else
             {
@@ -348,11 +369,32 @@ public class Dot : MonoBehaviour
         }
     }
 
+    public void MakeBombProperly(BombType bombType)
+    {
+        if (bombType == BombType.Color)
+        {
+            MakeColorBomb();
+        }
+        else if (bombType == BombType.Adjacent)
+        {
+            MakeAdjacentBomb();
+        }
+        else if (bombType == BombType.Column)
+        {
+            MakeColumnBomb();
+        }
+        else if (bombType == BombType.Row)
+        {
+            MakeRowBomb();
+        }
+    }
+    
     public void MakeRowBomb()
     {
         // Debug.Log("Making Row Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
+            tag = "Row Bomb";
             color = PieceColor.None;
             isMatched = false;
             isRowBomb = true;
@@ -364,6 +406,7 @@ public class Dot : MonoBehaviour
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
             // Debug.Log("Making Column Bomb at (" + column + ", " + row + ")");
+            tag = "Column Bomb";
             color = PieceColor.None;
             isMatched = false;
             isColumnBomb = true;
@@ -371,10 +414,22 @@ public class Dot : MonoBehaviour
         }
     }
 
+    public void MakeCrossBomb()
+    {
+        if (!isColorBomb && !isAdjacentBomb)
+        {
+            tag = "Cross Bomb";
+            color = PieceColor.None;
+            isColumnBomb = true;
+            isRowBomb = true;
+        }
+    }
+
     public void MakeColorBomb() {
         // Debug.Log("Making Color Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
         {
+            tag = "Color Bomb";
             color = PieceColor.None;
             isMatched = false;
             isColorBomb = true;
@@ -386,6 +441,7 @@ public class Dot : MonoBehaviour
         // Debug.Log("Making Adjacent Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isRowBomb && !isColorBomb)
         {
+            tag = "Adjacent Bomb";
             color = PieceColor.None;
             isMatched = false;
             isAdjacentBomb = true;

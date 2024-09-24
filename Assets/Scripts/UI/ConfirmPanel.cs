@@ -54,7 +54,6 @@ public class ConfirmPanel : MonoBehaviour
 
     void LoadData()
     {
-        Debug.Log(level.number);
         if (gameData != null)
         {
             starsActive = gameData.saveData.stars[level.number];

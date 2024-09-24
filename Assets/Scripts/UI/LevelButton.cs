@@ -89,7 +89,6 @@ public class LevelButton : MonoBehaviour
     {
         if (confirmPanel.TryGetComponent(out ConfirmPanel confirmPanelComponent))
         {
-            Debug.Log("Had set level");
             confirmPanelComponent.SetLevel(worldLevel);
         }
         confirmPanel.SetActive(true);

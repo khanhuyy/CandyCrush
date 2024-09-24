@@ -4766,8 +4766,23 @@ MonoBehaviour:
   - {fileID: 8197473084841504685, guid: d562efe84edd1984285461d34f9fe7e0, type: 3}
   - {fileID: 8197473084841504685, guid: c09817fec026df4458e49f4ebcc32aeb, type: 3}
   - {fileID: 8197473084841504685, guid: 01db9e2fc0e9f3744a1be5052ab5dea5, type: 3}
+  blueDot: {fileID: 8197473084841504685, guid: 8b5137357ec77b74db0098078f07ea2a, type: 3}
+  greenDot: {fileID: 4996280020185814671, guid: 52ae503f4ee60ed44bae0523096e458a, type: 3}
+  orangeDot: {fileID: 8197473084841504685, guid: e40a5e01f8692834680af69fd41d0e92, type: 3}
+  purpleDot: {fileID: 8197473084841504685, guid: d562efe84edd1984285461d34f9fe7e0, type: 3}
+  redDot: {fileID: 8197473084841504685, guid: c09817fec026df4458e49f4ebcc32aeb, type: 3}
+  yellowDot: {fileID: 8197473084841504685, guid: 01db9e2fc0e9f3744a1be5052ab5dea5, type: 3}
   destroyEffect: {fileID: 2809334069459502985, guid: aa38cac8ad6434f4c9e72c8aba7eb584, type: 3}
   boardLayout: []
+  preOrderPieces:
+  - column: 4
+    row: 3
+    color: 0
+    bombType: 2
+  - column: 4
+    row: 4
+    color: 0
+    bombType: 2
   cameraScalar: {fileID: 519420033}
   backgroundTilesContainer: {fileID: 1208038576}
   dotsContainer: {fileID: 1294931333}
@@ -13941,7 +13956,7 @@ GameObject:
   - component: {fileID: 2060981541}
   - component: {fileID: 2060981540}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14011,7 +14026,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2060981541}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1827215461}
+        m_TargetAssemblyTypeName: BackToSplashButton, Assembly-CSharp
+        m_MethodName: OnHomeClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2060981541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14240,7 +14267,7 @@ GameObject:
   - component: {fileID: 2083867780}
   - component: {fileID: 2083867779}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Retry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14310,7 +14337,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2083867780}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1827215460}
+        m_TargetAssemblyTypeName: EndGameManager, Assembly-CSharp
+        m_MethodName: RetryLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2083867780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14940,9 +14979,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 1639355395}
   - {fileID: 628157778}
   - {fileID: 880689097}
-  - {fileID: 1639355395}
   - {fileID: 1245810375}
   - {fileID: 1225582386}
   - {fileID: 626128475}

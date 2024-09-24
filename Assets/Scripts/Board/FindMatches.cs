@@ -50,6 +50,7 @@ public class FindMatches : MonoBehaviour
     }
 
     private void IsColumnBomb(Dot dot1, Dot dot2, Dot dot3) {
+        Debug.Log("hello hello");
         if(dot1.isColumnBomb && !dot1.isSolving)
         {
             dot1.isSolving = true;
@@ -429,32 +430,48 @@ public class FindMatches : MonoBehaviour
         }
     }
     
-    public void MatchCross(Dot dot)
+    public void MatchCross(Dot firstDot, Dot secondDot)
     {
+        // if (board.AllDots[firstDot.column, firstDot.row].TryGetComponent(out Dot firstPositionComponent))
+        // {
+        //     firstPositionComponent.isColumnBomb = true;
+        //     firstPositionComponent.isRowBomb = true;
+        // }
+        // if (board.AllDots[secondDot.column, secondDot.row].TryGetComponent(out Dot secondPositionComponent))
+        // {
+        //     secondPositionComponent.isColumnBomb = false;
+        //     secondPositionComponent.isRowBomb = false;
+        // }
+        secondDot.isColumnBomb = false;
+        secondDot.isRowBomb = false;
+        Debug.Log(currentMatches.Count);
         for (int column = 0; column < board.width; column++)
         {
-            if (board.AllDots[column, dot.row].TryGetComponent(out Dot sameRowDot))
+            if (board.AllDots[column, firstDot.row].TryGetComponent(out Dot sameRowDot))
             {
-                if(dot.isRowBomb)
+                if(sameRowDot.isColumnBomb && sameRowDot.column != firstDot.column)
                 {
                     MatchColumn(column);
                 }
                 sameRowDot.isMatched = true;
-                currentMatches.Add(board.AllDots[column, dot.row]);
+                currentMatches.Add(board.AllDots[column, firstDot.row]);
             }
         }
-
+        Debug.Log(currentMatches.Count);
         for (int row = 0; row < board.height; row++)
         {
-            if (board.AllDots[dot.column, row].TryGetComponent(out Dot sameColumnDot))
+            if (board.AllDots[firstDot.column, row].TryGetComponent(out Dot sameColumnDot))
             {
-                if(dot.isRowBomb)
+                if(sameColumnDot.isRowBomb && sameColumnDot.row != firstDot.row)
                 {
                     MatchRow(row);
                 }
                 sameColumnDot.isMatched = true;
-                currentMatches.Add(board.AllDots[dot.column, row]);
+                currentMatches.Add(board.AllDots[firstDot.column, row]);
             }
         }
+        firstDot.MakeCrossBomb();
+        firstDot.isMatched = true;
+        Debug.Log(currentMatches.Count);
     }
 }

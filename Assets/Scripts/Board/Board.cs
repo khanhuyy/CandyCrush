@@ -51,6 +51,15 @@ public class TileType {
     public TileKind tileKind;
 }
 
+[Serializable]
+public class PreOrderPiece
+{
+    public int column;
+    public int row;
+    public PieceColor color;
+    public BombType bombType;
+}
+
 public class Board : MonoBehaviour
 {
     [Header("Scriptable Object Stuff")]
@@ -71,10 +80,17 @@ public class Board : MonoBehaviour
     public GameObject concreteTilePrefab;
     public GameObject slimePrefab;
     public GameObject[] dots;
+    public GameObject blueDot;
+    public GameObject greenDot;
+    public GameObject orangeDot;
+    public GameObject purpleDot;
+    public GameObject redDot;
+    public GameObject yellowDot;
     public GameObject destroyEffect;
     
     [Header("Layout")]
     public TileType[] boardLayout;
+    public List<PreOrderPiece> preOrderPieces;
     public GameObject [,] AllDots;
     private bool[,] blankSpaces;
     private BackgroundTile[,] breakableTiles; // ~ jelly in candy crush
@@ -92,7 +108,7 @@ public class Board : MonoBehaviour
     
     [Header("Match Stuff")] 
     public MatchType matchType;
-    public Dot currentDot; // calculate first selected dot
+    public Dot currentDot;
     private FindMatches findMatches;
     public int basePieceValue = 20;
     private int streakValue = 1;
@@ -237,6 +253,50 @@ public class Board : MonoBehaviour
             }
         }
     }
+    
+    private void GeneratePreOrderPiece() {
+        for (int i = 0; i < preOrderPieces.Count; i++) {
+            Vector2 tempPosition = new Vector2(preOrderPieces[i].column, preOrderPieces[i].row + rowOffSet);
+            GameObject piece;
+            if (preOrderPieces[i].color == PieceColor.Blue)
+            {
+                piece = Instantiate(blueDot, tempPosition, Quaternion.identity, transform);
+            }
+            else if (preOrderPieces[i].color == PieceColor.Green)
+            {
+                piece = Instantiate(greenDot, tempPosition, Quaternion.identity, transform);
+            }
+            else if (preOrderPieces[i].color == PieceColor.Orange)
+            {
+                piece = Instantiate(orangeDot, tempPosition, Quaternion.identity, transform);
+            }
+            else if (preOrderPieces[i].color == PieceColor.Purple)
+            {
+                piece = Instantiate(purpleDot, tempPosition, Quaternion.identity, transform);
+            }
+            else if (preOrderPieces[i].color == PieceColor.Red)
+            {
+                piece = Instantiate(redDot, tempPosition, Quaternion.identity, transform);
+            }
+            else if (preOrderPieces[i].color == PieceColor.Yellow)
+            {
+                piece = Instantiate(yellowDot, tempPosition, Quaternion.identity, transform);
+            }
+            else
+            {
+                piece = Instantiate(blueDot, tempPosition, Quaternion.identity, transform);
+            }
+            if (piece.TryGetComponent(out Dot pieceComponent))
+            {
+                pieceComponent.column = preOrderPieces[i].column;
+                pieceComponent.row = preOrderPieces[i].row;
+                pieceComponent.color = preOrderPieces[i].color;
+                pieceComponent.MakeBombProperly(preOrderPieces[i].bombType);
+            }
+            AllDots[preOrderPieces[i].column, preOrderPieces[i].row] = piece;
+        }
+        preOrderPieces.Clear();
+    }
     #endregion
 
     private void Setup() {
@@ -246,6 +306,7 @@ public class Board : MonoBehaviour
         GenerateLockTiles();
         GenerateConcreteTiles();
         GenerateSlimeTiles();
+        GeneratePreOrderPiece();
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 if (!blankSpaces[column, row])
@@ -281,6 +342,25 @@ public class Board : MonoBehaviour
 
     private void GenerateSingleDot(int column, int row)
     {
+        if (AllDots[column, row])
+        {
+            return;
+        }
+
+        bool inPreOrder = false;
+        foreach (var piece in preOrderPieces)
+        {
+            if (piece.column == column && piece.row == row)
+            {
+                inPreOrder = true;
+                break;
+            }
+        }
+
+        if (inPreOrder)
+        {
+            return;
+        }
         int dotToUse = Random.Range(0, dots.Length);
         Dictionary<int, bool> usedDotDict = new Dictionary<int, bool>();
         List<int> notUseYet = new List<int>();
@@ -356,7 +436,6 @@ public class Board : MonoBehaviour
             // store this dot
             if (simulateMatch[i].TryGetComponent(out Dot currentSimulateDot))
             {
-                string currentColor = currentSimulateDot.tag;
                 int minColumn = currentSimulateDot.column;
                 int minRow = currentSimulateDot.row;
                 int columnMatch = 0;
@@ -381,7 +460,7 @@ public class Board : MonoBehaviour
                             hasMakeThisGroup = true;
                             break;
                         }
-                        if (nextDot.column == currentSimulateDot.column && nextDot.CompareTag(currentColor))
+                        if (nextDot.column == currentSimulateDot.column && nextDot.color == currentSimulateDot.color && nextDot.color != PieceColor.None)
                         {
                             columnMatch++;
                             if (nextDot.column < minColumn)
@@ -390,7 +469,7 @@ public class Board : MonoBehaviour
                             }
                         }
 
-                        if (nextDot.row == currentSimulateDot.row && nextDot.CompareTag(currentColor))
+                        if (nextDot.row == currentSimulateDot.row && nextDot.color == currentSimulateDot.color && nextDot.color != PieceColor.None)
                         {
                             rowMatch++;
                             if (nextDot.row < minRow)
@@ -449,24 +528,6 @@ public class Board : MonoBehaviour
                 }
             }
         }
-    }
-
-    private Vector2Int GetBombPosition(Dot calculatingDot, Vector2Int defaultPosition, int a, int b)
-    {
-        if (!calculatingDot)
-        {
-            if (currentDot.otherDotObject.TryGetComponent(out Dot currentOtherDot) && 
-                calculatingDot.column == currentOtherDot.column && calculatingDot.row == currentOtherDot.row)
-            {
-                return new Vector2Int(currentOtherDot.column, currentOtherDot.row);
-            }
-            if (currentDot.column == calculatingDot.column && currentDot.row == calculatingDot.row)
-            {
-                return new Vector2Int(currentDot.column, currentDot.row);
-            }
-        }
-        return defaultPosition;
-
     }
     
     private void CheckToMakeBomb() {

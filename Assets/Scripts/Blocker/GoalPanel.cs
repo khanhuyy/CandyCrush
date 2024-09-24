@@ -19,7 +19,6 @@ public class GoalPanel : MonoBehaviour
     void Setup()
     {
         thisImage.sprite = thisSprite;
-        Debug.Log(thisSprite.name);
         thisText.SetText(thisString);
     }
 }

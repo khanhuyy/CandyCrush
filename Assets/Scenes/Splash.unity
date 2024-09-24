@@ -747,6 +747,7 @@ MonoBehaviour:
   levelText: {fileID: 2046318146}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &38732630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,6 +983,7 @@ MonoBehaviour:
   levelText: {fileID: 1665491946}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &65727923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311,8 +1313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 700148b9c6ee7e2438ec8befd1c3ebbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelToLoad: Main
-  level: 0
+  sceneToLoad: Main
   levelTitle: {fileID: 37711885}
   stars:
   - {fileID: 468793479}
@@ -1320,8 +1321,10 @@ MonoBehaviour:
   - {fileID: 1005012754}
   highScoreText: {fileID: 1618523182}
   starText: {fileID: 1822059926}
-  targetScoreAccordingStar: {fileID: 0}
-  goals: {fileID: 68037397}
+  targetScoreAccordingStar: {fileID: 1618523182}
+  level: {fileID: 0}
+  goalsContainer: {fileID: 68037397}
+  goalPrefab: {fileID: 6030937461679432879, guid: ad2d83ce14be1a340be70a4e181261d6, type: 3}
 --- !u!1 &91187201
 GameObject:
   m_ObjectHideFlags: 0
@@ -2060,6 +2063,18 @@ MonoBehaviour:
       - m_Target: {fileID: 80326569}
         m_TargetAssemblyTypeName: ConfirmPanel, Assembly-CSharp
         m_MethodName: Cancel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1116161912}
+        m_TargetAssemblyTypeName: LevelSelectManager, Assembly-CSharp
+        m_MethodName: CloseConfirmPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3045,6 +3060,7 @@ MonoBehaviour:
   levelText: {fileID: 209877093}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &237280638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4140,6 +4156,7 @@ MonoBehaviour:
   levelText: {fileID: 552275945}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &324097339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5252,6 +5269,8 @@ MonoBehaviour:
   levelSelectPanelIsActive: 0
   dashboardPanelIsActive: 1
   confirmPlayPanelIsActive: 0
+  needLoadGame: 0
+  levelToLoad: 0
 --- !u!4 &424566650
 Transform:
   m_ObjectHideFlags: 0
@@ -6464,6 +6483,7 @@ MonoBehaviour:
   levelText: {fileID: 1560326678}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &564191689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9049,6 +9069,7 @@ MonoBehaviour:
   levelText: {fileID: 559257313}
   level: 6
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &706135873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10739,6 +10760,7 @@ MonoBehaviour:
   levelText: {fileID: 898435298}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &867287860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10898,6 +10920,7 @@ MonoBehaviour:
   levelText: {fileID: 1827317879}
   level: 5
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &867481511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11267,6 +11290,7 @@ MonoBehaviour:
   levelText: {fileID: 1135618650}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &885399612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11915,6 +11939,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPanel: {fileID: 1103779180}
   levelPanel: {fileID: 497038367}
+  levelSelectManager: {fileID: 1116161912}
+  confirmPanel: {fileID: 80326569}
 --- !u!1 &917120455
 GameObject:
   m_ObjectHideFlags: 0
@@ -12596,6 +12622,7 @@ MonoBehaviour:
   levelText: {fileID: 214146053}
   level: 9
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1015956672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13661,6 +13688,7 @@ MonoBehaviour:
   levelText: {fileID: 665721283}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1115458081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13807,6 +13835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f31dfbbe379a4ac4c8bc946c8641c285, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  world: {fileID: 0}
   panels:
   - {fileID: 1178057904}
   - {fileID: 607251332}
@@ -13815,6 +13844,7 @@ MonoBehaviour:
   page: 0
   currentLevel: 0
   paginationText: {fileID: 917120456}
+  goalsContainer: {fileID: 68037397}
 --- !u!1 &1121193991
 GameObject:
   m_ObjectHideFlags: 0
@@ -15421,6 +15451,7 @@ MonoBehaviour:
   levelText: {fileID: 883040839}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1206493518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17034,6 +17065,7 @@ MonoBehaviour:
   levelText: {fileID: 850582189}
   level: 8
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1326807691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17467,6 +17499,7 @@ MonoBehaviour:
   levelText: {fileID: 1930187195}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1373877150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18050,6 +18083,7 @@ MonoBehaviour:
   levelText: {fileID: 1767341897}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 11400000, guid: 996da0477f1fa1d45ba48680c22b4668, type: 2}
 --- !u!114 &1411327691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19399,6 +19433,7 @@ MonoBehaviour:
   levelText: {fileID: 640873423}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 11400000, guid: 996da0477f1fa1d45ba48680c22b4668, type: 2}
 --- !u!114 &1516285868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20837,6 +20872,7 @@ MonoBehaviour:
   levelText: {fileID: 1318756290}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1629440971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21043,6 +21079,7 @@ MonoBehaviour:
   levelText: {fileID: 608410123}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1647831267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21382,6 +21419,7 @@ MonoBehaviour:
   levelText: {fileID: 666765373}
   level: 7
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1665046318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22053,6 +22091,7 @@ MonoBehaviour:
   levelText: {fileID: 373237431}
   level: 4
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1694360323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23844,6 +23883,7 @@ MonoBehaviour:
   levelText: {fileID: 1528618058}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1794490700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25402,6 +25442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPanel: {fileID: 1103779180}
   levelPanel: {fileID: 497038367}
+  levelToLoad: 0
 --- !u!1 &1882617043
 GameObject:
   m_ObjectHideFlags: 0
@@ -26388,6 +26429,7 @@ MonoBehaviour:
   levelText: {fileID: 673385178}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1924491765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26681,6 +26723,7 @@ MonoBehaviour:
   levelText: {fileID: 322016110}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &1938145374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27517,6 +27560,7 @@ MonoBehaviour:
   levelText: {fileID: 2111767086}
   level: 3
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 11400000, guid: 4bcb84664dc76224d819f8580000275d, type: 2}
 --- !u!114 &1985748840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28261,6 +28305,7 @@ MonoBehaviour:
   levelText: {fileID: 1753055252}
   level: 2
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 11400000, guid: a91f8316c66f9204b9da02fcc68e12ce, type: 2}
 --- !u!114 &2018609126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28420,6 +28465,7 @@ MonoBehaviour:
   levelText: {fileID: 1449192391}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &2019655195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29120,6 +29166,7 @@ MonoBehaviour:
   levelText: {fileID: 152438125}
   level: 1
   confirmPanel: {fileID: 80326565}
+  worldLevel: {fileID: 0}
 --- !u!114 &2071484069
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class LevelSelectManager : MonoBehaviour
 {
+    public World world;
     public GameObject[] panels;
     public GameObject currentPanel;
     public int page;
@@ -10,10 +11,15 @@ public class LevelSelectManager : MonoBehaviour
     public int currentLevel = 0;
     public TextMeshProUGUI paginationText;
     private const int LevelPerPage = 9;
+    public GameObject goalsContainer;
     
     // Start is called before the first frame update
     void Start()
     {
+        if (world)
+        {
+            
+        }
         gameData = FindObjectOfType<GameData>();
         for (int i = 0; i < panels.Length; i++)
         {
@@ -64,5 +70,13 @@ public class LevelSelectManager : MonoBehaviour
     private void UpdatePaginationText()
     {
         paginationText.text = (page + 1) + "/" + panels.Length;
+    }
+
+    public void CloseConfirmPanel()
+    {
+        foreach (Transform goal in goalsContainer.transform)
+        {
+            Destroy(goal.gameObject);
+        }
     }
 }

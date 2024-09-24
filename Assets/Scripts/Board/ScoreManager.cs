@@ -51,16 +51,17 @@ public class ScoreManager : MonoBehaviour
         }
         if (gameData)
         {
-            int highScore = gameData.saveData.highScores[board.level];
+            var levelIndex = board.level - 1;
+            int highScore = gameData.saveData.highScores[levelIndex];
             if (score > highScore)
             {
-                gameData.saveData.highScores[board.level] = score;
+                gameData.saveData.highScores[levelIndex] = score;
             }
 
-            int currentStars = gameData.saveData.stars[board.level];
+            int currentStars = gameData.saveData.stars[levelIndex];
             if (numberStars > currentStars)
             {
-                gameData.saveData.stars[board.level] = numberStars;
+                gameData.saveData.stars[levelIndex] = numberStars;
             }
             gameData.Save();
         }

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Controller;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public enum GameType
 {
@@ -78,6 +80,19 @@ public class EndGameManager : MonoBehaviour
         counter.SetText("" + currentCounterValue);
         FadePanelController fade = FindObjectOfType<FadePanelController>();
         fade.GameOver();
+    }
+
+    public void GoNextLevel()
+    {
+        GameEvent.GoToLevel(board.level + 1);
+        Debug.Log(board.level + 1);
+        SceneManager.LoadScene("Splash");
+    }
+    
+    public void RetryLevel()
+    {
+        GameEvent.Retrylevel(board.level);
+        SceneManager.LoadScene("Splash");
     }
 
     public void LoseGame()

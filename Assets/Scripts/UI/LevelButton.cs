@@ -22,6 +22,7 @@ public class LevelButton : MonoBehaviour
     [Header("Manager")]
     private GameManager gameManager;
     private GameData gameData;
+    public Level worldLevel;
 
     void Start()
     {
@@ -86,9 +87,10 @@ public class LevelButton : MonoBehaviour
 
     public void ConfirmPanel()
     {
-        if (confirmPanel.TryGetComponent(out ConfirmPanel script))
+        if (confirmPanel.TryGetComponent(out ConfirmPanel confirmPanelComponent))
         {
-            script.level = level;
+            Debug.Log("Had set level");
+            confirmPanelComponent.SetLevel(worldLevel);
         }
         confirmPanel.SetActive(true);
     }

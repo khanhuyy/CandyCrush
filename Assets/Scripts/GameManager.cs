@@ -1,5 +1,8 @@
 using System;
+using Controller;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +21,10 @@ public class GameManager : MonoBehaviour
     public bool levelSelectPanelIsActive;
     public bool dashboardPanelIsActive;
     public bool confirmPlayPanelIsActive;
-    
+
+    public bool needLoadGame;
+    public int levelToLoad;
+
     void Awake()
     {
         if (Instance == null)
@@ -59,5 +65,38 @@ public class GameManager : MonoBehaviour
     {
         
         
+    }
+
+    // [RuntimeInitializeOnLoadMethod]
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        GameEvent.GoToLevel += GameEvent_GoToLevel;
+        GameEvent.Retrylevel += GameEvent_RetryLevel;
+    }
+    
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        GameEvent.GoToLevel -= GameEvent_GoToLevel;
+        GameEvent.Retrylevel -= GameEvent_RetryLevel;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        
+    }
+    
+    void GameEvent_GoToLevel(int targetLevel)
+    {
+        needLoadGame = true;
+        levelToLoad = targetLevel;
+        Debug.Log("Hello");
+    }
+    
+    void GameEvent_RetryLevel(int targetLevel)
+    {
+        needLoadGame = true;
+        levelToLoad = targetLevel;
     }
 }

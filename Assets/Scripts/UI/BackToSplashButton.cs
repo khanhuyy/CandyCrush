@@ -1,3 +1,4 @@
+using Controller;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,6 +19,7 @@ public class BackToSplashButton : MonoBehaviour
         }
         gameManager.ToSplashLevelSelectPanel();
         SceneManager.LoadScene(sceneToLoad);
+        GameEvent.GoToLevel(board.level + 1);
     }
     
     public void LoseOK()

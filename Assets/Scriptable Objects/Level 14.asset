@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88823f78b65673348b31d8263ce1707c, type: 3}
   m_Name: Level 14
   m_EditorClassIdentifier: 
+  number: 14
   width: 4
   height: 4
   boardLayout: []

@@ -3,13 +3,26 @@ using System.Collections;
 using Controller;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
+
+public enum PieceColor
+{
+    None,
+    Blue,
+    Green,
+    Orange,
+    Purple,
+    Red,
+    Yellow,
+}
 
 public class Dot : MonoBehaviour
 {
     [Header("System")] 
     private new Camera camera;
-    
+
     [Header("Board Variables")]
+    public PieceColor color;
     public int column;
     public int row;
     public int previousColumn;
@@ -28,7 +41,7 @@ public class Dot : MonoBehaviour
     private Vector2 finalTouchPosition = Vector2.zero;
     private Vector2 tempPosition;
 
-    [FormerlySerializedAs("isMoving")] [Header("Swipe Stuff")]
+    [Header("Swipe Stuff")]
     public bool isSolving; // for check if this is bomb solving problem
     public float swipeAngle;
     public float swipeResist = 1f; // swipe distance must greater than 1
@@ -41,6 +54,8 @@ public class Dot : MonoBehaviour
     public bool isAdjacentBomb; // L shape, > 3 length in both coordinate
     [SerializeField] private GameObject directBombIdleEffect;
     [SerializeField] private GameObject directBombDestroyEffect;
+    public Sprite horizonBombSprite;
+    public Sprite verticalBombSprite;
     [SerializeField] private Sprite areaBombSprite;
     [SerializeField] private Sprite colorBombSprite;
     [SerializeField] private GameObject colorBombPrefab;
@@ -101,10 +116,10 @@ public class Dot : MonoBehaviour
 
     void Update()
     {
-        if (CompareTag("Color"))
-        {
-            isColorBomb = true;
-        }
+        // if (color == PieceColor.None)
+        // {
+        //     isColorBomb = true;
+        // }
         targetX = column;
         targetY = row;
         if(Mathf.Abs(targetX - transform.position.x) > 0.1) {
@@ -142,59 +157,113 @@ public class Dot : MonoBehaviour
     }
 
     public IEnumerator CheckMoveCo() {
-        if(isColorBomb) {
-            // this piece is a color bomb and the other pieces the color to destroy
-            if (otherDotObject.TryGetComponent(out Dot otherDot))
-            {
-                if (otherDot.isColorBomb)
-                {
-                    findMatches.MatchAllBoard();
-                } 
-                else if (otherDot.isAdjacentBomb)
-                {
-                    findMatches.MakeAdjacentSameColor(otherDot.tag);
-                }
-                else if (otherDot.isColumnBomb || otherDot.isRowBomb)
-                {
-                    findMatches.MakeDirectionBombSameColor(otherDot.tag);
-                }
-                else
-                {
-                    findMatches.MatchDotsSameColor(otherDotObject.tag);
-                    isMatched = true;
-                }
-            }
-        } else if(otherDotObject.TryGetComponent(out Dot otherDot) && otherDot.isColorBomb) {
-            // other piece is color bomb
-            findMatches.MatchDotsSameColor(gameObject.tag);
-            otherDot.isMatched = true;
+        // solve bomb
+        var otherDotComponent = otherDotObject.GetComponent<Dot>();
+        if (IsBomb() || (otherDotComponent && otherDotComponent.IsBomb()))
+        {
+            ValidateSpecialBombMove(this, otherDotComponent);
         }
-        yield return new WaitForSeconds(0.5f);
-        if(otherDotObject) {
-            if(!isMatched && otherDotObject.TryGetComponent(out Dot otherDot) && !otherDot.isMatched) 
+        yield return new WaitForSeconds(2f);
+        if (otherDotObject)
+        {
+            if (!isMatched && !otherDotComponent.isMatched)
             {
-                otherDot.row = row;
-                otherDot.column = column;
+                otherDotComponent.row = row;
+                otherDotComponent.column = column;
                 row = previousRow;
                 column = previousColumn;
                 yield return new WaitForSeconds(0.5f);
                 board.currentDot = null;
                 board.currentState = GameState.Move;
-            } 
-            else 
+            }
+            else
             {
-                if(endGameManager.requirements.gameType == GameType.Moves)
+                if (endGameManager.requirements.gameType == GameType.Moves)
                 {
                     endGameManager.DecreaseCounterValue();
                 }
+
                 board.DestroyMatches();
             }
         }
     }
 
-    private void ValidateSpecialBombMove()
+    private void ValidateSpecialBombMove(Dot firstDot, Dot secondDot)
     {
-        
+        if(firstDot.isColorBomb) {
+            if (secondDot.isColorBomb)
+            {
+                findMatches.MatchAllBoard();
+            } 
+            else if (secondDot.isAdjacentBomb)
+            {
+                findMatches.MakeAdjacentSameColor(secondDot.color);
+            }
+            else if (secondDot.isColumnBomb || secondDot.isRowBomb)
+            {
+                findMatches.MakeDirectionBombSameColor(secondDot.color);
+                isMatched = true;
+            }
+            else
+            {
+                findMatches.MatchDotsSameColor(secondDot.color);
+                isMatched = true;
+            }
+        }
+        else if (firstDot.isAdjacentBomb)
+        {
+            if (secondDot.isColorBomb)
+            {
+                findMatches.MakeAdjacentSameColor(firstDot.color);
+            }
+            else if (secondDot.isAdjacentBomb)
+            {
+                findMatches.MatchDoubleAdjacent(firstDot, secondDot);
+            }
+            else if (secondDot.isColumnBomb)
+            {
+                findMatches.MatchAdjacentColumn(secondDot);
+            }
+            else if (secondDot.isRowBomb)
+            {
+                findMatches.MatchAdjacentRow(secondDot);
+            }
+            else
+            {
+                findMatches.MatchAdjacent(firstDot.column, firstDot.row);
+            }
+        }
+        else if (firstDot.IsDirectionBomb())
+        {
+            if (secondDot.isColorBomb)
+            {
+                findMatches.MatchDotsSameColor(firstDot.color);
+            }
+            else if (secondDot.isAdjacentBomb)
+            {
+                if (firstDot.isColumnBomb)
+                {
+                    findMatches.MatchAdjacentColumn(secondDot);
+                }
+                else
+                {
+                    findMatches.MatchAdjacentRow(secondDot);
+                }
+            }
+            else if (secondDot.IsDirectionBomb())
+            {
+                findMatches.MatchCross(secondDot);
+            }
+            else
+            {
+                findMatches.MatchDirection(firstDot);
+                firstDot.isMatched = true; // todo refactor
+            }
+        }
+        else
+        {
+            findMatches.MatchBombProperly(secondDot);
+        }
     }
 
     private void OnMouseDown() {
@@ -281,37 +350,32 @@ public class Dot : MonoBehaviour
 
     public void MakeRowBomb()
     {
-        Debug.Log("Making Row Bomb at (" + column + ", " + row + ")");
+        // Debug.Log("Making Row Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isColorBomb && !isAdjacentBomb)
         {
+            color = PieceColor.None;
             isMatched = false;
             isRowBomb = true;
-            directBombIdleEffect.SetActive(true);
-            if (directBombIdleEffect.TryGetComponent(out Animator animator))
-            {
-                animator.SetTrigger("Row");
-            }
+            spriteRenderer.sprite = horizonBombSprite;
         }
     }
 
     public void MakeColumnBomb() {
         if (!isRowBomb && !isColorBomb && !isAdjacentBomb)
         {
-            Debug.Log("Making Column Bomb at (" + column + ", " + row + ")");
+            // Debug.Log("Making Column Bomb at (" + column + ", " + row + ")");
+            color = PieceColor.None;
             isMatched = false;
             isColumnBomb = true;
-            directBombIdleEffect.SetActive(true);
-            if (directBombIdleEffect.TryGetComponent(out Animator animator))
-            {
-                animator.SetTrigger("Column");
-            }
+            spriteRenderer.sprite = verticalBombSprite;
         }
     }
 
     public void MakeColorBomb() {
-        Debug.Log("Making Color Bomb at (" + column + ", " + row + ")");
+        // Debug.Log("Making Color Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isRowBomb && !isAdjacentBomb)
         {
+            color = PieceColor.None;
             isMatched = false;
             isColorBomb = true;
             spriteRenderer.sprite = colorBombSprite;
@@ -319,9 +383,10 @@ public class Dot : MonoBehaviour
     }
 
     public void MakeAdjacentBomb() {
-        Debug.Log("Making Adjacent Bomb at (" + column + ", " + row + ")");
+        // Debug.Log("Making Adjacent Bomb at (" + column + ", " + row + ")");
         if (!isColumnBomb && !isRowBomb && !isColorBomb)
         {
+            color = PieceColor.None;
             isMatched = false;
             isAdjacentBomb = true;
             spriteRenderer.sprite = areaBombSprite;
@@ -330,6 +395,11 @@ public class Dot : MonoBehaviour
 
     public bool IsBomb()
     {
-        return isColorBomb || isAdjacentBomb || isColumnBomb || isRowBomb;
+        return color == PieceColor.None && (isColorBomb || isAdjacentBomb || isColumnBomb || isRowBomb);
+    }
+
+    public bool IsDirectionBomb()
+    {
+        return color == PieceColor.None && (isRowBomb || isColumnBomb);
     }
 }

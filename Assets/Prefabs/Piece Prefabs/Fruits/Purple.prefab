@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8edcc8921c2cc4448af12430677581be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  color: 4
   column: 0
   row: 0
   previousColumn: 0
@@ -161,7 +162,9 @@ MonoBehaviour:
   isAdjacentBomb: 0
   directBombIdleEffect: {fileID: 7650563919015151905}
   directBombDestroyEffect: {fileID: 2191978771857421615, guid: 7df6ec2a1c698f646968f87008c2d7de, type: 3}
-  areaBombSprite: {fileID: 21300000, guid: df946922b4a8efd4b9708f6b469b2dc2, type: 3}
+  horizonBombSprite: {fileID: 21300000, guid: e0ab5ff7a4eccd441b36a407ced70523, type: 3}
+  verticalBombSprite: {fileID: 21300000, guid: 4e549d3faabde9347bb1e510acad0090, type: 3}
+  areaBombSprite: {fileID: 21300000, guid: 232a54e58e4bce342baf3f3a410c73b7, type: 3}
   colorBombSprite: {fileID: 21300000, guid: c1d5a6c1ade19d340922e895b71ec629, type: 3}
   colorBombPrefab: {fileID: 0}
   destroyDestination: {fileID: 0}

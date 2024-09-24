@@ -5,9 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "World", menuName = "Level")]
 public class Level : ScriptableObject
 {
+    public int number;
+    
     [Header("Board Dimension")] 
     public int width;
-
     public int height;
 
     [Header("Starting Tiles")] 

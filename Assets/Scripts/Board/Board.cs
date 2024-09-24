@@ -39,7 +39,7 @@ public enum BombType
 public class MatchType
 {
     public BombType type;
-    public string color;
+    public PieceColor color;
     public int column;
     public int row;
 }
@@ -131,17 +131,21 @@ public class Board : MonoBehaviour
         if (PlayerPrefs.HasKey("Current Level"))
         {
             level = PlayerPrefs.GetInt("Current Level");
-            // level = 3;
+            if (level == 0)
+            {
+                level = 1;
+            }
         }
         if (world != null)
         {
-            if (Mathf.Abs(level) < world.levels.Length && world.levels[level] != null)
+            var levelIndex = level - 1;
+            if (Mathf.Abs(levelIndex) <= world.levels.Length && world.levels[levelIndex] != null)
             {
-                width = world.levels[level].width;
-                height = world.levels[level].height;
-                dots = world.levels[level].dots;
-                scoreGoals = world.levels[level].scoreGoals;
-                boardLayout = world.levels[level].boardLayout;
+                width = world.levels[levelIndex].width;
+                height = world.levels[levelIndex].height;
+                dots = world.levels[levelIndex].dots;
+                scoreGoals = world.levels[levelIndex].scoreGoals;
+                boardLayout = world.levels[levelIndex].boardLayout;
             }
         }
         goalManager = FindObjectOfType<GoalManager>();

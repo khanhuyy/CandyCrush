@@ -18,13 +18,13 @@ public class FindMatches : MonoBehaviour
 
     private void IsAdjacentBomb(Dot dot1, Dot dot2, Dot dot3) {
         if(dot1.isAdjacentBomb) {
-            GetAdjacentPieces(dot1.column, dot1.row);
+            MatchAdjacent(dot1.column, dot1.row);
         }
         if(dot2.isAdjacentBomb) {
-            GetAdjacentPieces(dot2.column, dot2.row);
+            MatchAdjacent(dot2.column, dot2.row);
         }
         if(dot3.isAdjacentBomb) {
-            GetAdjacentPieces(dot3.column, dot3.row);
+            MatchAdjacent(dot3.column, dot3.row);
         }
     }
 
@@ -32,19 +32,19 @@ public class FindMatches : MonoBehaviour
         if(dot1.isRowBomb && !dot1.isSolving)
         {
             dot1.isSolving = true;
-            GetRowDots(dot1.row);
+            MatchRow(dot1.row);
             board.BombRow(dot1.row);
         }
         if(dot2.isRowBomb && !dot2.isSolving)
         {
             dot2.isSolving = true;
-            GetRowDots(dot2.row);
+            MatchRow(dot2.row);
             board.BombRow(dot2.row);
         }
         if(dot3.isRowBomb && !dot3.isSolving)
         {
             dot3.isSolving = true;
-            GetRowDots(dot3.row);
+            MatchRow(dot3.row);
             board.BombRow(dot3.row);
         }
     }
@@ -53,19 +53,19 @@ public class FindMatches : MonoBehaviour
         if(dot1.isColumnBomb && !dot1.isSolving)
         {
             dot1.isSolving = true;
-            GetColumnDots(dot1.column);
+            MatchColumn(dot1.column);
             board.BombColumn(dot1.column);
         }
         if(dot2.isColumnBomb && !dot2.isSolving) 
         {
             dot2.isSolving = true;
-            GetColumnDots(dot2.column);
+            MatchColumn(dot2.column);
             board.BombColumn(dot2.column);
         }
         if(dot3.isColumnBomb && !dot3.isSolving) 
         {
             dot3.isSolving = true;
-            GetColumnDots(dot3.column);
+            MatchColumn(dot3.column);
             board.BombColumn(dot3.column);
         }
     }
@@ -100,7 +100,7 @@ public class FindMatches : MonoBehaviour
                                 if (board.AllDots[column - 1, row].TryGetComponent(out Dot leftDot) &&
                                     board.AllDots[column + 1, row].TryGetComponent(out Dot rightDot))
                                 {
-                                    if (leftDot.CompareTag(currentDot.tag) && rightDot.CompareTag(currentDot.tag))
+                                    if (leftDot.color == currentDot.color && rightDot.color == currentDot.color)
                                     {
                                         IsRowBomb(leftDot, currentDot, rightDot);
                                         IsColumnBomb(leftDot, currentDot, rightDot);
@@ -117,7 +117,7 @@ public class FindMatches : MonoBehaviour
                                 if (board.AllDots[column, row - 1].TryGetComponent(out Dot downDot) &&
                                     board.AllDots[column, row + 1].TryGetComponent(out Dot upDot))
                                 {
-                                    if (upDot.CompareTag(currentDot.tag) && downDot.CompareTag(currentDot.tag))
+                                    if (upDot.color == currentDot.color && downDot.color == currentDot.color)
                                     {
                                         IsRowBomb(downDot, currentDot, upDot);
                                         IsColumnBomb(downDot, currentDot, upDot);
@@ -145,7 +145,7 @@ public class FindMatches : MonoBehaviour
                                 if (board.AllDots[column - 1, row].TryGetComponent(out Dot leftDot) &&
                                     board.AllDots[column + 1, row].TryGetComponent(out Dot rightDot))
                                 {
-                                    if (leftDot.CompareTag(currentDot.tag) && rightDot.CompareTag(currentDot.tag))
+                                    if (leftDot.color == currentDot.color && rightDot.color == currentDot.color)
                                     {
                                         IsRowBomb(leftDot, currentDot, rightDot);
                                         IsColumnBomb(leftDot, currentDot, rightDot);
@@ -162,7 +162,7 @@ public class FindMatches : MonoBehaviour
                                 if (board.AllDots[column, row - 1].TryGetComponent(out Dot downDot) &&
                                     board.AllDots[column, row + 1].TryGetComponent(out Dot upDot))
                                 {
-                                    if (upDot.CompareTag(currentDot.tag) && downDot.CompareTag(currentDot.tag))
+                                    if (upDot.color == currentDot.color && downDot.color == currentDot.color)
                                     {
                                         IsRowBomb(downDot, currentDot, upDot);
                                         IsColumnBomb(downDot, currentDot, upDot);
@@ -178,7 +178,7 @@ public class FindMatches : MonoBehaviour
         }
     }
 
-    private void GetAdjacentPieces(int column, int row) {
+    public void MatchAdjacent(int column, int row) {
         for(int i = column - 1; i <= column + 1; i++) {
             for(int j = row - 1; j <= row + 1; j++) {
                 if(i >= 0 && i <board.width && j >= 0 && j < board.height) {
@@ -194,16 +194,15 @@ public class FindMatches : MonoBehaviour
             }
         }
     }
-
-    // all column dots
-    private void GetColumnDots(int column) {
+    
+    private void MatchColumn(int column) {
         for (int row = 0; row < board.height; row++) {
             if(board.AllDots[column, row]) {
-                if (board.AllDots[column, row].TryGetComponent(out Dot dot))
+                if (board.AllDots[column, row].TryGetComponent(out Dot dot) && dot.column == column)
                 {
                     if(dot.isRowBomb)
                     {
-                        GetRowDots(row);
+                        MatchRow(row);
                     }
                     dot.isMatched = true;
                     currentMatches.Add(board.AllDots[column, row]);
@@ -212,64 +211,70 @@ public class FindMatches : MonoBehaviour
         }
     }
     
-    public void MatchDotsSameColor(string color) {
+    private void MatchRow(int row) {
+        for (int column = 0; column < board.width; column++) {
+            if(board.AllDots[column, row]) {
+                if (board.AllDots[column, row].TryGetComponent(out Dot dot) && dot.row == row)
+                {
+                    if(dot.isColumnBomb)
+                    {
+                        MatchColumn(column);
+                    }
+                    dot.isMatched = true;
+                    currentMatches.Add(board.AllDots[column, row]);
+                }
+                
+            }
+        }
+    }
+    
+    public void MatchDotsSameColor(PieceColor color) {
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
                 // check if that dot exists
-                if(board.AllDots[column, row]) {
-                    // check the tag on that piece
-                    if(board.AllDots[column, row].CompareTag(color)) {
-                        // set that piece to be matched
-                        if (board.AllDots[column, row].TryGetComponent(out Dot otherDot))
-                        {
-                            otherDot.isMatched = true;
-                        }
+                if(board.AllDots[column, row])
+                {
+                    if (board.AllDots[column, row].TryGetComponent(out Dot otherDot) 
+                        && otherDot.color == color && otherDot.color != PieceColor.None)
+                    {
+                        otherDot.isMatched = true;
                     }
                 }
             }
         }
     }
     
-    public void MakeAdjacentSameColor(string color) {
+    public void MakeAdjacentSameColor(PieceColor color) {
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
-                // check if that dot exists
                 if(board.AllDots[column, row]) {
-                    // check the tag on that piece
-                    if(board.AllDots[column, row].CompareTag(color)) {
-                        // set that piece to be matched
-                        if (board.AllDots[column, row].TryGetComponent(out Dot otherDot))
-                        {
-                            otherDot.isMatched = true;
-                            otherDot.MakeAdjacentBomb();
-                        }
+                    if (board.AllDots[column, row].TryGetComponent(out Dot otherDot) && otherDot.color == color)
+                    {
+                        otherDot.isMatched = true;
+                        otherDot.MakeAdjacentBomb();
                     }
                 }
             }
         }
     }
     
-    public void MakeDirectionBombSameColor(string color) {
+    public void MakeDirectionBombSameColor(PieceColor color) {
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
-                // check if that dot exists
                 if(board.AllDots[column, row]) {
-                    // check the tag on that piece
-                    if(board.AllDots[column, row].CompareTag(color)) {
-                        // set that piece to be matched
-                        if (board.AllDots[column, row].TryGetComponent(out Dot otherDot))
+                    if (board.AllDots[column, row].TryGetComponent(out Dot otherDot) && otherDot.color == color)
+                    {
+                        var columnOrRow = Random.Range(0, 2);
+                        otherDot.isMatched = true;
+                        if (columnOrRow == 0)
                         {
-                            var columnOrRow = Random.Range(0, 2);
-                            otherDot.isMatched = true;
-                            if (columnOrRow == 0)
-                            {
-                                otherDot.MakeColumnBomb();
-                            }
-                            else
-                            {
-                                otherDot.MakeRowBomb();
-                            }
+                            otherDot.MakeColumnBomb();
                         }
+                        else
+                        {
+                            otherDot.MakeRowBomb();
+                        }
+                        currentMatches.Add(board.AllDots[column, row]);
                     }
                 }
             }
@@ -279,7 +284,6 @@ public class FindMatches : MonoBehaviour
     public void MatchAllBoard() {
         for(int column = 0; column < board.width; column++) {
             for (int row = 0; row< board.height; row++) {
-                // check if that dot exists
                 if(board.AllDots[column, row]) {
                     if (board.AllDots[column, row].TryGetComponent(out Dot dot))
                     {
@@ -290,27 +294,10 @@ public class FindMatches : MonoBehaviour
         }
     }
 
-    private void GetRowDots(int row) {
-        for (int column = 0; column < board.width; column++) {
-            if(board.AllDots[column, row]) {
-                if (board.AllDots[column, row].TryGetComponent(out Dot dot))
-                {
-                    if(dot.isColumnBomb)
-                    {
-                        GetColumnDots(column);
-                    }
-                    dot.isMatched = true;
-                    currentMatches.Add(board.AllDots[column, row]);
-                }
-                
-            }
-        }
-    }
-
     // gen row or column bomb
     public void CheckDirectionBombs(MatchType matchType) {
         if(!board.currentDot) {
-            if (board.currentDot.isMatched && board.currentDot.CompareTag(matchType.color))
+            if (board.currentDot.isMatched && board.currentDot.color == matchType.color)
             {
                 board.currentDot.isMatched = false;
                 if (board.currentDot.swipeAngle is > -45 and <= 45 or < -135 or >= 135)
@@ -325,7 +312,7 @@ public class FindMatches : MonoBehaviour
             else if(board.currentDot.otherDotObject) {
                 if (board.currentDot.otherDotObject.TryGetComponent(out Dot otherDot))
                 {
-                    if(otherDot.isMatched && otherDot.CompareTag(matchType.color)) {
+                    if(otherDot.isMatched && otherDot.color == matchType.color) {
                         otherDot.isMatched = false;
                     }
                     if (board.currentDot.swipeAngle is > -45 and <= 45 or < -135 or >= 135)
@@ -337,6 +324,136 @@ public class FindMatches : MonoBehaviour
                         otherDot.MakeColumnBomb();
                     }
                 }
+            }
+        }
+    }
+
+    public void MatchDoubleAdjacent(Dot firstDot, Dot secondDot)
+    {
+        var minCalculateColumn = Mathf.Min(firstDot.column, secondDot.column);
+        var minCalculateRow = Mathf.Min(firstDot.row, secondDot.row);
+        var maxCalculateColumn = Mathf.Max(firstDot.column, secondDot.column);
+        var maxCalculateRow = Mathf.Max(firstDot.row, secondDot.row);
+        for (int column = minCalculateColumn - 2; column <= maxCalculateColumn + 2; column++)
+        {
+            for (int row = minCalculateRow - 2; row <= maxCalculateRow + 2; row++)
+            {
+                if (column >= 0 && column < board.width && row >= 0 && row < board.height)
+                {
+                    if (board.AllDots[column, row] && board.AllDots[column, row].TryGetComponent(out Dot dotComponent))
+                    {
+                        dotComponent.isMatched = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public void MatchAdjacentColumn(Dot secondDot)
+    {
+        for (int column = secondDot.column - 1; column < secondDot.column + 1; column++)
+        {
+            for (int row = 0; row < board.width; row++)
+            {
+                if (column > 0 && column < board.width)
+                {
+                    if (board.AllDots[column, row] && board.AllDots[column, row].TryGetComponent(out Dot dot))
+                    {
+                        if(dot.IsBomb())
+                        {
+                            MatchBombProperly(dot);
+                        }
+                        if (dot.row == secondDot.row)
+                        {
+                            dot.MakeColumnBomb();
+                        }
+                        dot.isMatched = true;
+                        currentMatches.Add(board.AllDots[column, row]);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void MatchAdjacentRow(Dot secondDot)
+    {
+        for (int row = secondDot.row - 1; row < secondDot.row + 1; row++)
+        {
+            for (int column = 0; column < board.width; column++)
+            {
+                if (row > 0 && row < board.height)
+                {
+                    if (board.AllDots[column, row] && board.AllDots[column, row].TryGetComponent(out Dot dot))
+                    {
+                        if(dot.IsBomb())
+                        {
+                            MatchBombProperly(dot);
+                        }
+                        if (dot.column == secondDot.column)
+                        {
+                            dot.MakeRowBomb();
+                        }
+                        dot.isMatched = true;
+                        currentMatches.Add(board.AllDots[column, row]);
+                    }
+                }
+            }
+        }
+    }
+
+    public void MatchBombProperly(Dot bombDot)
+    {
+        if (bombDot.isAdjacentBomb)
+        {
+            MatchAdjacent(bombDot.column, bombDot.row);
+        }
+        else if (bombDot.IsDirectionBomb())
+        {
+            MatchDirection(bombDot);
+            bombDot.isMatched = true; // todo refactor
+        }
+    }
+    
+    public void MatchDirection(Dot directionDot)
+    {
+        if (directionDot.IsDirectionBomb())
+        {
+            if (directionDot.isColumnBomb)
+            {
+                MatchColumn(directionDot.column);
+            }
+            if (directionDot.isRowBomb)
+            {
+                MatchRow(directionDot.row);
+            }
+        }
+    }
+    
+    public void MatchCross(Dot dot)
+    {
+        for (int column = 0; column < board.width; column++)
+        {
+            if (board.AllDots[column, dot.row].TryGetComponent(out Dot sameRowDot))
+            {
+                if(dot.isRowBomb)
+                {
+                    MatchColumn(column);
+                }
+                sameRowDot.isMatched = true;
+                currentMatches.Add(board.AllDots[column, dot.row]);
+            }
+        }
+
+        for (int row = 0; row < board.height; row++)
+        {
+            if (board.AllDots[dot.column, row].TryGetComponent(out Dot sameColumnDot))
+            {
+                if(dot.isRowBomb)
+                {
+                    MatchRow(row);
+                }
+                sameColumnDot.isMatched = true;
+                currentMatches.Add(board.AllDots[dot.column, row]);
             }
         }
     }

@@ -30,11 +30,12 @@ public class GoalManager : MonoBehaviour
 
     void GetGoals()
     {
+        var levelIndex = board.level - 1;
         if (board != null && board.world != null)
         {
-            if (board.world.levels[board.level] != null)
+            if (board.world.levels[levelIndex] != null)
             {
-                levelGoals = board.world.levels[board.level].levelGoals;
+                levelGoals = board.world.levels[levelIndex].levelGoals;
                 foreach (var goal in levelGoals)
                 {
                     goal.numberCollected = 0;

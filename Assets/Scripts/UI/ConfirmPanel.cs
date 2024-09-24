@@ -4,12 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class ConfirmPanel : MonoBehaviour
 {
-    [Header("Level Information")]
-    public string levelToLoad;
-    public int level;
+    [FormerlySerializedAs("levelToLoad")] [Header("Level Information")]
+    public string sceneToLoad;
     private GameData gameData;
     private int starsActive;
     private int highScore;
@@ -20,7 +20,9 @@ public class ConfirmPanel : MonoBehaviour
     public TextMeshProUGUI highScoreText;
     public TextMeshProUGUI starText;
     public TextMeshProUGUI targetScoreAccordingStar;
-    public GameObject goals;
+    public Level level;
+    public GameObject goalsContainer;
+    public GameObject goalPrefab;
     
     void OnEnable()
     {
@@ -33,24 +35,39 @@ public class ConfirmPanel : MonoBehaviour
 
     private void SetGoals()
     {
-        
+        foreach (var goal in level.levelGoals)
+        {
+            GameObject createdGoal = Instantiate(goalPrefab, goalsContainer.transform.position, Quaternion.identity, goalsContainer.transform);
+            if (createdGoal.TryGetComponent(out Image goalImage))
+            {
+                goalImage.sprite = goal.goalSprite;
+            }
+
+            createdGoal.GetComponentInChildren<TextMeshProUGUI>().text = goal.numberNeeded.ToString();
+        }
+    }
+
+    public void SetLevel(Level worldLevel)
+    {
+        level = worldLevel;
     }
 
     void LoadData()
     {
+        Debug.Log(level.number);
         if (gameData != null)
         {
-            starsActive = gameData.saveData.stars[level - 1];
-            highScore = gameData.saveData.highScores[level - 1];
+            starsActive = gameData.saveData.stars[level.number];
+            highScore = gameData.saveData.highScores[level.number];
         }
     }
 
     void SetText()
     {
-        levelTitle.text = "Level " + level;
+        levelTitle.text = "Level " + level.number;
         highScoreText.text = highScore.ToString();
         starText.text = "x" + (starsActive == 3 ? starsActive : starsActive + 1);
-        // targetScoreAccordingStar = "Target: " + g;
+        targetScoreAccordingStar.text = "Target: " + level.scoreGoals[starsActive == 3 ? starsActive - 1 : starsActive];
     }
     
     void ActivateStars()
@@ -68,7 +85,7 @@ public class ConfirmPanel : MonoBehaviour
 
     public void Play()
     {
-        PlayerPrefs.SetInt("Current Level", level - 1); // todo refactor sync
-        SceneManager.LoadScene(levelToLoad);
+        PlayerPrefs.SetInt("Current Level", level.number); // todo refactor sync
+        SceneManager.LoadScene(sceneToLoad);
     }
 }

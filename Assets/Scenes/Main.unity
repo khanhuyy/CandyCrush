@@ -4775,10 +4775,10 @@ MonoBehaviour:
   destroyEffect: {fileID: 2809334069459502985, guid: aa38cac8ad6434f4c9e72c8aba7eb584, type: 3}
   boardLayout: []
   preOrderPieces:
-  - column: 4
-    row: 3
+  - column: 3
+    row: 4
     color: 0
-    bombType: 2
+    bombType: 0
   - column: 4
     row: 4
     color: 0

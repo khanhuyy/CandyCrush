@@ -243,11 +243,11 @@ public class Dot : MonoBehaviour
             }
             else if (secondDot.isColumnBomb)
             {
-                findMatches.MatchAdjacentColumn(secondDot);
+                findMatches.MatchAdjacentColumn(firstDot, secondDot);
             }
             else if (secondDot.isRowBomb)
             {
-                findMatches.MatchAdjacentRow(secondDot);
+                findMatches.MatchAdjacentRow(firstDot, secondDot);
             }
             else
             {
@@ -264,11 +264,11 @@ public class Dot : MonoBehaviour
             {
                 if (firstDot.isColumnBomb)
                 {
-                    findMatches.MatchAdjacentColumn(secondDot);
+                    findMatches.MatchAdjacentColumn(firstDot, secondDot);
                 }
                 else
                 {
-                    findMatches.MatchAdjacentRow(secondDot);
+                    findMatches.MatchAdjacentRow(firstDot, secondDot);
                 }
             }
             else if (secondDot.IsDirectionBomb())
@@ -457,5 +457,13 @@ public class Dot : MonoBehaviour
     public bool IsDirectionBomb()
     {
         return color == PieceColor.None && (isRowBomb || isColumnBomb);
+    }
+
+    public void DefuseBomb()
+    {
+        isColorBomb = false;
+        isAdjacentBomb = false;
+        isColumnBomb = false;
+        isRowBomb = false;
     }
 }

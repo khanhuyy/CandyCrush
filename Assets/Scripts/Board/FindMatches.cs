@@ -350,9 +350,11 @@ public class FindMatches : MonoBehaviour
         }
     }
 
-    public void MatchAdjacentColumn(Dot secondDot)
+    public void MatchAdjacentColumn(Dot currentDot, Dot swapDot)
     {
-        for (int column = secondDot.column - 1; column < secondDot.column + 1; column++)
+        currentDot.DefuseBomb();
+        swapDot.DefuseBomb();
+        for (int column = currentDot.column - 1; column <= currentDot.column + 1; column++)
         {
             for (int row = 0; row < board.width; row++)
             {
@@ -364,9 +366,9 @@ public class FindMatches : MonoBehaviour
                         {
                             MatchBombProperly(dot);
                         }
-                        if (dot.row == secondDot.row)
+                        if (dot.row == currentDot.row)
                         {
-                            dot.MakeColumnBomb();
+                            dot.isColumnBomb = true;
                         }
                         dot.isMatched = true;
                         currentMatches.Add(board.AllDots[column, row]);
@@ -376,9 +378,11 @@ public class FindMatches : MonoBehaviour
         }
     }
     
-    public void MatchAdjacentRow(Dot secondDot)
+    public void MatchAdjacentRow(Dot currentDot, Dot swapDot)
     {
-        for (int row = secondDot.row - 1; row < secondDot.row + 1; row++)
+        currentDot.DefuseBomb();
+        swapDot.DefuseBomb();
+        for (int row = currentDot.row - 1; row <= currentDot.row + 1; row++)
         {
             for (int column = 0; column < board.width; column++)
             {
@@ -390,9 +394,9 @@ public class FindMatches : MonoBehaviour
                         {
                             MatchBombProperly(dot);
                         }
-                        if (dot.column == secondDot.column)
+                        if (dot.column == currentDot.column)
                         {
-                            dot.MakeRowBomb();
+                            dot.isRowBomb = true;
                         }
                         dot.isMatched = true;
                         currentMatches.Add(board.AllDots[column, row]);

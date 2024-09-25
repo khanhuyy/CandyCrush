@@ -50,7 +50,6 @@ public class FindMatches : MonoBehaviour
     }
 
     private void IsColumnBomb(Dot dot1, Dot dot2, Dot dot3) {
-        Debug.Log("hello hello");
         if(dot1.isColumnBomb && !dot1.isSolving)
         {
             dot1.isSolving = true;
@@ -245,40 +244,77 @@ public class FindMatches : MonoBehaviour
         }
     }
     
-    public void MakeAdjacentSameColor(PieceColor color) {
-        for(int column = 0; column < board.width; column++) {
-            for (int row = 0; row< board.height; row++) {
-                if(board.AllDots[column, row]) {
-                    if (board.AllDots[column, row].TryGetComponent(out Dot otherDot) && otherDot.color == color)
-                    {
-                        otherDot.isMatched = true;
-                        otherDot.MakeAdjacentBomb();
-                    }
-                }
+    public void MakeAdjacentSameColor(Dot firstDot, Dot secondDot)
+    {
+        var newAdjacentBombPieces = new List<Dot>();
+        var bombNeedToMake = (board.height + board.width) / 2;
+        while (bombNeedToMake > 0)
+        {
+            var randomColumn = Random.Range(0, board.width);
+            var randomRow = Random.Range(0, board.height);
+            var safeIndex = 100;
+            while (board.AllDots[randomColumn, randomRow].GetComponent<Dot>().IsBomb() && safeIndex > 0)
+            {
+                randomColumn = Random.Range(0, board.width);
+                randomRow = Random.Range(0, board.height);
+                safeIndex--;
             }
+            var newAdjacentPiece = board.AllDots[randomColumn, randomRow].GetComponent<Dot>();
+            newAdjacentPiece.MakeAdjacentBomb();
+            newAdjacentPiece.isMatched = true;
+            currentMatches.Add(newAdjacentPiece.gameObject);
+            newAdjacentBombPieces.Add(newAdjacentPiece);
+            bombNeedToMake--;
+        }
+        MatchAdjacent(firstDot.column, firstDot.row);
+        MatchAdjacent(secondDot.column, secondDot.row);
+        firstDot.isMatched = true;
+        secondDot.isMatched = true;
+        currentMatches.Add(firstDot.gameObject);
+        currentMatches.Add(secondDot.gameObject);
+        foreach (Dot piece in newAdjacentBombPieces)
+        {
+            MatchAdjacent(piece.column, piece.row);
         }
     }
     
-    public void MakeDirectionBombSameColor(PieceColor color) {
-        for(int column = 0; column < board.width; column++) {
-            for (int row = 0; row< board.height; row++) {
-                if(board.AllDots[column, row]) {
-                    if (board.AllDots[column, row].TryGetComponent(out Dot otherDot) && otherDot.color == color)
-                    {
-                        var columnOrRow = Random.Range(0, 2);
-                        otherDot.isMatched = true;
-                        if (columnOrRow == 0)
-                        {
-                            otherDot.MakeColumnBomb();
-                        }
-                        else
-                        {
-                            otherDot.MakeRowBomb();
-                        }
-                        currentMatches.Add(board.AllDots[column, row]);
-                    }
-                }
+    public void MakeDirectionBombSameColor(Dot firstDot, Dot secondDot) {
+        var newDirectionBombPieces = new List<Dot>();
+        var bombNeedToMake = (board.height + board.width) / 2;
+        while (bombNeedToMake > 0)
+        {
+            var randomColumn = Random.Range(0, board.width);
+            var randomRow = Random.Range(0, board.height);
+            var safeIndex = 100;
+            while (board.AllDots[randomColumn, randomRow].GetComponent<Dot>().IsBomb() && safeIndex > 0)
+            {
+                randomColumn = Random.Range(0, board.width);
+                randomRow = Random.Range(0, board.height);
+                safeIndex--;
             }
+            var newDiectionBombPiece = board.AllDots[randomColumn, randomRow].GetComponent<Dot>();
+            if (bombNeedToMake % 2 == 0)
+            {
+                newDiectionBombPiece.MakeColumnBomb();
+            }
+            else
+            {
+                newDiectionBombPiece.MakeRowBomb();
+            }
+            newDiectionBombPiece.isMatched = true;
+            currentMatches.Add(newDiectionBombPiece.gameObject);
+            newDirectionBombPieces.Add(newDiectionBombPiece);
+            bombNeedToMake--;
+        }
+        MatchDirection(firstDot);
+        MatchDirection(secondDot);
+        firstDot.isMatched = true;
+        secondDot.isMatched = true;
+        currentMatches.Add(firstDot.gameObject);
+        currentMatches.Add(secondDot.gameObject);
+        foreach (Dot piece in newDirectionBombPieces)
+        {
+            MatchDirection(piece);
         }
     }
     

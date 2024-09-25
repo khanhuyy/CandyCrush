@@ -218,11 +218,11 @@ public class Dot : MonoBehaviour
             } 
             else if (secondDot.isAdjacentBomb)
             {
-                findMatches.MakeAdjacentSameColor(secondDot.color);
+                findMatches.MakeAdjacentSameColor(firstDot, secondDot);
             }
             else if (secondDot.isColumnBomb || secondDot.isRowBomb)
             {
-                findMatches.MakeDirectionBombSameColor(secondDot.color);
+                findMatches.MakeDirectionBombSameColor(firstDot, secondDot);
                 isMatched = true;
             }
             else
@@ -235,7 +235,7 @@ public class Dot : MonoBehaviour
         {
             if (secondDot.isColorBomb)
             {
-                findMatches.MakeAdjacentSameColor(firstDot.color);
+                findMatches.MakeAdjacentSameColor(firstDot, secondDot);
             }
             else if (secondDot.isAdjacentBomb)
             {
@@ -258,7 +258,7 @@ public class Dot : MonoBehaviour
         {
             if (secondDot.isColorBomb)
             {
-                findMatches.MatchDotsSameColor(firstDot.color);
+                findMatches.MakeDirectionBombSameColor(firstDot, secondDot);
             }
             else if (secondDot.isAdjacentBomb)
             {

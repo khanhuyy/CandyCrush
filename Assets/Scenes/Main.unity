@@ -4782,7 +4782,7 @@ MonoBehaviour:
   - column: 4
     row: 4
     color: 0
-    bombType: 2
+    bombType: 1
   cameraScalar: {fileID: 519420033}
   backgroundTilesContainer: {fileID: 1208038576}
   dotsContainer: {fileID: 1294931333}

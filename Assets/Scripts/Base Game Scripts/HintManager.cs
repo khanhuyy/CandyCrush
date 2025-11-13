@@ -19,21 +19,21 @@ public class HintManager : MonoBehaviour
     void Update()
     {
         hintDelaySeconds -= Time.deltaTime;
-        if(hintDelaySeconds <= 0 && currentHint == null)
+        if(hintDelaySeconds <= 0 && currentHint is null)
         {
             MarkHint();
             hintDelaySeconds = hintDelay;
         }
     }
 
-    List<GameObject> FindAllMatches()
+    List<Dot> FindAllMatches()
     {
-        List<GameObject> possibleMoves = new List<GameObject>();
+        var possibleMoves = new List<Dot>();
         for (int column = 0; column < board.width; column++)
         {
             for (int row = 0; row < board.height; row++)
             {
-                if(board.AllDots[column, row] != null)
+                if(board.AllDots[column, row])
                 {
                     if(column < board.width - 1)
                     {
@@ -55,7 +55,7 @@ public class HintManager : MonoBehaviour
         return possibleMoves;
     }
 
-    GameObject PickOneRandomly()
+    Dot PickOneRandomly()
     {
         var possibleMoves = FindAllMatches();
         if(possibleMoves.Count > 0)
@@ -68,7 +68,7 @@ public class HintManager : MonoBehaviour
 
     private void MarkHint()
     {
-        GameObject move = PickOneRandomly();
+        Dot move = PickOneRandomly();
         if(move != null)
         {
             currentHint = Instantiate(hintParticle, move.transform.position, Quaternion.identity);

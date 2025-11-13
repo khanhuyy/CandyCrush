@@ -8,57 +8,51 @@ using UnityEngine.Serialization;
 public class PauseMenuManager : MonoBehaviour
 {
     public GameObject pausePanel;
-    private Board board;
-    public bool paused = false;
+    private Board _board;
+    public bool paused;
     public Image soundButton;
     
     // todo make animation
     public Sprite musicOnSprite;
     public Sprite musicOffSprite;
-    private SoundManager sound;
-    private Animator pausePanelAnimator;
+    private SoundManager _sound;
+    private Animator _pausePanelAnimator;
 
-    private GameManager gameManager;
-    
-    void Start()
+    private GameManager _gameManager;
+    private static readonly int Close = Animator.StringToHash("Close");
+
+    private void Start()
     {
         if (PlayerPrefs.HasKey("Sound"))
         {
-            if (PlayerPrefs.GetInt("Sound") == 0)
-            {
-                soundButton.sprite = musicOffSprite;
-            }
-            else
-            {
-                soundButton.sprite = musicOnSprite;
-            }
+            soundButton.sprite = PlayerPrefs.GetInt("Sound") == 0 ? musicOffSprite : musicOnSprite;
         }
         else
         {
             soundButton.sprite = musicOnSprite;
         }
 
-        gameManager = FindObjectOfType<GameManager>();
-        pausePanelAnimator = pausePanel.GetComponentInChildren<Animator>();
+        _gameManager = FindFirstObjectByType<GameManager>();
+        _pausePanelAnimator = pausePanel.GetComponentInChildren<Animator>();
         pausePanel.SetActive(false);
-        board = FindObjectOfType<Board>();
-        sound = FindObjectOfType<SoundManager>();
+        _board = FindFirstObjectByType<Board>();
+        _sound = FindFirstObjectByType<SoundManager>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (paused && !pausePanel.activeInHierarchy)
+        switch (paused)
         {
-            pausePanel.SetActive(true);
-            board.currentState = GameState.Pause;
-        }
-
-        if (!paused && pausePanel.activeInHierarchy)
-        {
-            pausePanel.SetActive(false);
-            board.currentState = GameState.Move;
-            pausePanelAnimator.SetTrigger("Close");
+            case true when !pausePanel.activeInHierarchy:
+                pausePanel.SetActive(true);
+                _board.currentState = GameState.Pause;
+                break;
+            case false when pausePanel.activeInHierarchy:
+                pausePanel.SetActive(false);
+                _board.currentState = GameState.Move;
+                _pausePanelAnimator.SetTrigger(Close);
+                break;
         }
     }
     
@@ -70,20 +64,20 @@ public class PauseMenuManager : MonoBehaviour
             {
                 soundButton.sprite = musicOnSprite;
                 PlayerPrefs.SetInt("Sound", 1);
-                sound.AdjustVolume();
+                _sound.AdjustVolume();
             }
             else
             {
                 soundButton.sprite = musicOffSprite;
                 PlayerPrefs.SetInt("Sound", 0);
-                sound.AdjustVolume();
+                _sound.AdjustVolume();
             }
         }
         else
         {
             soundButton.sprite = musicOnSprite;
             PlayerPrefs.SetInt("Sound", 1);
-            sound.AdjustVolume();
+            _sound.AdjustVolume();
         }
     }
     
@@ -94,9 +88,9 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ToMainMenu()
     {
-        gameManager.dashboardPanelIsActive = true;
-        gameManager.confirmPlayPanelIsActive = false;
-        gameManager.levelSelectPanelIsActive = false;
+        _gameManager.dashboardPanelIsActive = true;
+        _gameManager.confirmPlayPanelIsActive = false;
+        _gameManager.levelSelectPanelIsActive = false;
         SceneManager.LoadScene("Scenes/Splash");
     }
 }
